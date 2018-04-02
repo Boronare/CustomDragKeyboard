@@ -3,42 +3,67 @@
     package="org.dyndns.fules.ck"
     android:versionCode="21"
     android:versionName="@string/version_summary">
+
     <uses-sdk
         android:minSdkVersion="21"
-        android:targetSdkVersion="26"/>
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.VIBRATE"/>
+        android:targetSdkVersion="26" />
+
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
     <application
-        android:label="@string/ime_name"
-        android:icon="@drawable/icon_launcher">
-        <service android:name="CompassKeyboard" android:permission="android.permission.BIND_INPUT_METHOD">
+        android:icon="@drawable/icon_launcher"
+        android:label="@string/ime_name">
+        <service
+            android:name=".CompassKeyboard"
+            android:permission="android.permission.BIND_INPUT_METHOD">
             <intent-filter>
-                <action android:name="android.view.InputMethod"/>
-                <action android:name="android.intent.action.DELETE"/>
+                <action android:name="android.view.InputMethod" />
+                <action android:name="android.intent.action.DELETE" />
             </intent-filter>
-            <meta-data android:name="android.view.im" android:resource="@xml/method"/>
+
+            <meta-data
+                android:name="android.view.im"
+                android:resource="@xml/method" />
         </service>
 
         <activity
-            android:label="@string/settings"
-            android:name="CompassKeyboardSettings"
-            android:exported="true">
-        </activity>
+            android:name=".CompassKeyboardSettings"
+            android:exported="true"
+            android:label="@string/settings" />
         <activity
             android:name=".MainActivity"
-            android:label="MainActivityHello">
+            android:label="MainActivityHello"
+            android:theme="@android:style/Theme.NoTitleBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="FilePicker">
+        <activity android:name=".FilePicker">
             <intent-filter>
                 <action android:name="org.dyndns.fules.ck.filepicker.action.PICK" />
-                <category android:name="android.intent.category.DEFAULT"/>
+
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".KeySettingActivity"
+            android:theme="@android:style/Theme.NoTitleBar">
+            <intent-filter>
+                <action android:name="android.provider.Settings.KeySettingActivity" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".KeySettingPopupActivity"
+            android:theme="@android:style/Theme.DeviceDefault.Light.Dialog">
+        </activity>
+
     </application>
+
 </manifest>

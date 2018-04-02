@@ -183,4 +183,15 @@
 			android:summary="@string/copyright_summary"
 			android:selectable="false"/>
 	</PreferenceScreen>
+	<Preference
+		android:key="key_setting"
+		android:title="@string/key_setting"
+		android:summary="@string/key_setting_summary">
+		<intent
+			android:action="android.intent.action.MAIN"
+			android:targetPackage="org.dyndns.fules.ck"
+			android:targetClass="org.dyndns.fules.ck.KeySettingActivity">
+		</intent>
+	</Preference>
+
 </PreferenceScreen>
