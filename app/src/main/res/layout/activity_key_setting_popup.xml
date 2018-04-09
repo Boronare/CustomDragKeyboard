@@ -8,54 +8,72 @@
     tools:context=".KeySettingPopupActivity">
     <TableRow>
 
-        <Button
-            android:id="@+id/button1"
+        <TextView
+            android:id="@+id/TextView1"
             android:layout_width="60dp"
             android:layout_height="60dp"
+            android:gravity="center"
+            android:background="@drawable/button"
             android:text="1" />
-        <Button
-            android:id="@+id/button2"
+        <TextView
+            android:id="@+id/TextView2"
             android:layout_width="60dp"
             android:layout_height="60dp"
+            android:gravity="center"
+            android:background="@drawable/button"
             android:text="2" />
-        <Button
-            android:id="@+id/button3"
+        <TextView
+            android:id="@+id/TextView3"
             android:layout_width="60dp"
             android:layout_height="60dp"
+            android:gravity="center"
+            android:background="@drawable/button"
             android:text="3" />
     </TableRow>
     <TableRow>
-        <Button
-            android:id="@+id/button4"
+        <TextView
+            android:id="@+id/TextView4"
             android:layout_width="60dp"
             android:layout_height="60dp"
+            android:gravity="center"
+            android:background="@drawable/button"
             android:text="4" />
-        <Button
-            android:id="@+id/button5"
+        <TextView
+            android:id="@+id/TextView5"
             android:layout_width="60dp"
             android:layout_height="60dp"
+            android:gravity="center"
+            android:background="@drawable/button"
             android:text="5" />
-        <Button
-            android:id="@+id/button6"
+        <TextView
+            android:id="@+id/TextView6"
             android:layout_width="60dp"
             android:layout_height="60dp"
+            android:gravity="center"
+            android:background="@drawable/button"
             android:text="6" />
     </TableRow>
     <TableRow>
-        <Button
-            android:id="@+id/button7"
+        <TextView
+            android:id="@+id/TextView7"
             android:layout_width="60dp"
             android:layout_height="60dp"
+            android:gravity="center"
+            android:background="@drawable/button"
             android:text="7" />
-        <Button
-            android:id="@+id/button8"
+        <TextView
+            android:id="@+id/TextView8"
             android:layout_width="60dp"
             android:layout_height="60dp"
+            android:gravity="center"
+            android:background="@drawable/button"
             android:text="8" />
-        <Button
-            android:id="@+id/button9"
+        <TextView
+            android:id="@+id/TextView9"
             android:layout_width="60dp"
             android:layout_height="60dp"
+            android:gravity="center"
+            android:background="@drawable/button"
             android:text="9" />
     </TableRow>
 

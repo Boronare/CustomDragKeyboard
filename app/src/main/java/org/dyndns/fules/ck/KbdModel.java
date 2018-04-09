@@ -38,4 +38,5 @@ public class KbdModel implements Serializable {
         String sValue;//인자 중 String값.
         int iValue;//인자 중 int값.
     }
+    //ex) getcount 비슷한 메소드 필요하면 만들기.
 }
