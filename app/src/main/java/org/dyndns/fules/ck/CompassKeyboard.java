@@ -44,7 +44,7 @@ public class CompassKeyboard extends InputMethodService implements OnKeyboardAct
 	private SharedPreferences	mPrefs;					// the preferences instance
 	CompassKeyboardView		ckv;					// the current layout view, either @ckv or @ckvVertical
 	String				currentLayout;
-
+	StringBuilder		sb;
 	boolean				lastInPortrait;
 	DisplayMetrics			lastMetrics = new DisplayMetrics();
 
@@ -234,28 +234,22 @@ public class CompassKeyboard extends InputMethodService implements OnKeyboardAct
 	private void sendModifiers(InputConnection ic, int action) {
 		if (ckv == null)
 			return;
-
-		if (ckv.checkState("shift"))
-			ic.sendKeyEvent(new KeyEvent(action, KeyEvent.KEYCODE_SHIFT_LEFT));
-		if (ckv.checkState("alt"))
-			ic.sendKeyEvent(new KeyEvent(action, KeyEvent.KEYCODE_ALT_LEFT));
-		if (ckv.checkState("altgr"))
-			ic.sendKeyEvent(new KeyEvent(action, KeyEvent.KEYCODE_ALT_RIGHT));
 	}
 
 	// Process a generated keycode
 	public void onKey(int primaryCode, int[] keyCodes) {
 		InputConnection ic = getCurrentInputConnection();
-		sendModifiers(ic, KeyEvent.ACTION_DOWN);
 		sendDownUpKeyEvents(primaryCode);
-		sendModifiers(ic, KeyEvent.ACTION_UP);
 	}
 
 	// Process the generated text
 	public void onText(CharSequence text) {
 		InputConnection ic = getCurrentInputConnection();
 		sendModifiers(ic, KeyEvent.ACTION_DOWN);
-		sendKeyChar(text.charAt(0));
+		if(sb==null) sb=new StringBuilder(text);
+		else sb.append(text);
+		ic.setComposingText(sb,sb.length());
+		//sendKeyChar(text.charAt(0));
 	} 
 
 	// Process a command
