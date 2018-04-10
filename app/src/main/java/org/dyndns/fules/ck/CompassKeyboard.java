@@ -1,6 +1,5 @@
 package org.dyndns.fules.ck;
 import org.dyndns.fules.ck.R;
-
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -10,6 +9,7 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.res.XmlResourceParser;
 import android.inputmethodservice.InputMethodService;
+import android.inputmethodservice.Keyboard;
 import android.inputmethodservice.KeyboardView.OnKeyboardActionListener;
 import android.inputmethodservice.KeyboardView;
 import android.util.DisplayMetrics;
@@ -34,35 +34,28 @@ import java.util.Iterator;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
-
 import android.inputmethodservice.AbstractInputMethodService;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.view.textservice.TextInfo;
 import android.view.textservice.SentenceSuggestionsInfo;
 import android.view.textservice.SpellCheckerSession;
-
 public class CompassKeyboard extends InputMethodService implements OnKeyboardActionListener, SharedPreferences.OnSharedPreferenceChangeListener  {
 	public static final String	SHARED_PREFS_NAME = "CompassKeyboardSettings";
 	public static final int[]	builtinLayouts = { R.xml.default_latin, R.xml.default_cyrillic, R.xml.default_greek }; // keep in sync with constants.xml
 	private static final String	TAG = "CompassKeyboard";
-
 	private SharedPreferences	mPrefs;					// the preferences instance
 	CompassKeyboardView		ckv;					// the current layout view, either @ckv or @ckvVertical
 	String				currentLayout;
 	StringBuilder		sb;
 	boolean				lastInPortrait;
 	DisplayMetrics			lastMetrics = new DisplayMetrics();
-
 	boolean				forcePortrait;				// use the portrait layout even for horizontal screens
-
 	ExtractedTextRequest		etreq = new ExtractedTextRequest();
 	int				selectionStart = -1, selectionEnd = -1;
-
 	// send an auto-revoked notification with a title and a message
 	void sendNotification(String title, String msg) {
 	}
-
 	public void skipLayout(XmlPullParser parser) throws XmlPullParserException, IOException {
 		while ((parser.getEventType() != XmlPullParser.END_TAG) || !parser.getName().contentEquals("Layout"))
 			parser.nextTag();
@@ -71,23 +64,18 @@ public class CompassKeyboard extends InputMethodService implements OnKeyboardAct
 	// Read a layout from a parser
 	String updateLayout(XmlPullParser parser) throws XmlPullParserException, IOException {
 		String name;
-
 		while (parser.getEventType() == XmlPullParser.START_DOCUMENT)
 			parser.next();
-
 		if ((parser.getEventType() != XmlPullParser.START_TAG) || !parser.getName().contentEquals("CompassKeyboard"))
 			throw new XmlPullParserException("Expected <CompassKeyboard>", parser, null);
-
 		name = parser.getAttributeValue(null, "name");
 		if (name != null)
 			Log.i(TAG, "Loading keyboard '"+name+"'");
 		parser.nextTag();
-
 		while (parser.getEventType() != XmlPullParser.END_TAG) {
 			if ((parser.getEventType() != XmlPullParser.START_TAG) || !parser.getName().contentEquals("Layout"))
 				throw new XmlPullParserException("Expected <Layout>", parser, null);
 			String layoutName = parser.getAttributeValue(null, "name");
-
 			if (layoutName.contentEquals("vertical")) {
 				if (lastInPortrait) 
 					ckv.readLayout(parser);
@@ -104,18 +92,14 @@ public class CompassKeyboard extends InputMethodService implements OnKeyboardAct
 				throw new XmlPullParserException("Invalid Layout name '"+layoutName+"'", parser, null);
 		}
 		ckv.calculateSizesForMetrics(lastMetrics);
-
 		if (!parser.getName().contentEquals("CompassKeyboard"))
 			throw new XmlPullParserException("Expected </CompassKeyboard>", parser, null);
 		parser.next();
-
 		return name;
 	}
-
 	public String updateLayout(String filename) {
 		String result = "same";
 		String err = null;
-
 		if (filename.contentEquals(currentLayout))
 			return result;
 		try {
@@ -137,12 +121,10 @@ public class CompassKeyboard extends InputMethodService implements OnKeyboardAct
 		catch (FileNotFoundException e)		{ err = e.getMessage(); }
 		catch (XmlPullParserException e)	{ err = e.getMessage(); }
 		catch (IOException e)		{ err = e.getMessage(); }
-
 		if (err == null) {
 			currentLayout = filename;	// loaded successfully, we may store it as 'current'
 			return result;
 		}
-
 		sendNotification("Invalid layout", err);
 		// revert to default latin, unless this was the one that has failed
 		if (!filename.contentEquals("@latin")) {
@@ -151,44 +133,35 @@ public class CompassKeyboard extends InputMethodService implements OnKeyboardAct
 		}
 		return "failed";
 	}
-
 	public String updateLayout(int i) {
 		String s = mPrefs.getString("layout_path_" + String.valueOf(i), "");
 		if (s.length() > 0)
 			return updateLayout(s);
 		return "failed";
 	}
-
 	@Override public AbstractInputMethodImpl onCreateInputMethodInterface() {
 		Log.d(TAG, "onCreateInputMethodInterface;");
 		etreq.hintMaxChars = etreq.hintMaxLines = 0;
 		mPrefs = getSharedPreferences(SHARED_PREFS_NAME, 0);
-
 		ckv = new CompassKeyboardView(this);
 		ckv.setOnKeyboardActionListener(this);
-
 		forcePortrait = mPrefs.getBoolean("portrait_only", false);
 		lastMetrics.setTo(getResources().getDisplayMetrics());
 		lastInPortrait = forcePortrait || (lastMetrics.widthPixels <= lastMetrics.heightPixels);
-
 		currentLayout = "";			// enforce reloading layout
 		updateLayout(mPrefs.getString("layout", "@latin"));
-
 		ckv.setVibrateOnKey(getPrefInt("feedback_key", 0));
 		ckv.setVibrateOnModifier(getPrefInt("feedback_mod", 0));
 		ckv.setVibrateOnCancel(getPrefInt("feedback_cancel", 0));
 		ckv.setFeedbackNormal(getPrefInt("feedback_text", 0));
 		ckv.setFeedbackPassword(getPrefInt("feedback_password", 0));
-
 		ckv.setLeftMargin(getPrefFloat("margin_left", 0));
 		ckv.setRightMargin(getPrefFloat("margin_right", 0));
 		ckv.setBottomMargin(getPrefFloat("margin_bottom", 0));
 		ckv.setMaxKeySize(getPrefFloat("max_keysize", 12));
-
 		mPrefs.registerOnSharedPreferenceChangeListener(this);
 		return super.onCreateInputMethodInterface();
 	}
-
 	// Select the layout view appropriate for the screen direction, if there is more than one
 	@Override public View onCreateInputView() {
 		DisplayMetrics metrics = new DisplayMetrics();
@@ -209,13 +182,11 @@ public class CompassKeyboard extends InputMethodService implements OnKeyboardAct
 				ckv.calculateSizesForMetrics(lastMetrics);	// don't reload, only resize
 			}
 		}
-
 		ViewParent p = ckv.getParent();
 		if ((p != null) && (p instanceof ViewGroup))
 			((ViewGroup)p).removeView(ckv);
 		return ckv;
 	} 
-
 	@Override public void onStartInputView(EditorInfo attribute, boolean restarting) {
 		//Log.d(TAG, "onStartInputView;");
 		super.onStartInputView(attribute, restarting);
@@ -224,7 +195,6 @@ public class CompassKeyboard extends InputMethodService implements OnKeyboardAct
 			ckv.setInputType(attribute.inputType);
 		}
 	}
-
 	@Override public void onStartInput(EditorInfo attribute, boolean restarting) {
 		super.onStartInput(attribute, restarting); 
 		if (ckv != null) {
@@ -232,36 +202,97 @@ public class CompassKeyboard extends InputMethodService implements OnKeyboardAct
 			ckv.setInputType(attribute.inputType);
 		}
 	}
-
 	@Override public boolean onEvaluateFullscreenMode() {
 		return false; // never require fullscreen
 	}
-
 	private void sendModifiers(InputConnection ic, int action) {
 		if (ckv == null)
 			return;
 	}
-
 	// Process a generated keycode
 	public void onKey(int primaryCode, int[] keyCodes) {
-		InputConnection ic = getCurrentInputConnection();
+		sb=null;
+		mCandidateView.clear();
+		getCurrentInputConnection().finishComposingText();
 		sendDownUpKeyEvents(primaryCode);
 	}
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		sb=null;
+		getCurrentInputConnection().finishComposingText();
+		switch (keyCode) {
+			case KeyEvent.KEYCODE_BACK:
+				// The InputMethodService already takes care of the back
+				// key for us, to dismiss the input method if it is shown.
+				// However, our keyboard could be showing a pop-up window
+				// that back should dismiss, so we first allow it to do that.
+				return super.onKeyDown(keyCode,event);
 
+			case KeyEvent.KEYCODE_DEL:
+
+				// Special handling of the delete key: if we currently are
+				// composing text for the user, we want to modify that instead
+				// of let the application to the delete itself.
+				if (mComposing.length() > 0) {
+					onKey(Keyboard.KEYCODE_DELETE, null);
+					return true;
+				}
+				break;
+
+			case KeyEvent.KEYCODE_ENTER:
+				// Let the underlying text editor always handle these.
+				return false;
+			default:
+				// For all other keys, if we want to do transformations on
+				// text being entered with a hard keyboard, we need to process
+				// it and do the appropriate action.
+                /*
+                if (PROCESS_HARD_KEYS) {
+                    if (keyCode == KeyEvent.KEYCODE_SPACE
+                            && (event.getMetaState()&KeyEvent.META_ALT_ON) != 0) {
+                        // A silly example: in our input method, Alt+Space
+                        // is a shortcut for 'android' in lower case.
+                        InputConnection ic = getCurrentInputConnection();
+                        if (ic != null) {
+                            // First, tell the editor that it is no longer in the
+                            // shift state, since we are consuming this.
+                            ic.clearMetaKeyStates(KeyEvent.META_ALT_ON);
+                            keyDownUp(KeyEvent.KEYCODE_A);
+                            keyDownUp(KeyEvent.KEYCODE_N);
+                            keyDownUp(KeyEvent.KEYCODE_D);
+                            keyDownUp(KeyEvent.KEYCODE_R);
+                            keyDownUp(KeyEvent.KEYCODE_O);
+                            keyDownUp(KeyEvent.KEYCODE_I);
+                            keyDownUp(KeyEvent.KEYCODE_D);
+                            // And we consume this event.
+                            return true;
+                        }
+                    }
+                    if (mPredictionOn && translateKeyDown(keyCode, event)) {
+                        return true;
+                    }
+                }*/
+		}
+
+		return super.onKeyDown(keyCode, event);
+	}
 	// Process the generated text
 	public void onText(CharSequence text) {
 		InputConnection ic = getCurrentInputConnection();
+		if(text==" "){
+			ic.finishComposingText();
+			sb=null;
+			return;
+		}
 		sendModifiers(ic, KeyEvent.ACTION_DOWN);
 		if(sb==null) sb=new StringBuilder(text);
 		else sb.append(text);
+		mCandidateView.setSuggestions(new ArrayList<String>(Arrays.asList(sb.toString(),"GHJK","LMNO")),true,true);
 		ic.setComposingText(sb,sb.length());
 		//sendKeyChar(text.charAt(0));
 	} 
-
 	// Process a command
 	public void execCmd(String cmd) {
 		InputConnection ic = getCurrentInputConnection();
-
 		if (cmd.equals("selectStart")) {
 			selectionStart = ic.getExtractedText(etreq, 0).selectionStart;
 			if ((selectionStart >= 0) && (selectionEnd >= 0)) {
@@ -289,34 +320,25 @@ public class CompassKeyboard extends InputMethodService implements OnKeyboardAct
 		else
 			Log.w(TAG, "Unknown cmd '" + cmd + "'");
 	}
-
 	public void pickDefaultCandidate() {
 		pickSuggestionManually(0);
 	}
-
 	public void swipeRight() {
 	}
-
 	public void swipeLeft() {
 	}
-
 	// Hide the view
 	public void swipeDown() {
 		requestHideSelf(0);
 	}
-
 	public void swipeUp() {
 	}
-
 	public void onPress(int primaryCode) {
 	}
-
 	public void onRelease(int primaryCode) {
 	} 
-
 	String getPrefString(String key, String def) {
 		String s = "";
-
 		if (lastInPortrait) {
 			s = mPrefs.getString("portrait_" + key, "");
 			if (s.contentEquals(""))
@@ -331,7 +353,6 @@ public class CompassKeyboard extends InputMethodService implements OnKeyboardAct
 			s = mPrefs.getString(key, "");
 		return s.contentEquals("") ? def : s;
 	}
-
 	int getPrefInt(String key, int def) {
 		String s = getPrefString(key, "");
 		try {
@@ -345,7 +366,6 @@ public class CompassKeyboard extends InputMethodService implements OnKeyboardAct
 		}
 		return def;
 	}
-
 	float getPrefFloat(String key, float def) {
 		String s = getPrefString(key, "");
 		try {
@@ -359,7 +379,6 @@ public class CompassKeyboard extends InputMethodService implements OnKeyboardAct
 		}
 		return def;
 	}
-
 	// Handle one change in the preferences
 	public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
 		//Log.d(TAG, "Changing pref "+key);
@@ -376,30 +395,23 @@ public class CompassKeyboard extends InputMethodService implements OnKeyboardAct
 		else if (key.endsWith("margin_left")) {
 			ckv.setLeftMargin(getPrefFloat("margin_left", 0));
 			getWindow().dismiss();
-		}
-		else if (key.endsWith("margin_right")) {
+		} else if (key.endsWith("margin_right")) {
 			ckv.setRightMargin(getPrefFloat("margin_right", 0));
 			getWindow().dismiss();
-		}
-		else if (key.endsWith("margin_bottom")) {
+		} else if (key.endsWith("margin_bottom")) {
 			ckv.setBottomMargin(getPrefFloat("margin_bottom", 0));
 			getWindow().dismiss();
-		}
-		else if (key.endsWith("max_keysize")) {
+		} else if (key.endsWith("max_keysize")) {
 			ckv.setMaxKeySize(getPrefFloat("max_keysize", 12));
 			getWindow().dismiss();
-		}
-		else if (key.contentEquals("layout"))
+		} else if (key.contentEquals("layout"))
 			updateLayout(mPrefs.getString("layout", "@latin"));
 		else if (key.startsWith("layout_path_")) {
 			int i = Integer.parseInt(key.substring(12));
 			// ...
-		}
-		else if (key.contentEquals("portrait_only"))
+		} else if (key.contentEquals("portrait_only"))
 			forcePortrait = mPrefs.getBoolean("portrait_only", false);
 	}
-
-
 
 	private boolean mCompletionOn;
 	private CandidateView mCandidateView;
@@ -417,7 +429,6 @@ public class CompassKeyboard extends InputMethodService implements OnKeyboardAct
 		//ckv.addView(mCandidateView,0);
 		return mCandidateView;
 	}
-
 	public void pickSuggestionManually(int index) {
 		if (mCompletionOn && mCompletions != null && index >= 0
 				&& index < mCompletions.length) {
@@ -427,7 +438,6 @@ public class CompassKeyboard extends InputMethodService implements OnKeyboardAct
 				mCandidateView.clear();
 			}
 		} else if (mComposing.length() > 0) {
-
 			if (mPredictionOn && mSuggestions != null && index >= 0) {
 				mComposing.replace(0, mComposing.length(), mSuggestions.get(index));
 			}
@@ -466,5 +476,4 @@ public class CompassKeyboard extends InputMethodService implements OnKeyboardAct
 		}
 	}
 }
-
 // vim: set ai si sw=8 ts=8 noet:

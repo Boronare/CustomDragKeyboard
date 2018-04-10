@@ -193,7 +193,7 @@ public class CompassKeyboardView extends FrameLayout {
 
 	LongTap					onLongTap;	// long tap checker
 	boolean					wasLongTap;	// marker to skip processing the release of a long tap
-	Toast					toast;
+	//Toast					toast;
 	float					downX, downY, upX, upY;	// the coordinates of a swipe, used for recognising global swipes
 
 	/*
@@ -441,11 +441,11 @@ public class CompassKeyboardView extends FrameLayout {
 					case FEEDBACK_TOAST:
 						Action cd = (dir != NONE) ? currentState.dir[dir] : null;
 						if (cd != null) {
-							toast.setText(cd.text);
-							toast.show();
+							//toast.setText(cd.text);
+							//toast.show();
 						}
 						else if (gDir == NONE) {
-							toast.cancel();
+							//toast.cancel();
 						}
 						break;
 				}
@@ -791,8 +791,8 @@ public class CompassKeyboardView extends FrameLayout {
 		locks = new HashSet();
 		effectiveMods = new HashSet();
 
-		toast = Toast.makeText(context, "<none>", Toast.LENGTH_SHORT);
-		toast.setGravity(Gravity.BOTTOM, 0, 0);
+		//toast = Toast.makeText(context, "<none>", Toast.LENGTH_SHORT);
+		//toast.setGravity(Gravity.BOTTOM, 0, 0);
 	}
 
 	void vibrateCode(int n) {
@@ -910,7 +910,7 @@ public class CompassKeyboardView extends FrameLayout {
 
 		Log.v(TAG, "keyMM=" + String.valueOf(keyMM) + ", xdpi=" + String.valueOf(metrics.xdpi) + ", ydpi=" + String.valueOf(metrics.ydpi) + ", nKeys=" + String.valueOf(nKeys) + ", nColumns=" + String.valueOf(nColumns) + ", totalWidth=" + String.valueOf(totalWidth) + ", max=" + String.valueOf(i) + ", sym=" + String.valueOf(sym) + ", gap=" + String.valueOf(gap) + ", reqFS="+String.valueOf(sym)+", fs="+String.valueOf(fontSize)+", asc="+String.valueOf(fm.ascent)+", desc="+String.valueOf(fm.descent));
 
-		toast.setGravity(Gravity.TOP + Gravity.CENTER_HORIZONTAL, 0, -sym);
+		//toast.setGravity(Gravity.TOP + Gravity.CENTER_HORIZONTAL, 0, -sym);
 
 		int n = kbd.getChildCount();
 		for (i = 0; i < n; i++) {
@@ -1027,11 +1027,11 @@ public class CompassKeyboardView extends FrameLayout {
 
 			case FEEDBACK_TOAST:
 				if (d != NONE) {
-					toast.setText(globalSwipeSign[d]);
-					toast.show();
+					//toast.setText(globalSwipeSign[d]);
+					//toast.show();
 				}
 				else {
-					toast.cancel();
+					//toast.cancel();
 				}
 				break;
 		}
@@ -1065,7 +1065,7 @@ public class CompassKeyboardView extends FrameLayout {
 	}
 
 	private boolean processAction(Action cd) {
-		toast.cancel();
+		//toast.cancel();
 		if (cd == null)
 			return false;
 
