@@ -16,6 +16,7 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.CompletionInfo;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
 import android.view.inputmethod.ExtractedText;
@@ -25,6 +26,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Iterator;
@@ -35,6 +38,9 @@ import org.xmlpull.v1.XmlPullParserFactory;
 import android.inputmethodservice.AbstractInputMethodService;
 import android.view.ViewGroup;
 import android.view.ViewParent;
+import android.view.textservice.TextInfo;
+import android.view.textservice.SentenceSuggestionsInfo;
+import android.view.textservice.SpellCheckerSession;
 
 public class CompassKeyboard extends InputMethodService implements OnKeyboardActionListener, SharedPreferences.OnSharedPreferenceChangeListener  {
 	public static final String	SHARED_PREFS_NAME = "CompassKeyboardSettings";
@@ -285,6 +291,7 @@ public class CompassKeyboard extends InputMethodService implements OnKeyboardAct
 	}
 
 	public void pickDefaultCandidate() {
+		pickSuggestionManually(0);
 	}
 
 	public void swipeRight() {
@@ -390,6 +397,73 @@ public class CompassKeyboard extends InputMethodService implements OnKeyboardAct
 		}
 		else if (key.contentEquals("portrait_only"))
 			forcePortrait = mPrefs.getBoolean("portrait_only", false);
+	}
+
+
+
+	private boolean mCompletionOn;
+	private CandidateView mCandidateView;
+	private CompletionInfo[] mCompletions;
+	private StringBuilder mComposing = new StringBuilder();
+	private boolean mPredictionOn;
+	private List<String> mSuggestions;
+	private SpellCheckerSession mScs;
+	@Override public View onCreateCandidatesView() {
+		Log.d("CAUADD","onCreateCandidatesView Invoked");
+		mCandidateView = new CandidateView(this);
+		mCandidateView.setService(this);
+		mCandidateView.setSuggestions(new ArrayList<String>(Arrays.asList("ASDF","GHJK","LMNO")),true,true);
+		setCandidatesViewShown(true);
+		//ckv.addView(mCandidateView,0);
+		return mCandidateView;
+	}
+
+	public void pickSuggestionManually(int index) {
+		if (mCompletionOn && mCompletions != null && index >= 0
+				&& index < mCompletions.length) {
+			CompletionInfo ci = mCompletions[index];
+			getCurrentInputConnection().commitCompletion(ci);
+			if (mCandidateView != null) {
+				mCandidateView.clear();
+			}
+		} else if (mComposing.length() > 0) {
+
+			if (mPredictionOn && mSuggestions != null && index >= 0) {
+				mComposing.replace(0, mComposing.length(), mSuggestions.get(index));
+			}
+			commitTyped(getCurrentInputConnection());
+		}
+	}
+	private void commitTyped(InputConnection inputConnection) {
+		if (mComposing.length() > 0) {
+			inputConnection.commitText(mComposing, mComposing.length());
+			mComposing.setLength(0);
+			updateCandidates();
+		}
+	}
+	private void updateCandidates() {
+		if (!mCompletionOn) {
+			if (mComposing.length() > 0) {
+				ArrayList<String> list = new ArrayList<String>();
+				//list.add(mComposing.toString());
+				Log.d("SoftKeyboard", "REQUESTING: " + mComposing.toString());
+				mScs.getSentenceSuggestions(new TextInfo[] {new TextInfo(mComposing.toString())}, 5);
+			} else {
+				setSuggestions(null, false, false);
+			}
+		}
+	}
+	public void setSuggestions(List<String> suggestions, boolean completions,
+							   boolean typedWordValid) {
+		if (suggestions != null && suggestions.size() > 0) {
+			setCandidatesViewShown(true);
+		} else if (isExtractViewShown()) {
+			setCandidatesViewShown(true);
+		}
+		mSuggestions = suggestions;
+		if (mCandidateView != null) {
+			mCandidateView.setSuggestions(suggestions, completions, typedWordValid);
+		}
 	}
 }
 
