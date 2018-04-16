@@ -3,78 +3,129 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="180dp"
-    android:layout_height="180dp"
+    android:layout_height="240dp"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
     android:stretchColumns="*"
     tools:context=".KeySettingPopupActivity">
     <TableRow>
 
-        <TextView
-            android:id="@+id/TextView1"
+        <EditText
+            android:id="@+id/EditText1"
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:gravity="center"
             android:background="@drawable/button"
-            android:text="1" />
-        <TextView
-            android:id="@+id/TextView2"
+            android:maxLength="1"
+            android:singleLine = "true"
+            android:lines = "1"
+            android:imeOptions="actionDone"
+            android:text="+" />
+        <EditText
+            android:id="@+id/EditText2"
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:gravity="center"
             android:background="@drawable/button"
-            android:text="2" />
-        <TextView
-            android:id="@+id/TextView3"
+            android:maxLength="1"
+            android:singleLine = "true"
+            android:lines = "1"
+            android:imeOptions="actionDone"
+            android:text="ㄲ" />
+        <EditText
+            android:id="@+id/EditText3"
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:gravity="center"
             android:background="@drawable/button"
-            android:text="3" />
+            android:maxLength="1"
+            android:singleLine = "true"
+            android:lines = "1"
+            android:imeOptions="actionDone"
+            android:text="-" />
     </TableRow>
     <TableRow>
-        <TextView
-            android:id="@+id/TextView4"
+        <EditText
+            android:id="@+id/EditText4"
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:gravity="center"
             android:background="@drawable/button"
-            android:text="4" />
-        <TextView
-            android:id="@+id/TextView5"
+            android:maxLength="1"
+            android:singleLine = "true"
+            android:lines = "1"
+            android:imeOptions="actionDone"
+            android:text="ㅋ" />
+        <EditText
+            android:id="@+id/EditText5"
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:gravity="center"
             android:background="@drawable/button"
-            android:text="5" />
-        <TextView
-            android:id="@+id/TextView6"
+            android:maxLength="1"
+            android:singleLine = "true"
+            android:lines = "1"
+            android:imeOptions="actionDone"
+            android:text="ㄱ" />
+
+        <EditText
+            android:id="@+id/EditText6"
             android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:gravity="center"
+            android:layout_height="match_parent"
             android:background="@drawable/button"
-            android:text="6" />
+            android:gravity="center"
+            android:imeOptions="actionDone"
+            android:lines="1"
+            android:maxLength="1"
+            android:singleLine="true"
+            android:text="ㅋ" />
     </TableRow>
     <TableRow>
-        <TextView
-            android:id="@+id/TextView7"
+        <EditText
+            android:id="@+id/EditText7"
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:gravity="center"
             android:background="@drawable/button"
-            android:text="7" />
-        <TextView
-            android:id="@+id/TextView8"
+            android:maxLength="1"
+            android:singleLine = "true"
+            android:lines = "1"
+            android:imeOptions="actionDone"
+            android:text="*" />
+        <EditText
+            android:id="@+id/EditText8"
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:gravity="center"
             android:background="@drawable/button"
-            android:text="8" />
-        <TextView
-            android:id="@+id/TextView9"
+            android:maxLength="1"
+            android:singleLine = "true"
+            android:lines = "1"
+            android:imeOptions="actionDone"
+            android:text="#" />
+        <EditText
+            android:id="@+id/EditText9"
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:gravity="center"
             android:background="@drawable/button"
-            android:text="9" />
+            android:maxLength="1"
+            android:singleLine = "true"
+            android:lines = "1"
+            android:imeOptions="actionDone"
+            android:text="/" />
+    </TableRow>
+    <TableRow>
+        <Button
+            android:id="@+id/Button1"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_span="3"
+            android:background="#eeeeee"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp"
+            android:layout_marginTop="3dp"
+            android:text="확인"/>
     </TableRow>
 
 </TableLayout>

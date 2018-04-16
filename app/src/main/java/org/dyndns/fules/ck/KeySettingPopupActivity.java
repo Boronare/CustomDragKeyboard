@@ -15,5 +15,6 @@ public class KeySettingPopupActivity extends Activity {
         setContentView(R.layout.activity_key_setting_popup);
 
         Intent intent = getIntent();
+        //KbdModel.Dir abc = intent.getSerializableExtra("Dir");
     }
 }

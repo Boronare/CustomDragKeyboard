@@ -17,8 +17,8 @@ public class KeySettingSizeActivity extends Activity {
 
     private Button btr;
 
-    private final String[] listRow = {"2", "3", "4", "5", "6", "7"};
-    private final String[] listCol = {"5", "6", "7", "8", "9"};
+    private final String[] listRow = {"2", "3", "4", "5", "6"};
+    private final String[] listCol = {"5", "6", "7", "8", "9", "10"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
