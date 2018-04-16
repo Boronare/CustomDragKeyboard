@@ -15,18 +15,29 @@ public class KbdModel implements Serializable {
     String kbdName;
     Row[] row;
 
+    KbdModel(int rows,int cols){
+        row = new Row[rows];
+        for (int i = 0; i < rows; i++) {
+            row[i] = new Row(cols);
+        }
+    }
+
+    KbdModel(){
+
+    }
+
     public static class Row implements Serializable {
 
         Col[] col;
 
-        Row(Col[] col){
-            this.col = col;
+        Row(int cols){
+            col = new Col[cols];
+            for(int i=0;i<cols;i++)
+                col[i] = new Col();
         }
+        Row(){
 
-        public void setCol(Col col[]){
-            this.col = col;
         }
-
     }
     public static class Col implements Serializable {
         Dir[] dir = new Dir[9];
@@ -35,17 +46,12 @@ public class KbdModel implements Serializable {
         Col(Dir[] dir){
             this.dir = dir;
         }
-
-        public void setDir(Dir dir[]){
-            this.dir = dir;
+        Col(){
+            for(int i=0;i<9;i++){
+                dir[i]=new Dir();
+            }
         }
-
     }
-    /*Row row[][];
-    public class Row implements Serializable {
-        Dir dir[] = new Dir[9];
-        boolean longpress = false;//길게 눌렀을 때 탭 액션 반복실행 여부
-    }*/
     /**
      * 방향별 행동 및 표시
      * 배열 인덱스는 키패드 방향의 숫자-1 (즉 탭은 가운데 5 -1=4)
@@ -68,22 +74,8 @@ public class KbdModel implements Serializable {
             this.show = show;
             this.actType = actType;
         }
-
-        public void setShow(String show){
-            this.show = show;
+        Dir(){
+            this.actType = 1;
         }
-
-        public void setActType(int actType){
-            this.actType = actType;
-        }
-
     }
-
-    public void setRow(Row row[]){
-        this.row = row;
-    }
-
-
-
-    //ex) getcount 비슷한 메소드 필요하면 만들기.
 }

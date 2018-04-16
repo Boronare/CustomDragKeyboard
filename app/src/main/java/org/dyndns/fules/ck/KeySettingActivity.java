@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -13,6 +12,7 @@ import android.widget.ScrollView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -34,14 +34,9 @@ public class KeySettingActivity extends Activity {
             {{"0","ㅗ","0","ㅓ","ㅇ","ㅏ","!","ㅜ","?"},{"ㅉ","ㅉ","ㅉ","ㅊ","ㅈ","ㅊ","ㅊ","ㅊ","ㅊ"},{"a","b","c","d","ㅎ","e","f","g","h"},{"ㅖ","ㅚ","ㅒ","ㅝ","ㅢ","ㅘ","!","ㅟ","?"},{"<","0",">","0","←","0","<","0",">"}}
     };
 
-    Intent intent;
-
     int row;    // 2 ~ 6
     int col;    // 5 ~ 9
 
-    //String filePath = getFilesDir().getAbsolutePath();
-    //String filePath = getApplicationContext().getFilesDir().getPath().toString() + "/file.txt";
-    //String filePath = "user.ser";
     KbdModel userKbdModel;
     KbdModel tempKbdModel;
 
@@ -52,40 +47,37 @@ public class KeySettingActivity extends Activity {
             try {
                 FileOutputStream fos = openFileOutput("userKbdModel", Context.MODE_PRIVATE);
                 ObjectOutputStream oos = new ObjectOutputStream(fos);
-                oos.writeObject(userKbdModel);
+                oos.writeObject(tempKbdModel);
                 oos.close();
+                Toast.makeText(KeySettingActivity.this, "수정되었습니다.", Toast.LENGTH_SHORT).show();
                 finish();
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
         }
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        intent = getIntent();   //preference로 변경해야 함
-
-        row = intent.getIntExtra("row", 3);
-        col = intent.getIntExtra("col", 5);
-
-        KbdModel tempKbdModel = new KbdModel();
-
-        //this.init();
+        //this.init(row,col);
         try {
             userKbdModel = (KbdModel) this.undoSerializable();
+        } catch(FileNotFoundException e) {
+            this.init(row, col);
         } catch (IOException e) {
             e.printStackTrace();
-            this.init();
+            this.init(row, col);
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
-            this.init();
+            this.init(row, col);
         }
 
-        tempKbdModel = userKbdModel;
+        row = userKbdModel.row.length;
+        col = userKbdModel.row[0].col.length;
+        tempKbdModel = userKbdModel;    //temp에 복사해서 temp를 사용하자.
 
         ScrollView mainScroll = new ScrollView(this);
         ScrollView.LayoutParams scrollParams = new ScrollView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
@@ -105,7 +97,7 @@ public class KeySettingActivity extends Activity {
         titleParams.height = (getResources().getDisplayMetrics().heightPixels/16);   //어림잡아 정한 크기
         titleParams.setMargins(20,0,0,0);
         kbdTitle.setLayoutParams(titleParams);
-        kbdTitle.setText("키보드 이름 : " + userKbdModel.kbdName);    //"키보드 이름 :" + 키보드이름변수
+        kbdTitle.setText("키보드 이름 : " + tempKbdModel.kbdName);    //"키보드 이름 :" + 키보드이름변수
         kbdTitle.setTextSize(24);
         titleTr.addView(kbdTitle);
         mainLayout.addView(titleTr);
@@ -128,19 +120,19 @@ public class KeySettingActivity extends Activity {
                 btr.setHeight(getResources().getDisplayMetrics().widthPixels/col);
                 btr.setBackgroundResource(R.drawable.button);
                 btr.setId(10*i + j);
-                //btr.setText(btr.getId() + "");
                 if(i<3 && j<5){
-                    btr.setText(userKbdModel.row[i].col[j].dir[4].show);
+                    btr.setText(tempKbdModel.row[i].col[j].dir[4].show);
                 }
-                //final int finalI = i;
-                //final int finalJ = j;
+                final int finalI = i;
+                final int finalJ = j;
                 btr.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         Intent intent = new Intent(KeySettingActivity.this, KeySettingPopupActivity.class);
-                        //intent.putExtra("Dir", userKbdModel.row[finalI].col[finalJ].dir);
-                        intent.putExtra("kbdModel", userKbdModel);  //여기서부터...
-                        startActivity(intent);
+                        intent.putExtra("kbdModel", tempKbdModel);  //여기서부터...
+                        intent.putExtra("row",finalI);
+                        intent.putExtra("col",finalJ);
+                        startActivityForResult(intent, 0);
                     }
                 });
                 tr.addView(btr);
@@ -158,7 +150,10 @@ public class KeySettingActivity extends Activity {
         sizeBtr.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(KeySettingActivity.this, KeySettingSizeActivity.class));
+                Intent intent = new Intent(KeySettingActivity.this, KeySettingSizeActivity.class);
+                intent.putExtra("row",row);
+                intent.putExtra("col",col);
+                startActivityForResult(intent, 1);
             }
         });
         sizeTr.addView(sizeBtr);
@@ -178,39 +173,99 @@ public class KeySettingActivity extends Activity {
         setContentView(mainScroll);
     }
 
-    public void init() {
-        userKbdModel = new KbdModel();
-        //tempKbdModel.row= new KbdModel.Row[row]; //이런식으로...
-
+    public void init(int rows, int cols) {
+        Log.i("TEST::","init Invoked");
+        userKbdModel = new KbdModel(rows, cols);
         userKbdModel.kbdName = "기본 키보드";
 
-        userKbdModel.setRow(new KbdModel.Row[row]);
-
-        for (int i = 0; i < row; i++) {
-            userKbdModel.row[i] = new KbdModel.Row(new KbdModel.Col[col]);
-            userKbdModel.row[i].setCol(new KbdModel.Col[col]);
-            for (int j = 0; j < col; j++) {
-                userKbdModel.row[i].col[j] = new KbdModel.Col(new KbdModel.Dir[9]);
-                userKbdModel.row[i].col[j].setDir(new KbdModel.Dir[9]);
+        for (int i = 0; i < rows; i++) {
+            Log.i("TEST::","i="+i);
+            userKbdModel.row[i] = new KbdModel.Row(cols);
+            for (int j = 0; j < cols; j++) {
+                userKbdModel.row[i].col[j] = new KbdModel.Col();
                 for (int k = 0; k < 9; k++) {
-                    userKbdModel.row[i].col[j].dir[k] = new KbdModel.Dir(defaultShow[i][j][k], 1);
-                    userKbdModel.row[i].col[j].dir[k].setShow(defaultShow[i][j][k]);
-                    userKbdModel.row[i].col[j].dir[k].setActType(1);
+                    if(i>2 || j>4) {  //기본 값 row=3, col=5 이거보다 클 경우 기본 문자로 초기화 ㄴㄴ 공백으로 초기화
+                        userKbdModel.row[i].col[j].dir[k].show = "";
+                    }
+                    else{
+                        userKbdModel.row[i].col[j].dir[k].show = defaultShow[i][j][k];
+                    }
                 }
             }
         }
 
     }
+    public void doSerializable() throws IOException {
+
+        FileOutputStream fos = openFileOutput("userKbdModel", Context.MODE_PRIVATE);
+        ObjectOutputStream oos = new ObjectOutputStream(fos);
+        oos.writeObject(userKbdModel);
+        oos.close();
+        Toast.makeText(KeySettingActivity.this, "수정되었습니다.", Toast.LENGTH_SHORT).show();
+
+        finish();
+    }
+
 
     public Object undoSerializable() throws IOException, ClassNotFoundException {
 
-        //FileInputStream fis = new FileInputStream(filePath);
         FileInputStream fis = openFileInput("userKbdModel");
         ObjectInputStream ois = new ObjectInputStream(fis);
         Object KbdModel = (KbdModel) ois.readObject();
         ois.close();
 
         return KbdModel;
+    }
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(requestCode == 0 && resultCode ==0 && data!=null) {  //키 변경
+            tempKbdModel = (KbdModel) data.getSerializableExtra("kbdModel");
+            userKbdModel = tempKbdModel;
+            try {
+                FileOutputStream fos = openFileOutput("userKbdModel", Context.MODE_PRIVATE);
+                ObjectOutputStream oos = new ObjectOutputStream(fos);
+                oos.writeObject(userKbdModel);
+                oos.close();
+                Toast.makeText(KeySettingActivity.this, "수정되었습니다.", Toast.LENGTH_SHORT).show();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            restartActivity(this);
+        }
+        else if(requestCode == 1 && resultCode ==1 && data!=null){   //사이즈 변경
+            int newRow = data.getIntExtra("row", 3);
+            int newCol = data.getIntExtra("col", 5);
+            this.init(newRow, newCol);
+            //tempKbdModel = userKbdModel;
+
+            try {
+                FileOutputStream fos = openFileOutput("userKbdModel", Context.MODE_PRIVATE);
+                ObjectOutputStream oos = new ObjectOutputStream(fos);
+                oos.writeObject(userKbdModel);
+                oos.close();
+                Toast.makeText(KeySettingActivity.this, "수정되었습니다.", Toast.LENGTH_SHORT).show();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            restartActivity(this);
+        }
+        //잘 나오는지 확인...
+        //Toast.makeText(this, "" + tempKbdModel.row[0].col[0].dir[0].show, Toast.LENGTH_SHORT).show();
+    }
+
+    public static void restartActivity(Activity act){
+
+        Intent intent=new Intent();
+        intent.setClass(act, act.getClass());
+
+        act.finish();
+        act.startActivity(intent);
+
     }
 
 }

@@ -16,33 +16,30 @@
             android:layout_height="60dp"
             android:gravity="center"
             android:background="@drawable/button"
-            android:maxLength="1"
+            android:maxLength="5"
             android:singleLine = "true"
             android:lines = "1"
-            android:imeOptions="actionDone"
-            android:text="+" />
+            android:imeOptions="actionDone"/>
         <EditText
             android:id="@+id/EditText2"
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:gravity="center"
             android:background="@drawable/button"
-            android:maxLength="1"
+            android:maxLength="5"
             android:singleLine = "true"
             android:lines = "1"
-            android:imeOptions="actionDone"
-            android:text="ㄲ" />
+            android:imeOptions="actionDone"/>
         <EditText
             android:id="@+id/EditText3"
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:gravity="center"
             android:background="@drawable/button"
-            android:maxLength="1"
+            android:maxLength="5"
             android:singleLine = "true"
             android:lines = "1"
-            android:imeOptions="actionDone"
-            android:text="-" />
+            android:imeOptions="actionDone"/>
     </TableRow>
     <TableRow>
         <EditText
@@ -51,34 +48,31 @@
             android:layout_height="60dp"
             android:gravity="center"
             android:background="@drawable/button"
-            android:maxLength="1"
+            android:maxLength="5"
             android:singleLine = "true"
             android:lines = "1"
-            android:imeOptions="actionDone"
-            android:text="ㅋ" />
+            android:imeOptions="actionDone"/>
         <EditText
             android:id="@+id/EditText5"
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:gravity="center"
             android:background="@drawable/button"
-            android:maxLength="1"
+            android:maxLength="5"
             android:singleLine = "true"
             android:lines = "1"
-            android:imeOptions="actionDone"
-            android:text="ㄱ" />
+            android:imeOptions="actionDone"/>
 
         <EditText
             android:id="@+id/EditText6"
             android:layout_width="60dp"
             android:layout_height="match_parent"
-            android:background="@drawable/button"
             android:gravity="center"
-            android:imeOptions="actionDone"
-            android:lines="1"
-            android:maxLength="1"
+            android:background="@drawable/button"
+            android:maxLength="5"
             android:singleLine="true"
-            android:text="ㅋ" />
+            android:lines="1"
+            android:imeOptions="actionDone"/>
     </TableRow>
     <TableRow>
         <EditText
@@ -87,33 +81,30 @@
             android:layout_height="60dp"
             android:gravity="center"
             android:background="@drawable/button"
-            android:maxLength="1"
+            android:maxLength="5"
             android:singleLine = "true"
             android:lines = "1"
-            android:imeOptions="actionDone"
-            android:text="*" />
+            android:imeOptions="actionDone" />
         <EditText
             android:id="@+id/EditText8"
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:gravity="center"
             android:background="@drawable/button"
-            android:maxLength="1"
+            android:maxLength="5"
             android:singleLine = "true"
             android:lines = "1"
-            android:imeOptions="actionDone"
-            android:text="#" />
+            android:imeOptions="actionDone"/>
         <EditText
             android:id="@+id/EditText9"
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:gravity="center"
             android:background="@drawable/button"
-            android:maxLength="1"
+            android:maxLength="5"
             android:singleLine = "true"
             android:lines = "1"
-            android:imeOptions="actionDone"
-            android:text="/" />
+            android:imeOptions="actionDone"/>
     </TableRow>
     <TableRow>
         <Button
