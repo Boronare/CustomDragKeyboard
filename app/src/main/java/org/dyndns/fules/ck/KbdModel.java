@@ -78,4 +78,21 @@ public class KbdModel implements Serializable {
             this.actType = 1;
         }
     }
+    public void makeTestValue(){
+        row=new Row[3];
+        for(int i=0;i<3;i++) {
+            row[i] = new Row();
+            row[i].col=new Col[5];
+            for(int j=0;j<5;j++) {
+                row[i].col[j] = new Col();
+                for(int k=0;k<9;k++){
+                    row[i].col[j].dir[k]=new Dir();
+                    row[i].col[j].dir[k].actType=1;
+                    row[i].col[j].dir[k].sValue=Character.toString((char)('A'+i+j+k));
+                    row[i].col[j].dir[k].show=Character.toString((char)('A'+i+j+k));
+                }
+            }
+        }
+        kbdName="TestLayout";
+    }
 }

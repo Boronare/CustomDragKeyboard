@@ -25,6 +25,7 @@ import android.R.id;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -62,21 +63,14 @@ public class CompassKeyboard extends InputMethodService implements OnKeyboardAct
 		parser.nextTag();
 	}
 	// Read a layout from a parser
-	String updateLayout(XmlPullParser parser) throws XmlPullParserException, IOException {
+	String updateLayout(ObjectInputStream ois) throws ClassNotFoundException, IOException {
 		String name;
-		while (parser.getEventType() == XmlPullParser.START_DOCUMENT)
-			parser.next();
-		if ((parser.getEventType() != XmlPullParser.START_TAG) || !parser.getName().contentEquals("CompassKeyboard"))
-			throw new XmlPullParserException("Expected <CompassKeyboard>", parser, null);
-		name = parser.getAttributeValue(null, "name");
-		if (name != null)
-			Log.i(TAG, "Loading keyboard '"+name+"'");
-		parser.nextTag();
-		while (parser.getEventType() != XmlPullParser.END_TAG) {
-			if ((parser.getEventType() != XmlPullParser.START_TAG) || !parser.getName().contentEquals("Layout"))
-				throw new XmlPullParserException("Expected <Layout>", parser, null);
-			String layoutName = parser.getAttributeValue(null, "name");
-			if (layoutName.contentEquals("vertical")) {
+		//KbdModel layout=(KbdModel)ois.readObject();
+		KbdModel layout=new KbdModel();
+		layout.makeTestValue();
+
+		ckv.readLayout(layout);
+			/*if (layoutName.contentEquals("vertical")) {
 				if (lastInPortrait) 
 					ckv.readLayout(parser);
 				else
@@ -90,46 +84,34 @@ public class CompassKeyboard extends InputMethodService implements OnKeyboardAct
 			}
 			else 
 				throw new XmlPullParserException("Invalid Layout name '"+layoutName+"'", parser, null);
-		}
-		ckv.calculateSizesForMetrics(lastMetrics);
-		if (!parser.getName().contentEquals("CompassKeyboard"))
-			throw new XmlPullParserException("Expected </CompassKeyboard>", parser, null);
-		parser.next();
-		return name;
+		}*/
+		return layout.kbdName;
 	}
-	public String updateLayout(String filename) {
+	public String updateLayout(String filename){
 		String result = "same";
 		String err = null;
 		if (filename.contentEquals(currentLayout))
 			return result;
 		try {
-			if (filename.contentEquals("@latin"))
-				result = updateLayout(getResources().getXml(R.xml.default_latin));
-			else if (filename.contentEquals("@cyrillic"))
-				result = updateLayout(getResources().getXml(R.xml.default_cyrillic));
-			else if (filename.contentEquals("@greek"))
-				result = updateLayout(getResources().getXml(R.xml.default_greek));
+			if (filename.contentEquals("default"))
+				//result = updateLayout(new ObjectInputStream(getResources().openRawResource(R.raw.latin)));
+				result=updateLayout((ObjectInputStream)null);
 			else {
-				FileInputStream is = new FileInputStream(filename);
-				XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
-				factory.setNamespaceAware(false);
-				XmlPullParser parser = factory.newPullParser();
-				parser.setInput(is, null);
-				result = updateLayout(parser);
+				result = updateLayout(new ObjectInputStream(new FileInputStream(filename)));
 			}
 		}
 		catch (FileNotFoundException e)		{ err = e.getMessage(); }
-		catch (XmlPullParserException e)	{ err = e.getMessage(); }
 		catch (IOException e)		{ err = e.getMessage(); }
+		catch(ClassNotFoundException e) { err = e.getMessage();}
 		if (err == null) {
 			currentLayout = filename;	// loaded successfully, we may store it as 'current'
 			return result;
 		}
 		sendNotification("Invalid layout", err);
 		// revert to default latin, unless this was the one that has failed
-		if (!filename.contentEquals("@latin")) {
+		if (!filename.contentEquals("default")) {
 			currentLayout = "";
-			return updateLayout("@latin");
+			return updateLayout("default");
 		}
 		return "failed";
 	}
@@ -149,7 +131,7 @@ public class CompassKeyboard extends InputMethodService implements OnKeyboardAct
 		lastMetrics.setTo(getResources().getDisplayMetrics());
 		lastInPortrait = forcePortrait || (lastMetrics.widthPixels <= lastMetrics.heightPixels);
 		currentLayout = "";			// enforce reloading layout
-		updateLayout(mPrefs.getString("layout", "@latin"));
+		updateLayout(mPrefs.getString("layout", "default"));
 		ckv.setVibrateOnKey(getPrefInt("feedback_key", 0));
 		ckv.setVibrateOnModifier(getPrefInt("feedback_mod", 0));
 		ckv.setVibrateOnCancel(getPrefInt("feedback_cancel", 0));
@@ -191,14 +173,12 @@ public class CompassKeyboard extends InputMethodService implements OnKeyboardAct
 		//Log.d(TAG, "onStartInputView;");
 		super.onStartInputView(attribute, restarting);
 		if (ckv != null) {
-			ckv.resetState();
 			ckv.setInputType(attribute.inputType);
 		}
 	}
 	@Override public void onStartInput(EditorInfo attribute, boolean restarting) {
 		super.onStartInput(attribute, restarting); 
 		if (ckv != null) {
-			ckv.resetState();
 			ckv.setInputType(attribute.inputType);
 		}
 	}

@@ -1,16 +1,22 @@
 package org.dyndns.fules.ck;
 import org.dyndns.fules.ck.R;
 
+import android.Manifest;
+import android.annotation.TargetApi;
 import android.content.Context;
+import android.os.Build;
 import android.util.Log;
 import android.view.View;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.net.Uri;
-import java.util.Iterator;
 import android.content.SharedPreferences.Editor;
 import android.content.SharedPreferences;
+
+import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
+import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
+import static android.content.pm.PackageManager.*;
+
 
 public class FilePicker extends Activity implements FilePickerView.ResultListener {
 	private static final String TAG = "FilePicker";
@@ -27,12 +33,15 @@ public class FilePicker extends Activity implements FilePickerView.ResultListene
 
     String prefName = null;
     String prefKey = null;
-
-	@Override public void
-	onCreate(Bundle savedInstanceState) {
+	@TargetApi(23) void getPermission(){
+		if(checkSelfPermission(WRITE_EXTERNAL_STORAGE)!=PERMISSION_GRANTED||checkSelfPermission(READ_EXTERNAL_STORAGE)!=PERMISSION_GRANTED){
+			requestPermissions(new String[]{WRITE_EXTERNAL_STORAGE,READ_EXTERNAL_STORAGE},1);
+		}
+	}
+	@Override public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		if(Build.VERSION.SDK_INT>=23) getPermission();
 		setContentView(R.layout.filepicker);
-
 		Intent i = getIntent();
         {
             Bundle bundle = i.getExtras();
