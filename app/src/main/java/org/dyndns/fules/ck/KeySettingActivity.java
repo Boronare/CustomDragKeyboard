@@ -28,7 +28,7 @@ import java.io.ObjectOutputStream;
 
 public class KeySettingActivity extends Activity {
     //기본 키보드값
-    String[][][] defaultShow = {
+    static final String[][][] defaultShow = {
             {{"+","ㄲ","-","ㅋ","ㄱ","ㅋ","*","#","/"},{"!","ㄸ","@","ㅌ","ㄴ","ㅌ","#","ㄷ","$"},{"%","^","&","(","ㄹ",")","*","_","="},{"{","ㅛ","}","ㅕ","ㅑ","ㅑ","[","ㅠ","]"},{"|",";",":","'","◁","'",",",".","."}},
             {{"1","2","3","ㅍ","ㅁ","ㅍ","7","8","9"},{"1","ㅃ","3","ㅃ","ㅂ","ㅃ","7","ㅃ","9"},{"~","ㅆ","~","ㅆ","ㅅ","ㅆ","~","ㅆ","~"},{"ㅖ","ㅗ","ㅒ","ㅓ","ㅣ","ㅏ","!","ㅜ","?"},{"1","2","3","4","5","6","7","8","9"}},
             {{"0","ㅗ","0","ㅓ","ㅇ","ㅏ","!","ㅜ","?"},{"ㅉ","ㅉ","ㅉ","ㅊ","ㅈ","ㅊ","ㅊ","ㅊ","ㅊ"},{"a","b","c","d","ㅎ","e","f","g","h"},{"ㅖ","ㅚ","ㅒ","ㅝ","ㅢ","ㅘ","!","ㅟ","?"},{"<","0",">","0","←","0","<","0",">"}}
@@ -66,13 +66,13 @@ public class KeySettingActivity extends Activity {
         try {
             userKbdModel = (KbdModel) this.undoSerializable();
         } catch(FileNotFoundException e) {
-            this.init(row, col);
+            userKbdModel = init(row, col);
         } catch (IOException e) {
             e.printStackTrace();
-            this.init(row, col);
+            userKbdModel=init(row, col);
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
-            this.init(row, col);
+            userKbdModel=init(row, col);
         }
 
         row = userKbdModel.row.length;
@@ -173,8 +173,9 @@ public class KeySettingActivity extends Activity {
         setContentView(mainScroll);
     }
 
-    public void init(int rows, int cols) {
+    public static KbdModel init(int rows, int cols) {
         Log.i("TEST::","init Invoked");
+        KbdModel userKbdModel;
         userKbdModel = new KbdModel(rows, cols);
         userKbdModel.kbdName = "기본 키보드";
 
@@ -186,14 +187,18 @@ public class KeySettingActivity extends Activity {
                 for (int k = 0; k < 9; k++) {
                     if(i>2 || j>4) {  //기본 값 row=3, col=5 이거보다 클 경우 기본 문자로 초기화 ㄴㄴ 공백으로 초기화
                         userKbdModel.row[i].col[j].dir[k].show = "";
+                        userKbdModel.row[i].col[j].dir[k].sValue = "";
+                        userKbdModel.row[i].col[j].dir[k].actType = 1;
                     }
                     else{
                         userKbdModel.row[i].col[j].dir[k].show = defaultShow[i][j][k];
+                        userKbdModel.row[i].col[j].dir[k].sValue = defaultShow[i][j][k];
+                        userKbdModel.row[i].col[j].dir[k].actType = 1;
                     }
                 }
             }
         }
-
+        return userKbdModel;
     }
     public void doSerializable() throws IOException {
 
@@ -211,10 +216,10 @@ public class KeySettingActivity extends Activity {
 
         FileInputStream fis = openFileInput("userKbdModel");
         ObjectInputStream ois = new ObjectInputStream(fis);
-        Object KbdModel = (KbdModel) ois.readObject();
+        Object kbdModel = (KbdModel) ois.readObject();
         ois.close();
 
-        return KbdModel;
+        return kbdModel;
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -237,7 +242,7 @@ public class KeySettingActivity extends Activity {
         else if(requestCode == 1 && resultCode ==1 && data!=null){   //사이즈 변경
             int newRow = data.getIntExtra("row", 3);
             int newCol = data.getIntExtra("col", 5);
-            this.init(newRow, newCol);
+            userKbdModel=init(newRow, newCol);
             //tempKbdModel = userKbdModel;
 
             try {

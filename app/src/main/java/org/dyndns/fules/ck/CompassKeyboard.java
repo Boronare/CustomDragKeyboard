@@ -64,10 +64,18 @@ public class CompassKeyboard extends InputMethodService implements OnKeyboardAct
 	}
 	// Read a layout from a parser
 	String updateLayout(ObjectInputStream ois) throws ClassNotFoundException, IOException {
-		String name;
+		Log.i("ZAIC_TESTMSG","updateLayout invoked");
 		//KbdModel layout=(KbdModel)ois.readObject();
-		KbdModel layout=new KbdModel();
-		layout.makeTestValue();
+		KbdModel layout;
+		try {
+			layout = (KbdModel) ois.readObject();
+			ois.close();
+		} catch(FileNotFoundException e) {
+			layout = KeySettingActivity.init(3, 5);
+		} catch (Exception e) {
+			e.printStackTrace();
+			layout = KeySettingActivity.init(3, 5);
+		}
 
 		ckv.readLayout(layout);
 			/*if (layoutName.contentEquals("vertical")) {
@@ -93,9 +101,21 @@ public class CompassKeyboard extends InputMethodService implements OnKeyboardAct
 		if (filename.contentEquals(currentLayout))
 			return result;
 		try {
-			if (filename.contentEquals("default"))
+			FileInputStream fis;
+			if (filename.contentEquals("default")) {
 				//result = updateLayout(new ObjectInputStream(getResources().openRawResource(R.raw.latin)));
-				result=updateLayout((ObjectInputStream)null);
+				try {
+					fis = openFileInput("userKbdModel");
+					ObjectInputStream ois = new ObjectInputStream(fis);
+					ckv.readLayout((KbdModel) ois.readObject());
+						ois.close();
+					} catch(FileNotFoundException e) {
+						ckv.readLayout(KeySettingActivity.init(3, 5));
+					} catch (Exception e) {
+						e.printStackTrace();
+						ckv.readLayout(KeySettingActivity.init(3, 5));
+					}
+			}
 			else {
 				result = updateLayout(new ObjectInputStream(new FileInputStream(filename)));
 			}
