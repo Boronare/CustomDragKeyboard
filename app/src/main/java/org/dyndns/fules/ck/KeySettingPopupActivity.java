@@ -50,6 +50,8 @@ public class KeySettingPopupActivity extends Activity {
                 }
                 Intent intent1 = new Intent(KeySettingPopupActivity.this, KeySettingActivity.class);
                 intent1.putExtra("kbdModel", tempKbdModel);
+                intent1.putExtra("row",row);
+                intent1.putExtra("col",col);
                 setResult(0, intent1);
                 finish();
             }
