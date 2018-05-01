@@ -192,6 +192,7 @@ public class CompassKeyboard extends InputMethodService implements OnKeyboardAct
 	@Override public void onStartInputView(EditorInfo attribute, boolean restarting) {
 		//Log.d(TAG, "onStartInputView;");
 		super.onStartInputView(attribute, restarting);
+		updateLayout("");
 		if (ckv != null) {
 			ckv.setInputType(attribute.inputType);
 		}

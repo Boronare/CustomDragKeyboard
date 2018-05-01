@@ -65,8 +65,10 @@
             android:theme="@android:style/Theme.DeviceDefault.Light.Dialog" />
         <activity
             android:name=".KeySettingSizeActivity"
-            android:theme="@android:style/Theme.NoTitleBar">
-        </activity>
+            android:theme="@android:style/Theme.NoTitleBar"></activity>
+        <activity
+            android:name=".KeySettingFunctionActivity"
+            android:theme="@android:style/Theme.DeviceDefault.Light.Dialog" ></activity>
     </application>
 
 </manifest>

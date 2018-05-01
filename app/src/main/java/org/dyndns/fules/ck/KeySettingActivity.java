@@ -48,7 +48,7 @@ public class KeySettingActivity extends Activity {
 
         @Override
         public void onClick(View view) {    //save (적용)
-            userKbdModel.kbdName = kbdTitle.getText().toString();
+            tempKbdModel.kbdName = kbdTitle.getText().toString();
             try {
                 FileOutputStream fos = openFileOutput("userKbdModel", Context.MODE_PRIVATE);
                 ObjectOutputStream oos = new ObjectOutputStream(fos);
@@ -131,9 +131,10 @@ public class KeySettingActivity extends Activity {
                 btr[i][j].setHeight(getResources().getDisplayMetrics().widthPixels/col);
                 btr[i][j].setBackgroundResource(R.drawable.button);
                 //btr[i][j].setId(10*i + j);
-                if(i<3 && j<5){
+                /*if(i<3 && j<5){
                     btr[i][j].setText(tempKbdModel.row[i].col[j].dir[4].show);
-                }
+                }*/
+                btr[i][j].setText(tempKbdModel.row[i].col[j].dir[4].show);
                 final int finalI = i;
                 final int finalJ = j;
                 btr[i][j].setOnClickListener(new View.OnClickListener() {
@@ -227,11 +228,13 @@ public class KeySettingActivity extends Activity {
                     if(i>2 || j>4) {  //기본 값 row=3, col=5 이거보다 클 경우 기본 문자로 초기화 ㄴㄴ 공백으로 초기화
                         userKbdModel.row[i].col[j].dir[k].show = "";
                         userKbdModel.row[i].col[j].dir[k].sValue = "";
+                        userKbdModel.row[i].col[j].dir[k].iValue = 0;
                         userKbdModel.row[i].col[j].dir[k].actType = 1;
                     }
                     else{
                         userKbdModel.row[i].col[j].dir[k].show = defaultShow[i][j][k];
                         userKbdModel.row[i].col[j].dir[k].sValue = defaultShow[i][j][k];
+                        userKbdModel.row[i].col[j].dir[k].iValue = 0;
                         userKbdModel.row[i].col[j].dir[k].actType = 1;
                     }
                 }
@@ -267,6 +270,7 @@ public class KeySettingActivity extends Activity {
             int newCol = data.getIntExtra("col", 5);
             tempKbdModel = (KbdModel) data.getSerializableExtra("kbdModel");
             btr[newRow][newCol].setText(tempKbdModel.row[newRow].col[newCol].dir[4].show);
+            //tempKbdModel.row[newRow].col[newCol].dir[k].sValue = "";
         }
         else if(requestCode == 1 && resultCode ==1 && data!=null){   //사이즈 변경
             int newRow = data.getIntExtra("row", 3);
