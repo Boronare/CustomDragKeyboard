@@ -79,19 +79,21 @@ public class KeySettingFunctionActivity extends Activity {
 
             @Override
             public void afterTextChanged(Editable s) {
+                /*String temp = editKey.getText().toString();
+                textShow.setText(temp);*/
                 String temp = editKey.getText().toString();
-                textShow.setText(temp);
+                editShow.setText(temp);
             }
         });
 
         spinnerAct.setOnItemSelectedListener(new OnItemSelectedListener() {
-            //1번 textShow   editShow        textShow
+            //1번 textShow   editShow        textShow    <- 다 editShow로
             //3번 editKey    spinnerKeycode  editKey
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if(position==0){    //actType 1
-                    editShow.setVisibility(View.GONE);
-                    textShow.setVisibility(View.VISIBLE);
+                    textShow.setVisibility(View.GONE);
+                    editShow.setVisibility(View.VISIBLE);
                     spinnerKeycode.setVisibility(View.GONE);
                     editKey.setVisibility(View.VISIBLE);
                 }
@@ -102,8 +104,8 @@ public class KeySettingFunctionActivity extends Activity {
                     spinnerKeycode.setVisibility(View.VISIBLE);
                 }
                 else if(position==2){
-                    editShow.setVisibility(View.GONE);
-                    textShow.setVisibility(View.VISIBLE);
+                    textShow.setVisibility(View.GONE);
+                    editShow.setVisibility(View.VISIBLE);
                     spinnerKeycode.setVisibility(View.GONE);
                     editKey.setVisibility(View.VISIBLE);
                 }
@@ -126,7 +128,8 @@ public class KeySettingFunctionActivity extends Activity {
                 // 세 개 중 하나 선택되면 맞는 값 - string or spinner의 int값
                 //intent.putExtra("value", Integer.parseInt(spinnerCol.getSelectedItem().toString()));
                 if(spinnerAct.getSelectedItemPosition()==0 || spinnerAct.getSelectedItemPosition()==2){
-                    intent.putExtra("show", textShow.getText());
+                    //intent.putExtra("show", textShow.getText());
+                    intent.putExtra("show", editShow.getText().toString());
                     intent.putExtra("sValue", editKey.getText().toString());
                     intent.putExtra("iValue", 0);   //초기화
                 }

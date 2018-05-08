@@ -77,7 +77,7 @@ public class CompassKeyboardView extends FrameLayout {
 	private static final long[][]		vibratePattern = { { 10, 100 }, { 10, 50, 50, 50 } };
 	private static final int		LONG_TAP_TIMEOUT = 700;	// timeout in msec after which a tap is considered a long one
 	public static final int			NONE	= -1;
-	public static final int			NW	= 6;
+	/*public static final int			NW	= 6;
 	public static final int			N	= 7;
 	public static final int			NE	= 8;
 	public static final int			W	= 3;
@@ -85,7 +85,16 @@ public class CompassKeyboardView extends FrameLayout {
 	public static final int			E	= 5;
 	public static final int			SW	= 0;
 	public static final int			S	= 1;
-	public static final int			SE	= 2;
+	public static final int			SE	= 2;*/
+	public static final int			NW	= 0;
+	public static final int			N	= 1;
+	public static final int			NE	= 2;
+	public static final int			W	= 3;
+	public static final int			TAP	= 4;
+	public static final int			E	= 5;
+	public static final int			SW	= 6;
+	public static final int			S	= 7;
+	public static final int			SE	= 8;
 
 	public static final int			FEEDBACK_HIGHLIGHT	= 1;
 	public static final int			FEEDBACK_TOAST		= 2;

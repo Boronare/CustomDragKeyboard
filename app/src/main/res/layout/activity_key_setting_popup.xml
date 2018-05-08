@@ -101,12 +101,12 @@
         <Button
             android:id="@+id/Button1"
             android:layout_width="60dp"
-            android:layout_height="60dp"
+            android:layout_height="40dp"
             android:layout_span="3"
             android:background="#eeeeee"
             android:layout_marginLeft="40dp"
             android:layout_marginRight="40dp"
-            android:layout_marginTop="3dp"
+            android:layout_marginTop="10dp"
             android:text="확인"/>
     </TableRow>
 
