@@ -1,17 +1,8 @@
 package org.dyndns.fules.ck;
-import org.dyndns.fules.ck.R;
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
-import android.content.res.XmlResourceParser;
 import android.inputmethodservice.InputMethodService;
 import android.inputmethodservice.Keyboard;
 import android.inputmethodservice.KeyboardView.OnKeyboardActionListener;
-import android.inputmethodservice.KeyboardView;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -19,7 +10,6 @@ import android.view.View;
 import android.view.inputmethod.CompletionInfo;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
-import android.view.inputmethod.ExtractedText;
 import android.view.inputmethod.ExtractedTextRequest;
 import android.R.id;
 import java.io.FileInputStream;
@@ -29,17 +19,11 @@ import java.io.ObjectInputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.Iterator;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
-import org.xmlpull.v1.XmlPullParserFactory;
-import android.inputmethodservice.AbstractInputMethodService;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.view.textservice.TextInfo;
-import android.view.textservice.SentenceSuggestionsInfo;
 import android.view.textservice.SpellCheckerSession;
 public class CompassKeyboard extends InputMethodService implements OnKeyboardActionListener, SharedPreferences.OnSharedPreferenceChangeListener  {
 	public static final String	SHARED_PREFS_NAME = "CompassKeyboardSettings";
@@ -54,6 +38,8 @@ public class CompassKeyboard extends InputMethodService implements OnKeyboardAct
 	boolean				forcePortrait;				// use the portrait layout even for horizontal screens
 	ExtractedTextRequest		etreq = new ExtractedTextRequest();
 	int				selectionStart = -1, selectionEnd = -1;
+	DbHelper db;
+	FileHelper fp;
 	// send an auto-revoked notification with a title and a message
 	void sendNotification(String title, String msg) {
 	}
@@ -78,21 +64,6 @@ public class CompassKeyboard extends InputMethodService implements OnKeyboardAct
 		}
 
 		ckv.readLayout(layout);
-			/*if (layoutName.contentEquals("vertical")) {
-				if (lastInPortrait) 
-					ckv.readLayout(parser);
-				else
-					skipLayout(parser);
-			}
-			else if (layoutName.contentEquals("horizontal")) {
-				if (!lastInPortrait) 
-					ckv.readLayout(parser);
-				else
-					skipLayout(parser);
-			}
-			else 
-				throw new XmlPullParserException("Invalid Layout name '"+layoutName+"'", parser, null);
-		}*/
 		return layout.kbdName;
 	}
 	public String updateLayout(String filename){
@@ -151,6 +122,12 @@ public class CompassKeyboard extends InputMethodService implements OnKeyboardAct
 		lastMetrics.setTo(getResources().getDisplayMetrics());
 		lastInPortrait = forcePortrait || (lastMetrics.widthPixels <= lastMetrics.heightPixels);
 		currentLayout = "";			// enforce reloading layout
+		db=new DbHelper(this);
+		fp=new FileHelper(this);
+		Log.i("ZAIC","Before ReadFile");
+		fp.readFile();
+		Log.i("ZAIC","After ReadFile");
+		db.fileToDB(fp);
 		updateLayout(mPrefs.getString("layout", "default"));
 		ckv.setVibrateOnKey(getPrefInt("feedback_key", 0));
 		ckv.setVibrateOnModifier(getPrefInt("feedback_mod", 0));
@@ -191,6 +168,8 @@ public class CompassKeyboard extends InputMethodService implements OnKeyboardAct
 	} 
 	@Override public void onStartInputView(EditorInfo attribute, boolean restarting) {
 		//Log.d(TAG, "onStartInputView;");
+		mCandidateView.clear();
+		sb=null;
 		super.onStartInputView(attribute, restarting);
 		updateLayout("");
 		if (ckv != null) {
@@ -287,7 +266,9 @@ public class CompassKeyboard extends InputMethodService implements OnKeyboardAct
 		sendModifiers(ic, KeyEvent.ACTION_DOWN);
 		if(sb==null) sb=new StringBuilder(text);
 		else sb.append(text);
-		mCandidateView.setSuggestions(new ArrayList<String>(Arrays.asList(sb.toString(),"GHJK","LMNO")),true,true);
+		ArrayList<String> suggList=db.search(sb.toString());
+		suggList.add(0,sb.toString());
+		mCandidateView.setSuggestions(suggList,true,true);
 		ic.setComposingText(sb,sb.length());
 		//sendKeyChar(text.charAt(0));
 	} 

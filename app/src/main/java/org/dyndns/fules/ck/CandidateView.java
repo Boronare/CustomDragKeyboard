@@ -150,17 +150,17 @@ public class CandidateView extends View {
             }
         }
         int x = 0;
-        final int count = mSuggestions.size();
+        int count = mSuggestions.size();
         final int height = getHeight();
         final Rect bgPadding = mBgPadding;
         final Paint paint = mPaint;
-        final int touchX = mTouchX;
-        final int scrollX = getScrollX();
-        final boolean scrolled = mScrolled;
+        int touchX = mTouchX;
+        int scrollX = getScrollX();
+        boolean scrolled = mScrolled;
         final boolean typedWordValid = mTypedWordValid;
         final int y = (int) (((height - mPaint.getTextSize()) / 2) - mPaint.ascent());
 
-        for (int i = 0; i < count; i++) {
+        for (int i = 0; i < mSuggestions.size() && i<10; i++) {
             String suggestion = mSuggestions.get(i);
             float textWidth = paint.measureText(suggestion);
             final int wordWidth = (int) textWidth + X_GAP * 2;
