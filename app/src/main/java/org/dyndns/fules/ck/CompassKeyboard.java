@@ -398,7 +398,7 @@ public class CompassKeyboard extends InputMethodService implements OnKeyboardAct
 	private boolean mCompletionOn;
 	private CandidateView mCandidateView;
 	private CompletionInfo[] mCompletions;
-	private StringBuilder mComposing = new StringBuilder();
+	StringBuilder mComposing = new StringBuilder();
 	private boolean mPredictionOn;
 	private List<String> mSuggestions;
 	private SpellCheckerSession mScs;

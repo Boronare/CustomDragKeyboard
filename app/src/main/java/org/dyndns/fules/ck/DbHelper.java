@@ -63,7 +63,7 @@ class DbHelper extends SQLiteOpenHelper {
     }
 
     public void fileToDB(FileHelper file) {
-        int i;
+        /*int i;
 
         FileHelper fp = file;
         ArrayList<ArrayList> answer = fp.getAns();
@@ -74,7 +74,7 @@ class DbHelper extends SQLiteOpenHelper {
 
         for (i = 0; i < name.size(); i++) {
             this.insert(name.get(i), Integer.parseInt(frq.get(i)), res.get(i));
-        }
+        }*/
     }
 }
 
