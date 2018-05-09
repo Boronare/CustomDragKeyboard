@@ -13,6 +13,7 @@
         android:layout_height="50dp"
         android:gravity="center_vertical"
         android:textSize="24dp"
+        android:layout_marginLeft="10dp"
         android:text="가로 갯수 조정 (5 - 9)"/>
 
     <Spinner
@@ -26,6 +27,7 @@
         android:layout_height="50dp"
         android:gravity="center_vertical"
         android:textSize="24dp"
+        android:layout_marginLeft="10dp"
         android:text="세로 갯수 조정 (2 - 6)" />
 
     <Spinner

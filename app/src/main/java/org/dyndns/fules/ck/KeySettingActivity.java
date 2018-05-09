@@ -3,8 +3,10 @@ package org.dyndns.fules.ck;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -42,13 +44,15 @@ public class KeySettingActivity extends Activity {
     KbdModel tempKbdModel;
 
     EditText kbdTitle;
-    Button btr[][];
+    //Button btr[][];
+    TableLayout kbdKeyLayout[][];
+    TextView kbdText[][];
 
     private class btnOnClickListener implements Button.OnClickListener{
 
         @Override
         public void onClick(View view) {    //save (적용)
-            userKbdModel.kbdName = kbdTitle.getText().toString();
+            tempKbdModel.kbdName = kbdTitle.getText().toString();
             try {
                 FileOutputStream fos = openFileOutput("userKbdModel", Context.MODE_PRIVATE);
                 ObjectOutputStream oos = new ObjectOutputStream(fos);
@@ -118,35 +122,63 @@ public class KeySettingActivity extends Activity {
         kbdLang.setTextSize(24);
         langTr.addView(kbdLang);
         mainLayout.addView(langTr);
-
-        btr = new Button[row][col];
+        //여기서부터 키보드 레이아웃...
+        //btr = new Button[row][col];
+        kbdKeyLayout = new TableLayout[row][col];
+        kbdText = new TextView[row*3][col*3];
 
         for(int i=0; i<row; i++){
             TableRow tr = new TableRow(this);
             for(int j=0; j<col; j++){
-                btr[i][j] = new Button(this);
+                kbdKeyLayout[i][j] = new TableLayout(this);
+                for(int k=0; k<3; k++){
+                    TableRow innerTr = new TableRow(this);
+                    for(int l=0; l<3; l++){
+                        kbdText[i*3+k][j*3+l] = new TextView(this);
+                        kbdText[i*3+k][j*3+l].setWidth(getResources().getDisplayMetrics().widthPixels/(col*3));
+                        kbdText[i*3+k][j*3+l].setHeight(getResources().getDisplayMetrics().widthPixels/(col*3));
+                        //kbdText[i*3+k][j*3+l].setBackgroundResource(R.drawable.button);
+                        kbdText[i*3+k][j*3+l].setGravity(Gravity.CENTER);
+                        kbdText[i*3+k][j*3+l].setTextColor(Color.BLACK);
+                        kbdText[i*3+k][j*3+l].setText(tempKbdModel.row[i].col[j].dir[k*3+l].show);
+                        innerTr.addView(kbdText[i*3+k][j*3+l]);
+                    }
+                    kbdKeyLayout[i][j].addView(innerTr);
+                }
+                /*btr[i][j] = new Button(this);
                 TableRow.LayoutParams buttonParams = new TableRow.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                 btr[i][j].setLayoutParams(buttonParams);
                 btr[i][j].setWidth(getResources().getDisplayMetrics().widthPixels/col);
                 btr[i][j].setHeight(getResources().getDisplayMetrics().widthPixels/col);
                 btr[i][j].setBackgroundResource(R.drawable.button);
-                //btr[i][j].setId(10*i + j);
-                if(i<3 && j<5){
-                    btr[i][j].setText(tempKbdModel.row[i].col[j].dir[4].show);
-                }
+                btr[i][j].setText(tempKbdModel.row[i].col[j].dir[4].show);
                 final int finalI = i;
                 final int finalJ = j;
                 btr[i][j].setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         Intent intent = new Intent(KeySettingActivity.this, KeySettingPopupActivity.class);
-                        intent.putExtra("kbdModel", tempKbdModel);  //여기서부터...
+                        intent.putExtra("kbdModel", tempKbdModel);
                         intent.putExtra("row",finalI);
                         intent.putExtra("col",finalJ);
                         startActivityForResult(intent, 0);
                     }
                 });
-                tr.addView(btr[i][j]);
+                tr.addView(btr[i][j]);*/
+                final int finalI = i;
+                final int finalJ = j;
+                kbdKeyLayout[i][j].setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(KeySettingActivity.this, KeySettingPopupActivity.class);
+                        intent.putExtra("kbdModel", tempKbdModel);
+                        intent.putExtra("row",finalI);
+                        intent.putExtra("col",finalJ);
+                        startActivityForResult(intent, 0);
+                    }
+                });
+                kbdKeyLayout[i][j].setBackgroundResource(R.drawable.button);
+                tr.addView(kbdKeyLayout[i][j]);
             }
             mainLayout.addView(tr);
         }
@@ -227,11 +259,13 @@ public class KeySettingActivity extends Activity {
                     if(i>2 || j>4) {  //기본 값 row=3, col=5 이거보다 클 경우 기본 문자로 초기화 ㄴㄴ 공백으로 초기화
                         userKbdModel.row[i].col[j].dir[k].show = "";
                         userKbdModel.row[i].col[j].dir[k].sValue = "";
+                        userKbdModel.row[i].col[j].dir[k].iValue = 0;
                         userKbdModel.row[i].col[j].dir[k].actType = 1;
                     }
                     else{
                         userKbdModel.row[i].col[j].dir[k].show = defaultShow[i][j][k];
                         userKbdModel.row[i].col[j].dir[k].sValue = defaultShow[i][j][k];
+                        userKbdModel.row[i].col[j].dir[k].iValue = 0;
                         userKbdModel.row[i].col[j].dir[k].actType = 1;
                     }
                 }
@@ -266,7 +300,14 @@ public class KeySettingActivity extends Activity {
             int newRow = data.getIntExtra("row", 3);
             int newCol = data.getIntExtra("col", 5);
             tempKbdModel = (KbdModel) data.getSerializableExtra("kbdModel");
-            btr[newRow][newCol].setText(tempKbdModel.row[newRow].col[newCol].dir[4].show);
+            //btr[newRow][newCol].setText(tempKbdModel.row[newRow].col[newCol].dir[4].show);
+            for (int i = 0; i < 3; i++) {
+                for (int j = 0; j < 3; j++) {
+                    kbdText[newRow*3+i][newCol*3+j].setText(tempKbdModel.row[newRow].col[newCol].dir[i*3+j].show);
+                }
+            }
+
+            //tempKbdModel.row[newRow].col[newCol].dir[k].sValue = "";
         }
         else if(requestCode == 1 && resultCode ==1 && data!=null){   //사이즈 변경
             int newRow = data.getIntExtra("row", 3);
