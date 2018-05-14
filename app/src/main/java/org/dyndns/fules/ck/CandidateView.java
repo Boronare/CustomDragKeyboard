@@ -150,7 +150,6 @@ public class CandidateView extends View {
             }
         }
         int x = 0;
-        int count = mSuggestions.size();
         final int height = getHeight();
         final Rect bgPadding = mBgPadding;
         final Paint paint = mPaint;
@@ -251,22 +250,22 @@ public class CandidateView extends View {
         int x = (int) me.getX();
         int y = (int) me.getY();
         mTouchX = x;
-
+        onDraw(null);
         switch (action) {
             case MotionEvent.ACTION_DOWN:
                 mScrolled = false;
                 invalidate();
                 break;
-            case MotionEvent.ACTION_MOVE:
+            /*case MotionEvent.ACTION_MOVE:
                 if (y <= 0) {
                     // Fling up!?
                     if (mSelectedIndex >= 0) {
                         mService.pickSuggestionManually(mSelectedIndex);
                         mSelectedIndex = -1;
-                    }
-                }
+                //    }
+                //}
                 invalidate();
-                break;
+                break;*/
             case MotionEvent.ACTION_UP:
                 if (!mScrolled) {
                     if (mSelectedIndex >= 0) {
@@ -274,7 +273,6 @@ public class CandidateView extends View {
                     }
                 }
                 mSelectedIndex = -1;
-                removeHighlight();
                 requestLayout();
                 break;
         }
@@ -293,11 +291,6 @@ public class CandidateView extends View {
         if (mSelectedIndex >= 0) {
             mService.pickSuggestionManually(mSelectedIndex);
         }
-        invalidate();
-    }
-
-    private void removeHighlight() {
-        mTouchX = OUT_OF_BOUNDS;
         invalidate();
     }
 }
