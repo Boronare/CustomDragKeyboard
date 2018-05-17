@@ -371,6 +371,19 @@ public class CompassKeyboard extends InputMethodService implements OnKeyboardAct
 		} else if (key.contentEquals("portrait_only"))
 			forcePortrait = mPrefs.getBoolean("portrait_only", false);
 	}
+	@Override public void onUpdateSelection(int oldSelStart, int oldSelEnd,
+											int newSelStart, int newSelEnd,
+											int candidatesStart, int candidatesEnd) {
+
+		super.onUpdateSelection(oldSelStart, oldSelEnd, newSelStart, newSelEnd,
+				candidatesStart, candidatesEnd);
+		if(newSelStart!=oldSelStart&&(newSelStart != candidatesEnd
+				|| newSelEnd != candidatesEnd)){
+			sb=null;
+			mCandidateView.clear();
+			getCurrentInputConnection().finishComposingText();
+		}
+	}
 
 	private boolean mCompletionOn=true;
 	private CandidateView mCandidateView;
