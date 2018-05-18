@@ -2,6 +2,8 @@ package org.dyndns.fules.ck;
 
 import java.io.Serializable;
 
+import static org.dyndns.fules.ck.KeySettingActivity.defaultShow;
+
 /**
  * 키보드 설정값 저장용 모델.
  * Created by ZaiC on 2018-03-28.
@@ -13,6 +15,7 @@ public class KbdModel implements Serializable {
     final long serialVersionUID= 1L;
 
     String kbdName;
+    String kbdLang;
     Row[] row;
 
     KbdModel(int rows,int cols){
@@ -21,8 +24,35 @@ public class KbdModel implements Serializable {
             row[i] = new Row(cols);
         }
     }
-
+    //기본 초기화...
     KbdModel(){
+        row = new Row[3];
+        for (int i = 0; i < 3; i++) {
+            row[i] = new Row(5);
+        }
+        this.kbdName = "기본 키보드";
+        this.kbdLang = "한국어";
+
+        for (int i = 0; i < 3; i++) {
+            this.row[i] = new KbdModel.Row(5);
+            for (int j = 0; j < 5; j++) {
+                this.row[i].col[j] = new KbdModel.Col();
+                for (int k = 0; k < 9; k++) {
+                    if(i>2 || j>4) {  //기본 값 row=3, col=5 이거보다 클 경우 기본 문자로 초기화 ㄴㄴ 공백으로 초기화
+                        this.row[i].col[j].dir[k].show = "";
+                        this.row[i].col[j].dir[k].sValue = "";
+                        this.row[i].col[j].dir[k].iValue = 0;
+                        this.row[i].col[j].dir[k].actType = 1;
+                    }
+                    else{
+                        this.row[i].col[j].dir[k].show = defaultShow[i][j][k];
+                        this.row[i].col[j].dir[k].sValue = defaultShow[i][j][k];
+                        this.row[i].col[j].dir[k].iValue = 0;
+                        this.row[i].col[j].dir[k].actType = 1;
+                    }
+                }
+            }
+        }
 
     }
 

@@ -37,6 +37,8 @@ public class KeySettingActivity extends Activity {
             {{"0","ㅗ","え","ㅓ","ㅇ","ㅏ","!","ㅜ","?"},{"ㅉ","ㅉ","ㅉ","ㅊ","ㅈ","ㅊ","ㅊ","ㅊ","ㅊ"},{"a","b","c","d","ㅎ","e","f","g","h"},{"ㅖ","ㅚ","ㅒ","ㅝ","ㅢ","ㅘ","!","ㅟ","?"},{"<","0",">","0","←","0","<","0",">"}}
     };
 
+    String kbdModelSerial;
+
     int row;    // 2 ~ 6
     int col;    // 5 ~ 9
 
@@ -54,7 +56,7 @@ public class KeySettingActivity extends Activity {
         public void onClick(View view) {    //save (적용)
             tempKbdModel.kbdName = kbdTitle.getText().toString();
             try {
-                FileOutputStream fos = openFileOutput("userKbdModel", Context.MODE_PRIVATE);
+                FileOutputStream fos = openFileOutput("" + kbdModelSerial, Context.MODE_PRIVATE);
                 ObjectOutputStream oos = new ObjectOutputStream(fos);
                 oos.writeObject(tempKbdModel);
                 oos.close();
@@ -71,7 +73,10 @@ public class KeySettingActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //this.init(row,col);
+
+        Intent intent = getIntent();
+        kbdModelSerial = intent.getStringExtra("KbdModelSerial");
+
         try {
             userKbdModel = (KbdModel) this.undoSerializable();
         } catch(FileNotFoundException e) {
@@ -118,7 +123,7 @@ public class KeySettingActivity extends Activity {
         TableRow langTr = new TableRow(this);
         TextView kbdLang = new TextView(this);
         kbdLang.setLayoutParams(titleParams);
-        kbdLang.setText("기본 언어 : 한국어");    //"기본 언어 :" + 키보드언어변수
+        kbdLang.setText("기본 언어 : " + tempKbdModel.kbdLang);    //"기본 언어 :" + 키보드언어변수
         kbdLang.setTextSize(24);
         langTr.addView(kbdLang);
         mainLayout.addView(langTr);
@@ -249,6 +254,7 @@ public class KeySettingActivity extends Activity {
 
         userKbdModel = new KbdModel(initRows, initCols);
         userKbdModel.kbdName = "기본 키보드";
+        userKbdModel.kbdLang = "한국어";
 
         for (int i = 0; i < initRows; i++) {
             Log.i("TEST::","i="+i);
@@ -273,7 +279,7 @@ public class KeySettingActivity extends Activity {
         }
         return userKbdModel;
     }
-    public void doSerializable() throws IOException {
+    /*public void doSerializable() throws IOException {
 
         FileOutputStream fos = openFileOutput("userKbdModel", Context.MODE_PRIVATE);
         ObjectOutputStream oos = new ObjectOutputStream(fos);
@@ -284,13 +290,15 @@ public class KeySettingActivity extends Activity {
         finish();
     }
 
-
+*/
     public Object undoSerializable() throws IOException, ClassNotFoundException {
 
-        FileInputStream fis = openFileInput("userKbdModel");
+        FileInputStream fis = openFileInput("" + kbdModelSerial);
         ObjectInputStream ois = new ObjectInputStream(fis);
         Object kbdModel = (KbdModel) ois.readObject();
         ois.close();
+        Log.i("TEST::","receivedKbdSerial read");
+
 
         return kbdModel;
     }
@@ -307,17 +315,15 @@ public class KeySettingActivity extends Activity {
                 }
             }
 
-            //tempKbdModel.row[newRow].col[newCol].dir[k].sValue = "";
         }
         else if(requestCode == 1 && resultCode ==1 && data!=null){   //사이즈 변경
             int newRow = data.getIntExtra("row", 3);
             int newCol = data.getIntExtra("col", 5);
             this.init(newRow, newCol);
             userKbdModel=init(newRow, newCol);
-            //tempKbdModel = userKbdModel;
 
             try {
-                FileOutputStream fos = openFileOutput("userKbdModel", Context.MODE_PRIVATE);
+                FileOutputStream fos = openFileOutput("" + kbdModelSerial, Context.MODE_PRIVATE);
                 ObjectOutputStream oos = new ObjectOutputStream(fos);
                 oos.writeObject(userKbdModel);
                 oos.close();
@@ -330,8 +336,6 @@ public class KeySettingActivity extends Activity {
 
             restartActivity(this);
         }
-        //잘 나오는지 확인...
-        //Toast.makeText(this, "" + tempKbdModel.row[0].col[0].dir[0].show, Toast.LENGTH_SHORT).show();
     }
 
     public static void restartActivity(Activity act){

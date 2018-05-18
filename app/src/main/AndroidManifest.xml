@@ -53,22 +53,27 @@
         <activity
             android:name=".KeySettingActivity"
             android:theme="@android:style/Theme.NoTitleBar"
-            android:windowSoftInputMode="stateAlwaysHidden">
-            <intent-filter>
-                <action android:name="android.provider.Settings.KeySettingActivity" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
+            android:windowSoftInputMode="stateAlwaysHidden"></activity>
         <activity
             android:name=".KeySettingPopupActivity"
             android:theme="@android:style/Theme.DeviceDefault.Light.Dialog" />
         <activity
             android:name=".KeySettingSizeActivity"
-            android:theme="@android:style/Theme.NoTitleBar"></activity>
+            android:theme="@android:style/Theme.NoTitleBar" />
         <activity
             android:name=".KeySettingFunctionActivity"
-            android:theme="@android:style/Theme.DeviceDefault.Light.Dialog" ></activity>
+            android:theme="@android:style/Theme.DeviceDefault.Light.Dialog" />
+        <activity
+            android:name=".KeySettingSelectActivity"
+            android:theme="@android:style/Theme.Light.NoTitleBar">
+            <intent-filter>
+                <action android:name="android.provider.Settings.KeySettingSelectActivity" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".KeySettingSelectSwapActivity"
+            android:theme="@android:style/Theme.Light.NoTitleBar"></activity>
     </application>
 
 </manifest>
