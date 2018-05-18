@@ -191,14 +191,21 @@ public class CompassKeyboard extends InputMethodService implements OnKeyboardAct
 	}
 	// Process a generated keycode
 	public void onKey(int primaryCode, int[] keyCodes) {
-		sb=null;
-		mCandidateView.clear();
-		getCurrentInputConnection().finishComposingText();
+		switch(primaryCode) {
+			case KeyEvent.KEYCODE_DEL:
+			case Keyboard.KEYCODE_DELETE:
+				if(sb!=null)sb.delete(sb.length()>0?sb.length()-1:0,sb.length());
+				updateCandidates();
+				break;
+			default:
+				sb = null;
+				mCandidateView.clear();
+				getCurrentInputConnection().finishComposingText();
+		}
 		sendDownUpKeyEvents(primaryCode);
 	}
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		sb=null;
-		getCurrentInputConnection().finishComposingText();
+		Log.i("ZaiC","onKeyDown invoked KeyCode : "+keyCode+" Action : "+event.getAction());
 		switch (keyCode) {
 			case KeyEvent.KEYCODE_BACK:
 				// The InputMethodService already takes care of the back
@@ -222,35 +229,6 @@ public class CompassKeyboard extends InputMethodService implements OnKeyboardAct
 				// Let the underlying text editor always handle these.
 				return false;
 			default:
-				// For all other keys, if we want to do transformations on
-				// text being entered with a hard keyboard, we need to process
-				// it and do the appropriate action.
-                /*
-                if (PROCESS_HARD_KEYS) {
-                    if (keyCode == KeyEvent.KEYCODE_SPACE
-                            && (event.getMetaState()&KeyEvent.META_ALT_ON) != 0) {
-                        // A silly example: in our input method, Alt+Space
-                        // is a shortcut for 'android' in lower case.
-                        InputConnection ic = getCurrentInputConnection();
-                        if (ic != null) {
-                            // First, tell the editor that it is no longer in the
-                            // shift state, since we are consuming this.
-                            ic.clearMetaKeyStates(KeyEvent.META_ALT_ON);
-                            keyDownUp(KeyEvent.KEYCODE_A);
-                            keyDownUp(KeyEvent.KEYCODE_N);
-                            keyDownUp(KeyEvent.KEYCODE_D);
-                            keyDownUp(KeyEvent.KEYCODE_R);
-                            keyDownUp(KeyEvent.KEYCODE_O);
-                            keyDownUp(KeyEvent.KEYCODE_I);
-                            keyDownUp(KeyEvent.KEYCODE_D);
-                            // And we consume this event.
-                            return true;
-                        }
-                    }
-                    if (mPredictionOn && translateKeyDown(keyCode, event)) {
-                        return true;
-                    }
-                }*/
 		}
 
 		return super.onKeyDown(keyCode, event);
@@ -258,18 +236,17 @@ public class CompassKeyboard extends InputMethodService implements OnKeyboardAct
 	// Process the generated text
 	public void onText(CharSequence text) {
 		InputConnection ic = getCurrentInputConnection();
-		if(text==" "){
+		if(text.charAt(0)==' '){
 			ic.finishComposingText();
 			sb=null;
-			return;
+			ic.commitText(text,text.length());
+		}else {
+			sendModifiers(ic, KeyEvent.ACTION_DOWN);
+			if (sb == null) sb = new StringBuilder(text);
+			else sb.append(text);
+			ic.setComposingText(sb,sb.length());
 		}
-		sendModifiers(ic, KeyEvent.ACTION_DOWN);
-		if(sb==null) sb=new StringBuilder(text);
-		else sb.append(text);
-		ArrayList<String> suggList=db.search(sb.toString());
-		suggList.add(0,sb.toString());
-		mCandidateView.setSuggestions(suggList,true,true);
-		ic.setComposingText(sb,sb.length());
+		updateCandidates();
 		//sendKeyChar(text.charAt(0));
 	} 
 	// Process a command
@@ -394,11 +371,24 @@ public class CompassKeyboard extends InputMethodService implements OnKeyboardAct
 		} else if (key.contentEquals("portrait_only"))
 			forcePortrait = mPrefs.getBoolean("portrait_only", false);
 	}
+	@Override public void onUpdateSelection(int oldSelStart, int oldSelEnd,
+											int newSelStart, int newSelEnd,
+											int candidatesStart, int candidatesEnd) {
 
-	private boolean mCompletionOn;
+		super.onUpdateSelection(oldSelStart, oldSelEnd, newSelStart, newSelEnd,
+				candidatesStart, candidatesEnd);
+		if(newSelStart!=oldSelStart&&(newSelStart != candidatesEnd
+				|| newSelEnd != candidatesEnd)){
+			sb=null;
+			mCandidateView.clear();
+			getCurrentInputConnection().finishComposingText();
+		}
+	}
+
+	private boolean mCompletionOn=true;
 	private CandidateView mCandidateView;
-	private CompletionInfo[] mCompletions;
-	private StringBuilder mComposing = new StringBuilder();
+	private ArrayList<String> mCompletions;
+	StringBuilder mComposing = new StringBuilder();
 	private boolean mPredictionOn;
 	private List<String> mSuggestions;
 	private SpellCheckerSession mScs;
@@ -412,16 +402,22 @@ public class CompassKeyboard extends InputMethodService implements OnKeyboardAct
 		return mCandidateView;
 	}
 	public void pickSuggestionManually(int index) {
+
 		if (mCompletionOn && mCompletions != null && index >= 0
-				&& index < mCompletions.length) {
-			CompletionInfo ci = mCompletions[index];
-			getCurrentInputConnection().commitCompletion(ci);
+				&& index < mCompletions.size()) {
+			String ci = mCompletions.get(index);
+			Log.d("ZaiC","CommitCompletion : "+ci);
+			getCurrentInputConnection().commitText(ci,ci.length());
+			getCurrentInputConnection().finishComposingText();
 			if (mCandidateView != null) {
 				mCandidateView.clear();
+				sb=null;
 			}
 		} else if (mComposing.length() > 0) {
 			if (mPredictionOn && mSuggestions != null && index >= 0) {
 				mComposing.replace(0, mComposing.length(), mSuggestions.get(index));
+				getCurrentInputConnection().finishComposingText();
+				sb=null;
 			}
 			commitTyped(getCurrentInputConnection());
 		}
@@ -430,10 +426,18 @@ public class CompassKeyboard extends InputMethodService implements OnKeyboardAct
 		if (mComposing.length() > 0) {
 			inputConnection.commitText(mComposing, mComposing.length());
 			mComposing.setLength(0);
+			sb=null;
 			updateCandidates();
 		}
 	}
 	private void updateCandidates() {
+		if(sb!=null&&sb.length()>0) {
+			ArrayList<String> suggList = db.search(sb.toString());
+			suggList.add(0, sb.toString());
+			mCompletions = suggList;
+			mCandidateView.setSuggestions(suggList, true, true);
+		}else mCandidateView.clear();
+
 		if (!mCompletionOn) {
 			if (mComposing.length() > 0) {
 				ArrayList<String> list = new ArrayList<String>();

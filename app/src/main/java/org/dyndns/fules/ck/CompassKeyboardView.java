@@ -45,7 +45,7 @@ interface EmbeddableItem {
  */
 class Action {
 	int		keyCode, layout;
-	String		code, text, cmd;
+	String		code, text, cmd, handlerStr;
 	boolean		isLock, isEmpty, isSpecial;
 
 	public Action() {
@@ -64,6 +64,7 @@ class Action {
 		switch (dir.actType) {
 			case 1:code=dir.sValue;break;
 			case 2:keyCode=dir.iValue;break;
+			case 3:handlerStr=dir.sValue;break;
 		}
 	}
 }
@@ -76,6 +77,7 @@ public class CompassKeyboardView extends FrameLayout {
 	private static final String		TAG = "CompassKeyboard";
 	private static final long[][]		vibratePattern = { { 10, 100 }, { 10, 50, 50, 50 } };
 	private static final int		LONG_TAP_TIMEOUT = 700;	// timeout in msec after which a tap is considered a long one
+	private static final int		LONG_TAP_REPEAT = 100;
 	public static final int			NONE	= -1;
 	/*public static final int			NW	= 6;
 	public static final int			N	= 7;
@@ -127,18 +129,23 @@ public class CompassKeyboardView extends FrameLayout {
 	LinearLayout.LayoutParams		lp;		// layout params for placing the rows
 	LinearLayout				kbd;  		// the keyboard layer
 	OverlayView				overlay;	// the overlay layer
+	CompassKeyboard ck;
 
 	LongTap					onLongTap;	// long tap checker
+	Row.Key					longTapKey;
 	boolean					wasLongTap;	// marker to skip processing the release of a long tap
 	//Toast					toast;
-	float					downX, downY, upX, upY;	// the coordinates of a swipe, used for recognising global swipes
+	float[]					downX={0,0,0,0}, downY={0,0,0,0}, upX={0,0,0,0}, upY={0,0,0,0};	// the coordinates of a swipe, used for recognising global swipes
 
 	/*
 	 * Long tap handler
 	 */
 	private final class LongTap implements Runnable {
 		public void run() {
-			//TodoError
+			Log.i("ZaiC","LongTap invoked");
+			wasLongTap=true;
+			processAction(longTapKey.dir[TAP]);
+			postDelayed(onLongTap, LONG_TAP_REPEAT);
 		}
 	}
 
@@ -207,7 +214,7 @@ public class CompassKeyboardView extends FrameLayout {
 			int			x1, x2, x3;		// x positions of the symbol columns within the key
 			boolean			hasLeft, hasRight;	// does the key have the given left and right symbols?
 			boolean			hasTop, hasBottom;	// does the key have tops and bottoms? (NOTE: can only be stricter than the row!)
-			int			candidateDir;		// the direction into which a drag is in progress, or NONE if inactive
+			int			candidateDir=NONE;		// the direction into which a drag is in progress, or NONE if inactive
 			Action[] dir;
 
 			/*
@@ -230,7 +237,6 @@ public class CompassKeyboardView extends FrameLayout {
 							dir[i] = null;
 				}
 
-				candidateDir = NONE;
 			}
 
 			// Recalculate the drawing coordinates according to the symbol size
@@ -244,21 +250,15 @@ public class CompassKeyboardView extends FrameLayout {
 			}
 
 			void setCandidate(int d) {
-				if (candidateDir == d)
-					return;
 				candidateDir = d;
-				switch (isTypingPassword ? feedbackPassword : feedbackNormal) {
-					case FEEDBACK_HIGHLIGHT:
-						invalidate();
-						break;
-				}
+				invalidate();
 			}
 
 			// figure out the direction of the swipe
-			int getDirection(float x, float y) {
+			int getDirection(float x, float y,int idx) {
 				int d;
-				float dx = (x - downX) * 2;
-				float dy = (y - downY) * 2;
+				float dx = (x - downX[idx]) * 2;
+				float dy = (y - downY[idx]) * 2;
 
 				if (dx < -xmax) {
 					if (dy < -ymax)
@@ -290,24 +290,28 @@ public class CompassKeyboardView extends FrameLayout {
 
 			// Touch event handler
 			@Override public boolean onTouchEvent(MotionEvent event) {
-				float t, l;
-				int d;
+				int idx=event.getActionIndex();
+				if(idx>3) return false;
 				boolean res = processTouchEvent(event);
 				switch (event.getAction()) {
 					case MotionEvent.ACTION_DOWN:
-						setCandidate(getDirection(event.getX(), event.getY()));
+						longTapKey = this;
+					case MotionEvent.ACTION_POINTER_DOWN:
+						setCandidate(getDirection(event.getX(), event.getY(),idx));
 						return true;
 
+					case MotionEvent.ACTION_POINTER_UP:
 					case MotionEvent.ACTION_UP:
 						setCandidate(NONE);
 
 						// if the key is not valid in this state or there is no corresponding Action for it, then release the modifiers
-						processAction(dir[getDirection(upX, upY)]);
+						if(!wasLongTap)processAction(dir[getDirection(upX[idx], upY[idx],idx)]);
+						else wasLongTap=false;
 						// touch event processed
 						return true;
 
 					case MotionEvent.ACTION_MOVE:
-						setCandidate(getDirection(event.getX(), event.getY()));
+						setCandidate(getDirection(event.getX(), event.getY(),idx));
 						break;
 				}
 				return res;
@@ -466,8 +470,9 @@ public class CompassKeyboardView extends FrameLayout {
 	 * Methods of CompassKeyboardView
 	 */
 
-	public CompassKeyboardView(Context context) {
+	public CompassKeyboardView(CompassKeyboard context) {
 		super(context);
+		ck=context;
 		kbd = new LinearLayout(context);
 		kbd.setOrientation(LinearLayout.VERTICAL);
 		kbd.setGravity(Gravity.TOP);
@@ -611,25 +616,24 @@ public class CompassKeyboardView extends FrameLayout {
 
 	// Common touch event handler - record coordinates and manage long tap handlers
 	public boolean processTouchEvent(MotionEvent event) {
+		int idx=event.getActionIndex();
+		if(idx>3) return false;
+		Log.i("ZAIC_TEST :","idx="+idx+"; Action="+event.getAction());
 		switch (event.getAction()) {
 			case MotionEvent.ACTION_DOWN:
+			case MotionEvent.ACTION_POINTER_DOWN:
+				postDelayed(onLongTap, LONG_TAP_TIMEOUT);
 				// remember the swipe starting coordinates for checking for global swipes
-				downX = event.getX();
-				downY = event.getY();
+				downX[idx] = event.getX();
+				downY[idx] = event.getY();
 				// register a long tap handler
 				wasLongTap = false;
-				postDelayed(onLongTap, LONG_TAP_TIMEOUT);
 				return true;
-
+			case MotionEvent.ACTION_POINTER_UP:
 			case MotionEvent.ACTION_UP:
 				// end of swipe
-				upX = event.getX();
-				upY = event.getY();
-				// check if this is the end of a long tap
-				if (wasLongTap) {
-					wasLongTap = false;
-					return true;
-				}
+				upX[idx] = event.getX();
+				upY[idx] = event.getY();
 				// cancel any pending checks for long tap
 				removeCallbacks(onLongTap);
 				// touch event processed
@@ -662,6 +666,9 @@ public class CompassKeyboardView extends FrameLayout {
 				actionListener.onText(cd.code); // process a 'code'
 			else if (cd.keyCode >= 0)
 				actionListener.onKey(cd.keyCode, null); // process a 'key'
+			else if (cd.handlerStr!=null){
+				//TODO:languageHandler.handle(cd.handlerStr,ck.mComposing);
+			}
 			else if (actionListener instanceof CompassKeyboard) {
 				CompassKeyboard ck = (CompassKeyboard)actionListener;
 				if (cd.layout >= 0)

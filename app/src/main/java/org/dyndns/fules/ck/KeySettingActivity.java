@@ -85,14 +85,14 @@ public class KeySettingActivity extends Activity {
             e.printStackTrace();
             userKbdModel=init(row, col);
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
             userKbdModel=init(row, col);
         }
 
         row = userKbdModel.row.length;
         col = userKbdModel.row[0].col.length;
         tempKbdModel = userKbdModel;    //temp에 복사해서 temp를 사용하자.
-
+ 
         ScrollView mainScroll = new ScrollView(this);
         ScrollView.LayoutParams scrollParams = new ScrollView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT);
