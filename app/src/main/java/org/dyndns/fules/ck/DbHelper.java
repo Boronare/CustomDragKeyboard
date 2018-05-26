@@ -89,14 +89,40 @@ class DbHelper extends SQLiteOpenHelper {
     }
 
 
-    public ArrayList<String> search(String cond) {
+    public ArrayList<String> search(String dic, String cond) {
+        Cursor cursor = null;
         ArrayList<String> ans = new ArrayList<String>();
 
-        Cursor cursor = mDB.rawQuery("SELECT NAME FROM EN_DICTIONARY_TABLE WHERE NAME LIKE '" + cond + "%' ORDER BY FREQUENCY",null);
+        if (dic.compareTo("EN") == 0) {
+            cursor = mDB.rawQuery("SELECT NAME FROM EN_DICTIONARY_TABLE WHERE NAME LIKE '" + cond + "%' Order by FREQUENCY DESC Limit 10",null);
+            cursor.moveToFirst();
+            while(cursor.moveToNext()) {
+                ans.add(cursor.getString(cursor.getColumnIndex("NAME")));
+            }
+        }
+        else if (dic.compareTo("KO") == 0) {
+            cursor = mDB.rawQuery("SELECT NAME FROM KO_DICTIONARY_TABLE WHERE NAME LIKE '" + cond + "%' Order by FREQUENCY DESC Limit 10",null);
+            cursor.moveToFirst();
+            while(cursor.moveToNext()) {
+                ans.add(cursor.getString(cursor.getColumnIndex("NAME")));
+            }
+        }
+        else if (dic.compareTo("JP") == 0) {
+            cursor = mDB.rawQuery("SELECT RESULT FROM JP_DICTIONARY_TABLE WHERE NAME LIKE '" + cond + "%' Order by FREQUENCY DESC Limit 10",null);
+            cursor.moveToFirst();
+            while(cursor.moveToNext()) {
+                ans.add(cursor.getString(cursor.getColumnIndex("RESULT")));
+            }
+        }
+        else if (dic.compareTo("CH") == 0) {
+            cursor = mDB.rawQuery("SELECT NAME FROM CH_DICTIONARY_TABLE WHERE PINYIN_NUBER = '" + cond +"'",null);
+            cursor.moveToFirst();
+            while(cursor.moveToNext()) {
+                ans.add(cursor.getString(cursor.getColumnIndex("NAME")));
+            }
+        }
+        else {
 
-        cursor.moveToFirst();
-        while(cursor.moveToNext()) {
-            ans.add(cursor.getString(cursor.getColumnIndex("NAME")));
         }
 
         return ans;
@@ -107,6 +133,13 @@ class DbHelper extends SQLiteOpenHelper {
         ContentValues value = new ContentValues();
 
 
+
+
+
+
+
+    }
+}
 
 
 

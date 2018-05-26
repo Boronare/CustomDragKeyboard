@@ -39,7 +39,6 @@ public class CompassKeyboard extends InputMethodService implements OnKeyboardAct
 	ExtractedTextRequest		etreq = new ExtractedTextRequest();
 	int				selectionStart = -1, selectionEnd = -1;
 	DbHelper db;
-	FileHelper fp;
 	// send an auto-revoked notification with a title and a message
 	void sendNotification(String title, String msg) {
 	}
@@ -85,11 +84,10 @@ public class CompassKeyboard extends InputMethodService implements OnKeyboardAct
 		currentLayout = 0;			// enforce reloading layout
 		DbHelper.copyDataBase(this);
 		db=new DbHelper(this);
-		fp=new FileHelper(this);
 		Log.i("ZAIC","Before ReadFile");
-		fp.readFile();
 		Log.i("ZAIC","After ReadFile");
 		updateLayout(Integer.parseInt(mPrefs.getString("layout", "0")));
+		updateLayout(mPrefs.getString("layout", "default"));
 		ckv.setVibrateOnKey(getPrefInt("feedback_key", 0));
 		ckv.setVibrateOnModifier(getPrefInt("feedback_mod", 0));
 		ckv.setVibrateOnCancel(getPrefInt("feedback_cancel", 0));
