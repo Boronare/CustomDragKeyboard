@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -18,6 +19,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -38,6 +40,7 @@ public class KeySettingSelectActivity extends Activity {
 
     Button btr;
     Button btr2;
+    Button btr3;
     KbdModelSelector kbdList;
     RecyclerView.Adapter mAdaptor;
     RecyclerView mRecyclerView;
@@ -86,9 +89,9 @@ public class KeySettingSelectActivity extends Activity {
     public class MyAdapter extends RecyclerView.Adapter<ViewHolder> implements ViewHolder.OnListItemClickListener, ViewHolder.OnListItemLongClickListener{
 
         private Context context;
-        private List<String> mItems;
+        private List<KbdModel> mItems;
 
-        public MyAdapter(List<String> items, Context mContext){
+        public MyAdapter(List<KbdModel> items, Context mContext){
             mItems = items;
             context = mContext;
         }
@@ -104,8 +107,8 @@ public class KeySettingSelectActivity extends Activity {
 
         @Override
         public void onBindViewHolder(ViewHolder holder, int position) {
-            String item = mItems.get(position);
-            holder.kbdModelTextView.setText(item);
+            KbdModel item = mItems.get(position);
+            holder.kbdModelTextView.setText(item.kbdName);
         }
 
         @Override
@@ -117,8 +120,10 @@ public class KeySettingSelectActivity extends Activity {
         public void onListItemClick(int position) {
             Intent intent = new Intent(KeySettingSelectActivity.this, KeySettingActivity.class);
             intent.putExtra("KbdModelSerial", mItems.get(position));
-            Log.i("TEST::","get() is " + mItems.get(position));
-            startActivity(intent);
+            intent.putExtra("KbdList", kbdList);
+            intent.putExtra("position", position);
+            Log.i("TEST::","get() is " + mItems.get(position).kbdName);
+            startActivityForResult(intent, 1);
         }
 
         @Override
@@ -194,7 +199,7 @@ public class KeySettingSelectActivity extends Activity {
         btr.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                kbdList.add("userKbdModel" + kbdList.kbdSerialList.size());
+                kbdList.add(new KbdModel());
 
                 try {
                     FileOutputStream fos = openFileOutput("kbdList", Context.MODE_PRIVATE);
@@ -224,6 +229,30 @@ public class KeySettingSelectActivity extends Activity {
             }
         });
 
+        btr3 = findViewById(R.id.btr3);
+        btr3.setText("Export");
+        btr3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    FileOutputStream fos = new FileOutputStream(new File(Environment.
+                            getExternalStorageDirectory() + "/kbdList"));
+                    ObjectOutputStream oos = new ObjectOutputStream(fos);
+                    oos.writeObject(kbdList);
+                    Log.i("TEST::","저장된 경로 :" + Environment.
+                            getExternalStorageDirectory());
+                    Toast.makeText(mContext, "" + Environment.
+                            getExternalStorageDirectory() + " 에 저장되었습니다.", Toast.LENGTH_SHORT).show();
+                    oos.close();
+                } catch (FileNotFoundException e) {
+                    Log.i("TEST::","failed");
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
     }
 
     public Object undoSerializable() throws IOException, ClassNotFoundException {
@@ -238,7 +267,7 @@ public class KeySettingSelectActivity extends Activity {
         return kbdList;
     }
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(requestCode == 0 && resultCode ==0 && data!=null) {  //키 변경
+        if(requestCode == 0 && resultCode ==0 && data!=null) {
             kbdList = (KbdModelSelector) data.getSerializableExtra("kbdList");
             try {
                 FileOutputStream fos = openFileOutput("kbdList", Context.MODE_PRIVATE);
@@ -251,6 +280,9 @@ public class KeySettingSelectActivity extends Activity {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+            recreate();
+        }
+        else if(requestCode == 1 && resultCode ==1 && data!=null) {
             recreate();
         }
     }

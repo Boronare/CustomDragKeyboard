@@ -49,9 +49,9 @@ public class KeySettingSelectSwapActivity extends Activity {
     public class MyAdapter extends RecyclerView.Adapter<ViewHolder> implements ItemTouchHelperAdapter{
 
         private Context context;
-        private List<String> mItems;
+        private List<KbdModel> mItems;
 
-        public MyAdapter(List<String> items, Context mContext){
+        public MyAdapter(List<KbdModel> items, Context mContext){
             mItems = items;
             context = mContext;
         }
@@ -65,8 +65,8 @@ public class KeySettingSelectSwapActivity extends Activity {
 
         @Override
         public void onBindViewHolder(ViewHolder holder, int position) {
-            String item = mItems.get(position);
-            holder.kbdModelTextView.setText(item);
+            KbdModel item = mItems.get(position);
+            holder.kbdModelTextView.setText(item.kbdName);
         }
 
         @Override

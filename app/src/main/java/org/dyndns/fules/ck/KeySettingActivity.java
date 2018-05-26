@@ -37,7 +37,9 @@ public class KeySettingActivity extends Activity {
             {{"0","ㅗ","え","ㅓ","ㅇ","ㅏ","!","ㅜ","?"},{"ㅉ","ㅉ","ㅉ","ㅊ","ㅈ","ㅊ","ㅊ","ㅊ","ㅊ"},{"a","b","c","d","ㅎ","e","f","g","h"},{"ㅖ","ㅚ","ㅒ","ㅝ","ㅢ","ㅘ","!","ㅟ","?"},{"<","0",">","0","←","0","<","0",">"}}
     };
 
-    String kbdModelSerial;
+    //KbdModel kbdModelSerial;
+    KbdModelSelector kbdList;
+    int kbdPosition;
 
     int row;    // 2 ~ 6
     int col;    // 5 ~ 9
@@ -46,6 +48,7 @@ public class KeySettingActivity extends Activity {
     KbdModel tempKbdModel;
 
     EditText kbdTitle;
+    EditText kbdLangEdit;
     //Button btr[][];
     TableLayout kbdKeyLayout[][];
     TextView kbdText[][];
@@ -56,11 +59,20 @@ public class KeySettingActivity extends Activity {
         public void onClick(View view) {    //save (적용)
             tempKbdModel.kbdName = kbdTitle.getText().toString();
             try {
+               /*
                 FileOutputStream fos = openFileOutput("" + kbdModelSerial, Context.MODE_PRIVATE);
                 ObjectOutputStream oos = new ObjectOutputStream(fos);
                 oos.writeObject(tempKbdModel);
+                oos.close();*/
+                kbdList.kbdSerialList.set(kbdPosition, tempKbdModel);
+                FileOutputStream fos = openFileOutput("kbdList", Context.MODE_PRIVATE);
+                ObjectOutputStream oos = new ObjectOutputStream(fos);
+                oos.writeObject(kbdList);
+                Log.i("TEST::","new kbdList and 수정된 kbdModel saved");
                 oos.close();
                 Toast.makeText(KeySettingActivity.this, "수정되었습니다.", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(KeySettingActivity.this, KeySettingSelectActivity.class);
+                setResult(1, intent);
                 finish();
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
@@ -75,10 +87,11 @@ public class KeySettingActivity extends Activity {
         super.onCreate(savedInstanceState);
 
         Intent intent = getIntent();
-        kbdModelSerial = intent.getStringExtra("KbdModelSerial");
 
-        try {
+
+        /*try {
             userKbdModel = (KbdModel) this.undoSerializable();
+
         } catch(FileNotFoundException e) {
             userKbdModel = init(row, col);
         } catch (IOException e) {
@@ -87,7 +100,10 @@ public class KeySettingActivity extends Activity {
         } catch (ClassNotFoundException e) {
             //e.printStackTrace();
             userKbdModel=init(row, col);
-        }
+        }*/
+        userKbdModel = (KbdModel) intent.getSerializableExtra("KbdModelSerial");
+        kbdList = (KbdModelSelector) intent.getSerializableExtra("KbdList");
+        kbdPosition = intent.getIntExtra("position", 0);
 
         row = userKbdModel.row.length;
         col = userKbdModel.row[0].col.length;
@@ -106,12 +122,14 @@ public class KeySettingActivity extends Activity {
         mainLayout.isFocusableInTouchMode();
 
         TableRow titleTr = new TableRow(this);
-        kbdTitle = new EditText(this);
+
         TableRow.LayoutParams titleParams = new TableRow.LayoutParams();
         titleParams.span = col;
         titleParams.width = (getResources().getDisplayMetrics().widthPixels);
         titleParams.height = (getResources().getDisplayMetrics().heightPixels/10);   //어림잡아 정한 크기
         titleParams.setMargins(20,0,20,0);
+
+        kbdTitle = new EditText(this);
         kbdTitle.setLayoutParams(titleParams);
         kbdTitle.setText(tempKbdModel.kbdName);    //"키보드 이름 :" + 키보드이름변수
         kbdTitle.setTextSize(24);
@@ -121,11 +139,25 @@ public class KeySettingActivity extends Activity {
         mainLayout.addView(titleTr);
 
         TableRow langTr = new TableRow(this);
+        TableRow.LayoutParams langParams = new TableRow.LayoutParams();
+        langParams.span = col/2;
+        langParams.width = (getResources().getDisplayMetrics().widthPixels);
+        langParams.height = (getResources().getDisplayMetrics().heightPixels/10);   //어림잡아 정한 크기
+        langParams.setMargins(16,0,16,0);
+
         TextView kbdLang = new TextView(this);
-        kbdLang.setLayoutParams(titleParams);
-        kbdLang.setText("기본 언어 : " + tempKbdModel.kbdLang);    //"기본 언어 :" + 키보드언어변수
+        kbdLang.setLayoutParams(langParams);
+        kbdLang.setText("기본 언어 : ");    //"기본 언어 :" + 키보드언어변수
         kbdLang.setTextSize(24);
         langTr.addView(kbdLang);
+
+        kbdLangEdit = new EditText(this);
+        kbdLangEdit.setLayoutParams(langParams);
+        kbdLangEdit.setText("" + tempKbdModel.kbdLang);
+        kbdLangEdit.setTextSize(24);
+        kbdLangEdit.setLines(1);
+        kbdLangEdit.setSingleLine();
+        langTr.addView(kbdLangEdit);
         mainLayout.addView(langTr);
         //여기서부터 키보드 레이아웃...
         //btr = new Button[row][col];
@@ -150,26 +182,6 @@ public class KeySettingActivity extends Activity {
                     }
                     kbdKeyLayout[i][j].addView(innerTr);
                 }
-                /*btr[i][j] = new Button(this);
-                TableRow.LayoutParams buttonParams = new TableRow.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                btr[i][j].setLayoutParams(buttonParams);
-                btr[i][j].setWidth(getResources().getDisplayMetrics().widthPixels/col);
-                btr[i][j].setHeight(getResources().getDisplayMetrics().widthPixels/col);
-                btr[i][j].setBackgroundResource(R.drawable.button);
-                btr[i][j].setText(tempKbdModel.row[i].col[j].dir[4].show);
-                final int finalI = i;
-                final int finalJ = j;
-                btr[i][j].setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Intent intent = new Intent(KeySettingActivity.this, KeySettingPopupActivity.class);
-                        intent.putExtra("kbdModel", tempKbdModel);
-                        intent.putExtra("row",finalI);
-                        intent.putExtra("col",finalJ);
-                        startActivityForResult(intent, 0);
-                    }
-                });
-                tr.addView(btr[i][j]);*/
                 final int finalI = i;
                 final int finalJ = j;
                 kbdKeyLayout[i][j].setOnClickListener(new View.OnClickListener() {
@@ -236,6 +248,7 @@ public class KeySettingActivity extends Activity {
     }
 
     public static KbdModel init(int rows, int cols) {
+        //키보드 크기 변경 시에만 사용...
         Log.i("TEST::","init Invoked");
         KbdModel userKbdModel;
         userKbdModel = new KbdModel(rows, cols);
@@ -291,7 +304,7 @@ public class KeySettingActivity extends Activity {
     }
 
 */
-    public Object undoSerializable() throws IOException, ClassNotFoundException {
+    /*public Object undoSerializable() throws IOException, ClassNotFoundException {
 
         FileInputStream fis = openFileInput("" + kbdModelSerial);
         ObjectInputStream ois = new ObjectInputStream(fis);
@@ -302,13 +315,12 @@ public class KeySettingActivity extends Activity {
 
         return kbdModel;
     }
-
+*/
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(requestCode == 0 && resultCode ==0 && data!=null) {  //키 변경
             int newRow = data.getIntExtra("row", 3);
             int newCol = data.getIntExtra("col", 5);
             tempKbdModel = (KbdModel) data.getSerializableExtra("kbdModel");
-            //btr[newRow][newCol].setText(tempKbdModel.row[newRow].col[newCol].dir[4].show);
             for (int i = 0; i < 3; i++) {
                 for (int j = 0; j < 3; j++) {
                     kbdText[newRow*3+i][newCol*3+j].setText(tempKbdModel.row[newRow].col[newCol].dir[i*3+j].show);
@@ -323,9 +335,15 @@ public class KeySettingActivity extends Activity {
             userKbdModel=init(newRow, newCol);
 
             try {
-                FileOutputStream fos = openFileOutput("" + kbdModelSerial, Context.MODE_PRIVATE);
+               /* FileOutputStream fos = openFileOutput("" + kbdModelSerial, Context.MODE_PRIVATE);
                 ObjectOutputStream oos = new ObjectOutputStream(fos);
                 oos.writeObject(userKbdModel);
+                oos.close();*/
+                kbdList.kbdSerialList.set(kbdPosition, userKbdModel);
+                FileOutputStream fos = openFileOutput("kbdList", Context.MODE_PRIVATE);
+                ObjectOutputStream oos = new ObjectOutputStream(fos);
+                oos.writeObject(kbdList);
+                Log.i("TEST::","new kbdList and 수정된 kbdModel saved");
                 oos.close();
                 Toast.makeText(KeySettingActivity.this, "수정되었습니다.", Toast.LENGTH_SHORT).show();
             } catch (FileNotFoundException e) {
@@ -334,13 +352,16 @@ public class KeySettingActivity extends Activity {
                 e.printStackTrace();
             }
 
-            restartActivity(this);
+            restartActivity(this, userKbdModel, kbdList, kbdPosition);
         }
     }
 
-    public static void restartActivity(Activity act){
+    public static void restartActivity(Activity act, KbdModel userKbdModel, KbdModelSelector kbdList, int kbdPosition){
 
         Intent intent=new Intent();
+        intent.putExtra("KbdModelSerial", userKbdModel);
+        intent.putExtra("KbdList", kbdList);
+        intent.putExtra("position", kbdPosition);
         intent.setClass(act, act.getClass());
 
         act.finish();

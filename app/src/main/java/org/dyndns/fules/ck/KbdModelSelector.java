@@ -7,7 +7,7 @@ import java.util.Vector;
 
 public class KbdModelSelector implements Serializable {
     final long serialVersionUID= 2L;
-    List<String> kbdSerialList = new ArrayList<>();
+    List<KbdModel> kbdSerialList = new ArrayList<>();
 
     //selectActivity에서 settingActivity로 kbdmodel 이름 값을 전달
     //전달 받은 kbdmodel 불러오기. 없으면 새로 생성한 것이므로 기본값 생성
@@ -15,9 +15,9 @@ public class KbdModelSelector implements Serializable {
     //기본 초기화
     KbdModelSelector(){
         //KbdModel kbdModel = new KbdModel();
-        this.kbdSerialList.add("userKbdModel" + this.kbdSerialList.size());
+        this.kbdSerialList.add(new KbdModel());
     }
-    public void add(String data){
+    public void add(KbdModel data){
         kbdSerialList.add(data);
 
     }
