@@ -79,15 +79,6 @@ public class CompassKeyboardView extends FrameLayout {
 	private static final int		LONG_TAP_TIMEOUT = 700;	// timeout in msec after which a tap is considered a long one
 	private static final int		LONG_TAP_REPEAT = 100;
 	public static final int			NONE	= -1;
-	/*public static final int			NW	= 6;
-	public static final int			N	= 7;
-	public static final int			NE	= 8;
-	public static final int			W	= 3;
-	public static final int			TAP	= 4;
-	public static final int			E	= 5;
-	public static final int			SW	= 0;
-	public static final int			S	= 1;
-	public static final int			SE	= 2;*/
 	public static final int			NW	= 0;
 	public static final int			N	= 1;
 	public static final int			NE	= 2;
@@ -130,7 +121,7 @@ public class CompassKeyboardView extends FrameLayout {
 	LinearLayout				kbd;  		// the keyboard layer
 	OverlayView				overlay;	// the overlay layer
 	CompassKeyboard ck;
-
+	LanguageHandler languageHandler;
 	LongTap					onLongTap;	// long tap checker
 	Row.Key					longTapKey;
 	boolean					wasLongTap;	// marker to skip processing the release of a long tap
@@ -146,50 +137,6 @@ public class CompassKeyboardView extends FrameLayout {
 			wasLongTap=true;
 			processAction(longTapKey.dir[TAP]);
 			postDelayed(onLongTap, LONG_TAP_REPEAT);
-		}
-	}
-
-	/*
-	 * <Align> tag
-	 */
-	class Align extends View implements EmbeddableItem {
-		int width, height;
-		int xmax, ymax;
-
-		public Align(Context context, XmlPullParser parser) throws XmlPullParserException, IOException {
-			super(context);
-			String s;
-
-			if ((parser.getEventType() != XmlPullParser.START_TAG) || !parser.getName().contentEquals("Align"))
-				throw new XmlPullParserException("Expected <Align>", parser, null);
-
-			width = height = xmax = ymax = 0;
-
-			s = parser.getAttributeValue(null, "width");
-			if (s != null)
-				width = Integer.parseInt(s);
-
-			s = parser.getAttributeValue(null, "height");
-			if (s != null)
-				height = Integer.parseInt(s);
-
-			parser.nextTag();
-			if ((parser.getEventType() != XmlPullParser.END_TAG) || !parser.getName().contentEquals("Align"))
-				throw new XmlPullParserException("Expected </Align>", parser, null);
-			parser.nextTag();
-		}
-
-		// Recalculate the drawing coordinates according to the symbol size
-		public void calculateSizes() {
-			xmax = Math.round(width * (sym + gap));
-			ymax = Math.round(height * fontSize);
-		}
-
-		// Report the size of the alignment
-		@Override protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-			int w = (MeasureSpec.getMode(widthMeasureSpec) == MeasureSpec.EXACTLY) ? MeasureSpec.getSize(widthMeasureSpec) : xmax;
-			int h = (MeasureSpec.getMode(heightMeasureSpec) == MeasureSpec.EXACTLY) ? MeasureSpec.getSize(heightMeasureSpec) : ymax;
-			setMeasuredDimension(w, h);
 		}
 	}
 
@@ -472,6 +419,7 @@ public class CompassKeyboardView extends FrameLayout {
 
 	public CompassKeyboardView(CompassKeyboard context) {
 		super(context);
+		languageHandler = new KoreanHandler();
 		ck=context;
 		kbd = new LinearLayout(context);
 		kbd.setOrientation(LinearLayout.VERTICAL);
@@ -667,7 +615,7 @@ public class CompassKeyboardView extends FrameLayout {
 			else if (cd.keyCode >= 0)
 				actionListener.onKey(cd.keyCode, null); // process a 'key'
 			else if (cd.handlerStr!=null){
-				//TODO:languageHandler.handle(cd.handlerStr,ck.mComposing);
+				ck.handle(cd.handlerStr);
 			}
 			else if (actionListener instanceof CompassKeyboard) {
 				CompassKeyboard ck = (CompassKeyboard)actionListener;
