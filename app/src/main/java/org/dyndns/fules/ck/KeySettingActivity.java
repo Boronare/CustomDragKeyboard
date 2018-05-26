@@ -58,6 +58,7 @@ public class KeySettingActivity extends Activity {
         @Override
         public void onClick(View view) {    //save (적용)
             tempKbdModel.kbdName = kbdTitle.getText().toString();
+            tempKbdModel.kbdLang = kbdLangEdit.getText().toString();
             try {
                /*
                 FileOutputStream fos = openFileOutput("" + kbdModelSerial, Context.MODE_PRIVATE);
