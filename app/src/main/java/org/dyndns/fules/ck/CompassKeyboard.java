@@ -31,7 +31,7 @@ public class CompassKeyboard extends InputMethodService implements OnKeyboardAct
 	private static final String	TAG = "CompassKeyboard";
 	private SharedPreferences	mPrefs;					// the preferences instance
 	CompassKeyboardView		ckv;					// the current layout view, either @ckv or @ckvVertical
-	String				currentLayout;
+	int				currentLayout;
 	StringBuilder		sb;
 	boolean				lastInPortrait;
 	DisplayMetrics			lastMetrics = new DisplayMetrics();
@@ -39,45 +39,22 @@ public class CompassKeyboard extends InputMethodService implements OnKeyboardAct
 	ExtractedTextRequest		etreq = new ExtractedTextRequest();
 	int				selectionStart = -1, selectionEnd = -1;
 	DbHelper db;
-	FileHelper fp;
 	// send an auto-revoked notification with a title and a message
 	void sendNotification(String title, String msg) {
 	}
-	public void skipLayout(XmlPullParser parser) throws XmlPullParserException, IOException {
-		while ((parser.getEventType() != XmlPullParser.END_TAG) || !parser.getName().contentEquals("Layout"))
-			parser.nextTag();
-		parser.nextTag();
-	}
-	// Read a layout from a parser
-	String updateLayout(ObjectInputStream ois) throws ClassNotFoundException, IOException {
-		Log.i("ZAIC_TESTMSG","updateLayout invoked");
-		//KbdModel layout=(KbdModel)ois.readObject();
-		KbdModel layout;
-		try {
-			layout = (KbdModel) ois.readObject();
-			ois.close();
-		} catch(FileNotFoundException e) {
-			layout = KeySettingActivity.init(3, 5);
-		} catch (Exception e) {
-			e.printStackTrace();
-			layout = KeySettingActivity.init(3, 5);
-		}
-
-		ckv.readLayout(layout);
-		return layout.kbdName;
-	}
-	public String updateLayout(String filename){
+	public String updateLayout(int index){
 		String result = "same";
 		String err = null;
-		if (filename.contentEquals(currentLayout))
-			return result;
 		try {
-			FileInputStream fis;
-			if (filename.contentEquals("default")) {
-				//result = updateLayout(new ObjectInputStream(getResources().openRawResource(R.raw.latin)));
-				try {
-					fis = openFileInput("userKbdModel");
-					ObjectInputStream ois = new ObjectInputStream(fis);
+			try {
+				FileInputStream fis;
+				fis = openFileInput("kbdList");
+				ObjectInputStream ois = new ObjectInputStream(fis);
+				KbdModelSelector kbdSelector = (KbdModelSelector)ois.readObject();
+				fis.close();
+					fis=openFileInput(kbdSelector.kbdSerialList.get(0));
+					Log.i("kbdSelector",kbdSelector.kbdSerialList.get(0));
+					ois=new ObjectInputStream(fis);
 					ckv.readLayout((KbdModel) ois.readObject());
 						ois.close();
 					} catch(FileNotFoundException e) {
@@ -86,30 +63,13 @@ public class CompassKeyboard extends InputMethodService implements OnKeyboardAct
 						e.printStackTrace();
 						ckv.readLayout(KeySettingActivity.init(3, 5));
 					}
-			}
-			else {
-				result = updateLayout(new ObjectInputStream(new FileInputStream(filename)));
-			}
 		}
-		catch (FileNotFoundException e)		{ err = e.getMessage(); }
 		catch (IOException e)		{ err = e.getMessage(); }
-		catch(ClassNotFoundException e) { err = e.getMessage();}
 		if (err == null) {
-			currentLayout = filename;	// loaded successfully, we may store it as 'current'
+			currentLayout = index;	// loaded successfully, we may store it as 'current'
 			return result;
 		}
 		sendNotification("Invalid layout", err);
-		// revert to default latin, unless this was the one that has failed
-		if (!filename.contentEquals("default")) {
-			currentLayout = "";
-			return updateLayout("default");
-		}
-		return "failed";
-	}
-	public String updateLayout(int i) {
-		String s = mPrefs.getString("layout_path_" + String.valueOf(i), "");
-		if (s.length() > 0)
-			return updateLayout(s);
 		return "failed";
 	}
 	@Override public AbstractInputMethodImpl onCreateInputMethodInterface() {
@@ -121,13 +81,12 @@ public class CompassKeyboard extends InputMethodService implements OnKeyboardAct
 		forcePortrait = mPrefs.getBoolean("portrait_only", false);
 		lastMetrics.setTo(getResources().getDisplayMetrics());
 		lastInPortrait = forcePortrait || (lastMetrics.widthPixels <= lastMetrics.heightPixels);
-		currentLayout = "";			// enforce reloading layout
+		currentLayout = 0;			// enforce reloading layout
+		DbHelper.copyDataBase(this);
 		db=new DbHelper(this);
-		fp=new FileHelper(this);
 		Log.i("ZAIC","Before ReadFile");
-		fp.readFile();
 		Log.i("ZAIC","After ReadFile");
-		db.fileToDB(fp);
+		updateLayout(Integer.parseInt(mPrefs.getString("layout", "0")));
 		updateLayout(mPrefs.getString("layout", "default"));
 		ckv.setVibrateOnKey(getPrefInt("feedback_key", 0));
 		ckv.setVibrateOnModifier(getPrefInt("feedback_mod", 0));
@@ -153,9 +112,6 @@ public class CompassKeyboard extends InputMethodService implements OnKeyboardAct
 			Log.v(TAG, "onCreateInputView; metrics changed, inPortrait=" + String.valueOf(inPortrait) + ", lastInPortrait=" + String.valueOf(lastInPortrait));
 			if (inPortrait != lastInPortrait) {
 				lastInPortrait = inPortrait;
-				String s = currentLayout;
-				currentLayout = "";			// enforce reloading layout
-				updateLayout(s);
 			}
 			else {
 				ckv.calculateSizesForMetrics(lastMetrics);	// don't reload, only resize
@@ -171,7 +127,7 @@ public class CompassKeyboard extends InputMethodService implements OnKeyboardAct
 		mCandidateView.clear();
 		sb=null;
 		super.onStartInputView(attribute, restarting);
-		updateLayout("");
+		updateLayout(0);
 		if (ckv != null) {
 			ckv.setInputType(attribute.inputType);
 		}
@@ -194,7 +150,11 @@ public class CompassKeyboard extends InputMethodService implements OnKeyboardAct
 		switch(primaryCode) {
 			case KeyEvent.KEYCODE_DEL:
 			case Keyboard.KEYCODE_DELETE:
-				if(sb!=null)sb.delete(sb.length()>0?sb.length()-1:0,sb.length());
+				if(sb!=null){
+					if(ckv.languageHandler.deletable(sb)){
+						ckv.languageHandler.delete(sb);
+					}else sb.delete(sb.length()>0?sb.length()-1:0,sb.length());
+				}
 				updateCandidates();
 				break;
 			default:
@@ -235,8 +195,9 @@ public class CompassKeyboard extends InputMethodService implements OnKeyboardAct
 	}
 	// Process the generated text
 	public void onText(CharSequence text) {
+		Log.i("HANDLER TEST",sb.toString());
 		InputConnection ic = getCurrentInputConnection();
-		if(text.charAt(0)==' '){
+		if(text.length()>0&&text.charAt(0)==' '){
 			ic.finishComposingText();
 			sb=null;
 			ic.commitText(text,text.length());
@@ -248,7 +209,12 @@ public class CompassKeyboard extends InputMethodService implements OnKeyboardAct
 		}
 		updateCandidates();
 		//sendKeyChar(text.charAt(0));
-	} 
+	}
+	public void handle(String arg){
+		if(sb==null) sb=new StringBuilder();
+		ckv.languageHandler.handle(arg,sb);
+		onText("");
+	}
 	// Process a command
 	public void execCmd(String cmd) {
 		InputConnection ic = getCurrentInputConnection();
@@ -364,7 +330,7 @@ public class CompassKeyboard extends InputMethodService implements OnKeyboardAct
 			ckv.setMaxKeySize(getPrefFloat("max_keysize", 12));
 			getWindow().dismiss();
 		} else if (key.contentEquals("layout"))
-			updateLayout(mPrefs.getString("layout", "@latin"));
+			updateLayout(Integer.parseInt(mPrefs.getString("layout", "0")));
 		else if (key.startsWith("layout_path_")) {
 			int i = Integer.parseInt(key.substring(12));
 			// ...
