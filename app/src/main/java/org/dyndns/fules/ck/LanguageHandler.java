@@ -58,7 +58,8 @@ class KoreanHandler implements LanguageHandler {
         int cd=s.codePointBefore(s.length());
         if(ns>='ㄱ'&&ns<='ㅎ'){
             if(cd>='ᅡ'&&cd<='ᅵ') {//첫가끝 모음
-                sb.append(nfcNfcJong[ns - 'ㄱ']);
+                if(nfcNfcJong[ns-'ㄱ'].length()==0) sb.append(new_s);
+                else sb.append(nfcNfcJong[ns - 'ㄱ']);
                 return sb;
             }else if(cd>='ᄀ'&&cd<='ᇂ') {//첫가끝 종성
                 switch(cd){

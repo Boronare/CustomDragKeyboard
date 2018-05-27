@@ -92,7 +92,7 @@ public class CompassKeyboard extends InputMethodService implements OnKeyboardAct
 		ckv.setLeftMargin(getPrefFloat("margin_left", 0));
 		ckv.setRightMargin(getPrefFloat("margin_right", 0));
 		ckv.setBottomMargin(getPrefFloat("margin_bottom", 0));
-		ckv.setMaxKeySize(getPrefFloat("max_keysize", 12));
+		ckv.setMaxKeySize(100);
 		mPrefs.registerOnSharedPreferenceChangeListener(this);
 		return super.onCreateInputMethodInterface();
 	}
