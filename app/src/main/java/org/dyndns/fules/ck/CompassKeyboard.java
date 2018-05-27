@@ -191,7 +191,6 @@ public class CompassKeyboard extends InputMethodService implements OnKeyboardAct
 	}
 	// Process the generated text
 	public void onText(CharSequence text) {
-		Log.i("HANDLER TEST",sb.toString());
 		InputConnection ic = getCurrentInputConnection();
 		if(text.length()>0&&text.charAt(0)==' '){
 			ic.finishComposingText();
@@ -355,7 +354,6 @@ public class CompassKeyboard extends InputMethodService implements OnKeyboardAct
 	private List<String> mSuggestions;
 	private SpellCheckerSession mScs;
 	@Override public View onCreateCandidatesView() {
-		Log.d("CAUADD","onCreateCandidatesView Invoked");
 		mCandidateView = new CandidateView(this);
 		mCandidateView.setService(this);
 		mCandidateView.setSuggestions(new ArrayList<String>(Arrays.asList("ASDF","GHJK","LMNO")),true,true);
@@ -368,7 +366,6 @@ public class CompassKeyboard extends InputMethodService implements OnKeyboardAct
 		if (mCompletionOn && mCompletions != null && index >= 0
 				&& index < mCompletions.size()) {
 			String ci = mCompletions.get(index);
-			Log.d("ZaiC","CommitCompletion : "+ci);
 			getCurrentInputConnection().commitText(ci,ci.length());
 			getCurrentInputConnection().finishComposingText();
 			if (mCandidateView != null) {

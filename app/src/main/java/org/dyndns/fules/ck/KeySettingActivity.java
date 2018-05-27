@@ -250,7 +250,6 @@ public class KeySettingActivity extends Activity {
 
     public static KbdModel init(int rows, int cols) {
         //키보드 크기 변경 시에만 사용...
-        Log.i("TEST::","init Invoked");
         KbdModel userKbdModel;
         userKbdModel = new KbdModel(rows, cols);
         int initRows;

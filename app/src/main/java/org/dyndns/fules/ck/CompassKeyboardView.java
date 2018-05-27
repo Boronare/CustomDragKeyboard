@@ -133,7 +133,6 @@ public class CompassKeyboardView extends FrameLayout {
 	 */
 	private final class LongTap implements Runnable {
 		public void run() {
-			Log.i("ZaiC","LongTap invoked");
 			wasLongTap=true;
 			processAction(longTapKey.dir[TAP]);
 			postDelayed(onLongTap, LONG_TAP_REPEAT);
@@ -307,7 +306,6 @@ public class CompassKeyboardView extends FrameLayout {
 
 		public Row(Context context, KbdModel.Row row) throws IOException {
 			super(context);
-			Log.i("CAU_ZAIC_TEST",Integer.toString(row.col.length));
 			String s;
 
 			setOrientation(LinearLayout.HORIZONTAL);
@@ -473,7 +471,6 @@ public class CompassKeyboardView extends FrameLayout {
 	// Read the layout from an XML parser
 	public void readLayout(KbdModel kbdModel) throws IOException {
 
-		Log.i("CAU_ZAIC_TEST",Integer.toString(kbdModel.row.length));
 		// drop and re-read all previously existing rows
 		kbd.removeAllViews();
 		nColumns = nKeys = 0;
@@ -487,7 +484,6 @@ public class CompassKeyboardView extends FrameLayout {
 					nColumns = nr.columns;
 				if (nKeys < nc)
 					nKeys = nc;
-				Log.i("CAU_ZAIC_TEST","nKeys"+nc+"/nColumns"+nColumns);
 			/*else if (parser.getName().contentEquals("Align")) {
 				Align na = new Align(getContext(), parser);
 				kbd.addView(na, lp);
@@ -566,7 +562,6 @@ public class CompassKeyboardView extends FrameLayout {
 	public boolean processTouchEvent(MotionEvent event) {
 		int idx=event.getActionIndex();
 		if(idx>3) return false;
-		Log.i("ZAIC_TEST :","idx="+idx+"; Action="+event.getAction());
 		switch (event.getAction()) {
 			case MotionEvent.ACTION_DOWN:
 			case MotionEvent.ACTION_POINTER_DOWN:
