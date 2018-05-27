@@ -50,19 +50,16 @@ public class CompassKeyboard extends InputMethodService implements OnKeyboardAct
 				FileInputStream fis;
 				fis = openFileInput("kbdList");
 				ObjectInputStream ois = new ObjectInputStream(fis);
-				KbdModelSelector kbdSelector = (KbdModelSelector)ois.readObject();
+				KbdModelSelector kbdSelector = (KbdModelSelector) ois.readObject();
 				fis.close();
-					fis=openFileInput(kbdSelector.kbdSerialList.get(0));
-					Log.i("kbdSelector",kbdSelector.kbdSerialList.get(0));
-					ois=new ObjectInputStream(fis);
-					ckv.readLayout((KbdModel) ois.readObject());
-						ois.close();
-					} catch(FileNotFoundException e) {
-						ckv.readLayout(KeySettingActivity.init(3, 5));
-					} catch (Exception e) {
-						e.printStackTrace();
-						ckv.readLayout(KeySettingActivity.init(3, 5));
-					}
+				ckv.readLayout(kbdSelector.kbdSerialList.get(0));
+				ois.close();
+			} catch (FileNotFoundException e) {
+				ckv.readLayout(KeySettingActivity.init(3, 5));
+			} catch (Exception e) {
+				e.printStackTrace();
+				ckv.readLayout(KeySettingActivity.init(3, 5));
+			}
 		}
 		catch (IOException e)		{ err = e.getMessage(); }
 		if (err == null) {
@@ -87,7 +84,6 @@ public class CompassKeyboard extends InputMethodService implements OnKeyboardAct
 		Log.i("ZAIC","Before ReadFile");
 		Log.i("ZAIC","After ReadFile");
 		updateLayout(Integer.parseInt(mPrefs.getString("layout", "0")));
-		updateLayout(mPrefs.getString("layout", "default"));
 		ckv.setVibrateOnKey(getPrefInt("feedback_key", 0));
 		ckv.setVibrateOnModifier(getPrefInt("feedback_mod", 0));
 		ckv.setVibrateOnCancel(getPrefInt("feedback_cancel", 0));
@@ -153,7 +149,7 @@ public class CompassKeyboard extends InputMethodService implements OnKeyboardAct
 				if(sb!=null){
 					if(ckv.languageHandler.deletable(sb)){
 						ckv.languageHandler.delete(sb);
-					}else sb.delete(sb.length()>0?sb.length()-1:0,sb.length());
+                }else sb.delete(sb.length()>0?sb.length()-1:0,sb.length());
 				}
 				updateCandidates();
 				break;
