@@ -87,18 +87,19 @@ class DbHelper extends SQLiteOpenHelper {
         }
     }
 
-
     public ArrayList<String> search(/*String dic,*/ String cond) {
         Cursor cursor = null;
         ArrayList<String> ans = new ArrayList<String>();
 
-        //if (dic.compareTo("EN") == 0) {
+        String dic = whatLanguage(cond);
+
+        if (dic.compareTo("EN") == 0) {
             cursor = mDB.rawQuery("SELECT NAME FROM EN_DICTIONARY_TABLE WHERE NAME LIKE '" + cond + "%' Order by FREQUENCY DESC Limit 10",null);
             cursor.moveToFirst();
             while(cursor.moveToNext()) {
                 ans.add(cursor.getString(cursor.getColumnIndex("NAME")));
             }
-       /* }
+        }
         else if (dic.compareTo("KO") == 0) {
             cursor = mDB.rawQuery("SELECT NAME FROM KO_DICTIONARY_TABLE WHERE NAME LIKE '" + cond + "%' Order by FREQUENCY DESC Limit 10",null);
             cursor.moveToFirst();
@@ -122,20 +123,59 @@ class DbHelper extends SQLiteOpenHelper {
         }
         else {
 
-        }*/
+        }
 
         return ans;
     }
 
     public void updateRecordParameter(String dic, String name) {
+        String dic_table = null;
 
-        ContentValues value = new ContentValues();
+        if (dic == "EN") { dic_table = "EN_DICTIONARY_TABLE"; }
+        else if (dic == "KO") { dic_table = "KO_DICTIONARY_TABLE"; }
+        else if (dic == "JP") { dic_table = "JP_DICTIONARY_TABLE"; }
+        else if (dic == "CH") { dic_table = "CH_DICTIONARY_TABLE"; }
 
+        String sql = "UPDATE " + dic_table + " SET FREQUENCY = FREQUENCY + 1 WHERE NAME = " + name;
 
+        mDB.execSQL(sql);
+    }
 
+    public String whatLanguage(String name) {
+        String lang = null;
 
+        char last_c = name.charAt(name.length() - 1);
+        Character.UnicodeBlock unicodeBlock = Character.UnicodeBlock.of(last_c);
 
+        if (Character.UnicodeBlock.HANGUL_SYLLABLES.equals( unicodeBlock ) ||
+                Character.UnicodeBlock.HANGUL_COMPATIBILITY_JAMO.equals( unicodeBlock ) ||
+                Character.UnicodeBlock.HANGUL_JAMO.equals(unicodeBlock))
+        {
+            lang = "KO";
+        }
+        else if (Character.UnicodeBlock.KATAKANA.equals( unicodeBlock ) ||
+                Character.UnicodeBlock.KATAKANA_PHONETIC_EXTENSIONS.equals( unicodeBlock ) ||
+                Character.UnicodeBlock.HIRAGANA.equals( unicodeBlock ))
+        {
+            lang = "JP";
+        }
+        else if(Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS.equals( unicodeBlock ) ||
+                Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS_EXTENSION_A.equals( unicodeBlock ) ||
+                Character.UnicodeBlock.CJK_COMPATIBILITY_IDEOGRAPHS.equals( unicodeBlock ) ||
+                Character.UnicodeBlock.CJK_COMPATIBILITY_IDEOGRAPHS_SUPPLEMENT.equals( unicodeBlock ))
+        {
+            lang = "CH";
+        }
+        else if(Character.UnicodeBlock.BASIC_LATIN.equals( unicodeBlock ) ||
+                Character.UnicodeBlock.LATIN_1_SUPPLEMENT.equals( unicodeBlock ) ||
+                Character.UnicodeBlock.LATIN_EXTENDED_A.equals( unicodeBlock ))
+        {
+            lang = "EN";
+        }
+        else {
+            lang = null;
+        }
 
-
+        return lang;
     }
 }
