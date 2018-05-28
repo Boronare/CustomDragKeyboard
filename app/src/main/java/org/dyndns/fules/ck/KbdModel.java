@@ -15,7 +15,7 @@ public class KbdModel implements Serializable {
     final long serialVersionUID= 1L;
 
     String kbdName;
-    String kbdLang;
+    int kbdLang;    //  0: 영어   1: 한국어  2: 일본어  3: 중국어
     Row[] row;
 
     KbdModel(int rows,int cols){
@@ -31,7 +31,7 @@ public class KbdModel implements Serializable {
             row[i] = new Row(5);
         }
         this.kbdName = "기본 키보드";
-        this.kbdLang = "한국어";
+        this.kbdLang = 0;
 
         for (int i = 0; i < 3; i++) {
             this.row[i] = new KbdModel.Row(5);
@@ -94,7 +94,8 @@ public class KbdModel implements Serializable {
          * 1:sValue 출력
          * 2:iValue에 해당하는 Keycode 입력
          * 3:언어에 해당하는 입력기 입력(sValue)
-         * 4:iValue에 해당하는 KbdModel호출 (-1:최근, -2:이전, -3:다음, -4:sValue의 파일 호출)
+         * 4:이전 kbdModel 호출
+         * 5:다음 kbdModel 호출
          */
         int actType;
         String sValue;//인자 중 String값.

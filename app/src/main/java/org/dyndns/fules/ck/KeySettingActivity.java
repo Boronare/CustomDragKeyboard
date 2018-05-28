@@ -57,7 +57,7 @@ public class KeySettingActivity extends Activity {
     Spinner spinnerLang;
 
     private final String[] listLang = {"영어", "한국어", "일본어", "중국어"};
-    private final String[] listLangValue = {"0", "1", "2", "ZH"};
+    private final int[] listLangValue = {0, 1, 2, 3};
 
     private class btnOnClickListener implements Button.OnClickListener{
 
@@ -114,6 +114,7 @@ public class KeySettingActivity extends Activity {
         col = userKbdModel.row[0].col.length;
         tempKbdModel = userKbdModel;    //temp에 복사해서 temp를 사용하자.
 
+
         ScrollView mainScroll = new ScrollView(this);
         ScrollView.LayoutParams scrollParams = new ScrollView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT);
@@ -168,6 +169,7 @@ public class KeySettingActivity extends Activity {
         spinnerParams.height = (getResources().getDisplayMetrics().heightPixels/10);   //어림잡아 정한 크기
         spinnerParams.setMargins(0,0,20,0);
         spinnerLang.setLayoutParams(spinnerParams);
+        spinnerLang.setSelection(tempKbdModel.kbdLang);
         langTr.addView(spinnerLang);
         mainLayout.addView(langTr);
 
@@ -260,7 +262,7 @@ public class KeySettingActivity extends Activity {
         TableRow applyTr = new TableRow(this);
         Button applyBtr = new Button(this);
         applyBtr.setLayoutParams(sizeBtrParams);
-        applyBtr.setText("수정");
+        applyBtr.setText("저장");
         btnOnClickListener onClickListener = new btnOnClickListener();
         applyBtr.setOnClickListener(onClickListener);
         applyTr.addView(applyBtr);
@@ -305,7 +307,7 @@ public class KeySettingActivity extends Activity {
 
         userKbdModel = new KbdModel(initRows, initCols);
         userKbdModel.kbdName = "기본 키보드";
-        userKbdModel.kbdLang = "한국어";
+        userKbdModel.kbdLang = 0;
 
         for (int i = 0; i < initRows; i++) {
             Log.i("TEST::","i="+i);
