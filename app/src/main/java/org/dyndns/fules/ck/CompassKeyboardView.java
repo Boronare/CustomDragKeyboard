@@ -108,6 +108,7 @@ public class CompassKeyboardView extends FrameLayout {
 	float					fontSize;	// height of the key caption font in pixels
 	float					fontDispY;	// Y-displacement of key caption font (top to baseline)
 	boolean					isTypingPassword; // is the user typing a password
+	String lang = "none";
 
 	Vibrator				vibro;		// vibrator
 	Paint					textPaint;	// Paint for drawing key captions
@@ -470,7 +471,7 @@ public class CompassKeyboardView extends FrameLayout {
 
 	// Read the layout from an XML parser
 	public void readLayout(KbdModel kbdModel) throws IOException {
-
+		lang=kbdModel.kbdLang;
 		// drop and re-read all previously existing rows
 		kbd.removeAllViews();
 		nColumns = nKeys = 0;

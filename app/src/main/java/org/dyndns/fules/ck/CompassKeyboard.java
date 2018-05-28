@@ -209,7 +209,7 @@ public class CompassKeyboard extends InputMethodService implements OnKeyboardAct
 	public void handle(String arg){
 		if(sb==null) sb=new StringBuilder();
 		ckv.languageHandler.handle(arg,sb);
-		
+		Log.i("ZaiC","sb="+sb.toString());
 		sb.replace(0,sb.length(), Normalizer.normalize(sb.toString(), Normalizer.Form.NFC));
 		onText("");
 	}

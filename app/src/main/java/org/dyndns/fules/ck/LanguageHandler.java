@@ -51,6 +51,7 @@ class KoreanHandler implements LanguageHandler {
     }
     public StringBuilder handle(String new_s, StringBuilder sb) {
         String s = Normalizer.normalize(sb.toString(),Normalizer.Form.NFD);
+        sb.replace(0,sb.length(), s);
         int ns=new_s.codePointAt(0);
 
         if(s.length()==0){
