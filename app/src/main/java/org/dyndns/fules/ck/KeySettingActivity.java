@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -32,9 +33,9 @@ import java.io.ObjectOutputStream;
 public class KeySettingActivity extends Activity {
     //기본 키보드값
     static final String[][][] defaultShow = {
-            {{"+","ㄲ","-","あ","ㄱ","ㅋ","*","#","/"},{"!","ㄸ","@","い","ㄴ","ㅌ","#","ㄷ","$"},{"%","^","&","(","ㄹ",")","*","_","="},{"{","ㅛ","}","ㅕ","う","ㅑ","[","ㅠ","]"},{"|",";",":","'","◁","'",",",".","."}},
-            {{"1","2","3","ㅍ","ㅁ","ㅍ","7","8","9"},{"お","ㅃ","か","き","ㅂ","く","7","ㅃ","9"},{"~","ㅆ","~","ㅆ","ㅅ","ㅆ","~","ㅆ","~"},{"ㅖ","ㅗ","ㅒ","ㅓ","ㅣ","ㅏ","!","ㅜ","?"},{"1","2","3","4","5","6","7","8","9"}},
-            {{"0","ㅗ","え","ㅓ","ㅇ","ㅏ","!","ㅜ","?"},{"ㅉ","ㅉ","ㅉ","ㅊ","ㅈ","ㅊ","ㅊ","ㅊ","ㅊ"},{"a","b","c","d","ㅎ","e","f","g","h"},{"ㅖ","ㅚ","ㅒ","ㅝ","ㅢ","ㅘ","!","ㅟ","?"},{"<","0",">","0","←","0","<","0",">"}}
+            {{"`","ㄲ","","ㅎ","ㅇ","ㅋ","","ㄱ",""},{"{","ㄸ","}","ㄹ","ㄴ","ㅌ","=","ㄷ","0"},{"1","2","3","4","5","6","7","8","9"},{"ㅖ","ㅛ","ㅒ","ㅕ","ㅣ","ㅑ","ㅖ","ㅠ","ㅒ"},{"(",",",")","<","⌫",">","[",".","]"}},
+            {{"+","ㅆ","-","ㅊ","ㅅ","ㅉ","*","ㅈ","/"},{"'","ㅃ","\"","ㅍ","ㅁ","ㅍ",";","ㅂ",":"},{"!","@","#","$","%","^","&","*","?"},{"ㅔ","ㅗ","ㅐ","ㅓ","ㅡ","ㅏ","ㅔ","ㅜ","ㅐ"},{"s","t","u","v","⏎","w","x","y","z"}},
+            {{"A","B","C","D","E","F","G","H","I"},{"J","K","L","M","N","O","P","Q","R"},{"S","T","U","V"," ","W","X","Y","Z"},{"a","b","c","d","e","f","g","h","i"},{"j","k","l","m","n","o","p","q","r"}}
     };
 
     //KbdModel kbdModelSerial;
@@ -275,17 +276,41 @@ public class KeySettingActivity extends Activity {
             for (int j = 0; j < initCols; j++) {
                 userKbdModel.row[i].col[j] = new KbdModel.Col();
                 for (int k = 0; k < 9; k++) {
+                    KbdModel.Dir curdir = userKbdModel.row[i].col[j].dir[k];
                     if(i>2 || j>4) {  //기본 값 row=3, col=5 이거보다 클 경우 기본 문자로 초기화 ㄴㄴ 공백으로 초기화
-                        userKbdModel.row[i].col[j].dir[k].show = "";
-                        userKbdModel.row[i].col[j].dir[k].sValue = "";
-                        userKbdModel.row[i].col[j].dir[k].iValue = 0;
-                        userKbdModel.row[i].col[j].dir[k].actType = 1;
+                        curdir.show = "";
+                        curdir.sValue = "";
+                        curdir.iValue = 0;
+                        curdir.actType = 1;
+                    }else if(defaultShow[i][j][k].length()>0&&defaultShow[i][j][k].codePointAt(0)>='ㄱ'&&defaultShow[i][j][k].codePointAt(0)<='ㅣ') {
+                        curdir.show = defaultShow[i][j][k];
+                        curdir.sValue = defaultShow[i][j][k];
+                        curdir.iValue = 0;
+                        curdir.actType = 3;
                     }
                     else{
-                        userKbdModel.row[i].col[j].dir[k].show = defaultShow[i][j][k];
-                        userKbdModel.row[i].col[j].dir[k].sValue = defaultShow[i][j][k];
-                        userKbdModel.row[i].col[j].dir[k].iValue = 0;
-                        userKbdModel.row[i].col[j].dir[k].actType = 1;
+                        switch(defaultShow[i][j][k]){
+                            case " ":curdir.show="␣";
+                                curdir.sValue=" ";
+                                curdir.iValue=0;
+                                curdir.actType=1;
+                                break;
+                            case "⏎":curdir.show="⏎";
+                                curdir.sValue="";
+                                curdir.iValue= KeyEvent.KEYCODE_ENTER;
+                                curdir.actType=2;
+                                break;
+                            case "⌫":curdir.show="⌫";
+                                curdir.sValue="";
+                                curdir.iValue=KeyEvent.KEYCODE_DEL;
+                                curdir.actType=2;
+                                break;
+                            default:
+                                curdir.show = defaultShow[i][j][k];
+                                curdir.sValue = defaultShow[i][j][k];
+                                curdir.iValue = 0;
+                                curdir.actType = 1;
+                        }
                     }
                 }
             }

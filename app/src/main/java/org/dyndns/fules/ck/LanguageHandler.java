@@ -1,6 +1,8 @@
 package org.dyndns.fules.ck;
 
 
+import java.text.Normalizer;
+
 interface LanguageHandler {
 
     StringBuilder handle(String s, StringBuilder sb);
@@ -22,7 +24,7 @@ class KoreanHandler implements LanguageHandler {
     private static final String[] nfcNfdCho =  {"ᄀ", "ᄁ", "","ᄂ", "","","ᄃ", "ᄄ", "ᄅ","","","","","","","", "ᄆ", "ᄇ" ,"ᄈ","", "ᄉ", "ᄊ", "ᄋ", "ᄌ", "ᄍ", "ᄎ", "ᄏ", "ᄐ", "ᄑ", "ᄒ" };
     private static final String[] nfcNfdMo = {"ᅡ" ,"ᅢ" ,"ᅣ" ,"ᅤ" ,"ᅥ" ,"ᅦ" ,"ᅧ" ,"ᅨ" ,"ᅩ" ,"ᅪ" ,"ᅫ","ᅬ", "ᅭ" ,"ᅮ" ,"ᅯ","ᅰ" ,"ᅱ" ,"ᅲ", "ᅳ", "ᅴ", "ᅵ" };
     private static final String[] nfcNfcJong={"ᆨ", "ᆩ" ,"ᆪ", "ᆫ" ,"ᆬ", "ᆭ", "ᆮ","" ,"ᆯ", "ᆰ" ,"ᆱ", "ᆲ" ,"ᆳ","ᆴ", "ᆵ","ᆶ" ,"ᆷ" ,"ᆸ","" ,"ᆹ", "ᆺ","ᆻ" ,"ᆼ" ,"ᆽ" ,"","ᆾ" ,"ᆿ","ᇀ","ᇁ","ᇂ"};
-    private static final String[] leftJong = {"","","ᆨ","","ᆫ","ᆫ","","","","ᆯ","ᆯ","ᆯ","ᆯ","ᆯ","ᆯ","ᆯ","","","","ᆸ","","","","","","","","",""};
+    private static final String[] leftJong = {"","","ᆨ","","ᆫ","ᆫ","","","ㄹ","ᆯ","ᆯ","ᆯ","ᆯ","ᆯ","ᆯ","","","ㅂ","","","","","","","","","","",""};
     private static final String[] jongCho = {"ᄀ", "ᄁ", "ᄉ","ᄂ", "ᄌ","ᄒ","ᄃ", "ᄅ","ᄀ","ᄆ","ᄇ","ᄉ","ᄐ","ᄑ","ᄒ", "ᄆ", "ᄇ" ,"ᄉ", "ᄉ", "ᄊ", "ᄋ", "ᄌ", "ᄎ", "ᄏ", "ᄐ", "ᄑ", "ᄒ"};
     /*private static final String[] moum = {"ㅏ", "ㅐ", "ㅑ", "ㅒ", "ㅓ", "ㅔ", "ㅕ", "ㅖ", "ㅗ", "ㅘ", "ㅙ", "ㅚ", "ㅛ", "ㅜ", "ㅝ", "ㅞ", "ㅟ", "ㅠ", "ㅡ", "ㅢ", "ㅣ"};
     private static final String[] jong = {"", "ㄱ", "ㄲ", "ㄳ", "ㄴ", "ㄵ", "ㄶ", "ㄷ", "ㄹ", "ㄺ", "ㄻ", "ㄼ", "ㄽ", "ㄾ", "ㄿ", "ㅀ", "ㅁ", "ㅂ", "ㅄ", "ㅅ", "ㅆ", "ㅇ", "ㅈ", "ㅊ", "ㅋ", "ㅌ", "ㅍ", "ㅎ"};
@@ -48,7 +50,8 @@ class KoreanHandler implements LanguageHandler {
     public void delete(StringBuilder sb){
     }
     public StringBuilder handle(String new_s, StringBuilder sb) {
-        String s = sb.toString();
+        String s = Normalizer.normalize(sb.toString(),Normalizer.Form.NFD);
+        sb.replace(0,sb.length(), s);
         int ns=new_s.codePointAt(0);
 
         if(s.length()==0){
@@ -128,6 +131,8 @@ class KoreanHandler implements LanguageHandler {
                     case 'ᅳ'://첫가끝 ㅡ
                         if (new_s.equals("ㅣ")) sb.replace(sb.length() - 1, sb.length(), "ᅴ");
                         else sb.append(new_s);
+                        return sb;
+                    default: sb.append(new_s);
                         return sb;
                 }
             }
