@@ -1,7 +1,13 @@
 package org.dyndns.fules.ck;
 
+import android.inputmethodservice.Keyboard;
+import android.view.KeyEvent;
+
+import android.view.KeyEvent;
+
 import java.io.Serializable;
 
+import static android.view.KeyEvent.*;
 import static org.dyndns.fules.ck.KeySettingActivity.defaultShow;
 
 /**
@@ -38,17 +44,41 @@ public class KbdModel implements Serializable {
             for (int j = 0; j < 5; j++) {
                 this.row[i].col[j] = new KbdModel.Col();
                 for (int k = 0; k < 9; k++) {
+                    Dir curdir = this.row[i].col[j].dir[k];
                     if(i>2 || j>4) {  //기본 값 row=3, col=5 이거보다 클 경우 기본 문자로 초기화 ㄴㄴ 공백으로 초기화
-                        this.row[i].col[j].dir[k].show = "";
-                        this.row[i].col[j].dir[k].sValue = "";
-                        this.row[i].col[j].dir[k].iValue = 0;
-                        this.row[i].col[j].dir[k].actType = 1;
+                        curdir.show = "";
+                        curdir.sValue = "";
+                        curdir.iValue = 0;
+                        curdir.actType = 1;
+                    }else if(defaultShow[i][j][k].length()>0&&defaultShow[i][j][k].codePointAt(0)>='ㄱ'&&defaultShow[i][j][k].codePointAt(0)<='ㅣ') {
+                        curdir.show = defaultShow[i][j][k];
+                        curdir.sValue = defaultShow[i][j][k];
+                        curdir.iValue = 0;
+                        curdir.actType = 3;
                     }
                     else{
-                        this.row[i].col[j].dir[k].show = defaultShow[i][j][k];
-                        this.row[i].col[j].dir[k].sValue = defaultShow[i][j][k];
-                        this.row[i].col[j].dir[k].iValue = 0;
-                        this.row[i].col[j].dir[k].actType = 1;
+                        switch(defaultShow[i][j][k]){
+                            case " ":curdir.show="␣";
+                                curdir.sValue=" ";
+                                curdir.iValue=0;
+                                curdir.actType=1;
+                                break;
+                            case "⏎":curdir.show="⏎";
+                            curdir.sValue="";
+                            curdir.iValue= KEYCODE_ENTER;
+                            curdir.actType=2;
+                            break;
+                            case "⌫":curdir.show="⌫";
+                            curdir.sValue="";
+                            curdir.iValue= KEYCODE_DEL;
+                            curdir.actType=2;
+                            break;
+                            default:
+                            curdir.show = defaultShow[i][j][k];
+                            curdir.sValue = defaultShow[i][j][k];
+                            curdir.iValue = 0;
+                            curdir.actType = 1;
+                        }
                     }
                 }
             }
@@ -93,9 +123,8 @@ public class KbdModel implements Serializable {
          * 0:Action List 실행
          * 1:sValue 출력
          * 2:iValue에 해당하는 Keycode 입력
-         * 3:언어에 해당하는 입력기 입력(sValue)
-         * 4:이전 kbdModel 호출
-         * 5:다음 kbdModel 호출
+         * 3:iValue에 해당하는 unicode char 입력
+         * 4:iValue에 해당하는 KbdModel호출 (-1:최근, -2:이전, -3:다음, -4:sValue의 파일 호출)
          */
         int actType;
         String sValue;//인자 중 String값.

@@ -16,6 +16,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -50,16 +51,16 @@ public class CompassKeyboard extends InputMethodService implements OnKeyboardAct
 				FileInputStream fis;
 				fis = openFileInput("kbdList");
 				ObjectInputStream ois = new ObjectInputStream(fis);
-				KbdModelSelector kbdSelector = (KbdModelSelector)ois.readObject();
+				KbdModelSelector kbdSelector = (KbdModelSelector) ois.readObject();
 				fis.close();
-					ckv.readLayout((KbdModel) ois.readObject());
-						ois.close();
-					} catch(FileNotFoundException e) {
-						ckv.readLayout(KeySettingActivity.init(3, 5));
-					} catch (Exception e) {
-						e.printStackTrace();
-						ckv.readLayout(KeySettingActivity.init(3, 5));
-					}
+				ckv.readLayout(kbdSelector.kbdSerialList.get(0));
+				ois.close();
+			} catch (FileNotFoundException e) {
+				ckv.readLayout(KeySettingActivity.init(3, 5));
+			} catch (Exception e) {
+				e.printStackTrace();
+				ckv.readLayout(KeySettingActivity.init(3, 5));
+			}
 		}
 		catch (IOException e)		{ err = e.getMessage(); }
 		if (err == null) {
@@ -92,7 +93,7 @@ public class CompassKeyboard extends InputMethodService implements OnKeyboardAct
 		ckv.setLeftMargin(getPrefFloat("margin_left", 0));
 		ckv.setRightMargin(getPrefFloat("margin_right", 0));
 		ckv.setBottomMargin(getPrefFloat("margin_bottom", 0));
-		ckv.setMaxKeySize(getPrefFloat("max_keysize", 12));
+		ckv.setMaxKeySize(100);
 		mPrefs.registerOnSharedPreferenceChangeListener(this);
 		return super.onCreateInputMethodInterface();
 	}
@@ -147,9 +148,8 @@ public class CompassKeyboard extends InputMethodService implements OnKeyboardAct
 			case KeyEvent.KEYCODE_DEL:
 			case Keyboard.KEYCODE_DELETE:
 				if(sb!=null){
-					if(ckv.languageHandler.deletable(sb)){
-						ckv.languageHandler.delete(sb);
-					}else sb.delete(sb.length()>0?sb.length()-1:0,sb.length());
+					sb.replace(0,sb.length(),Normalizer.normalize(sb.toString(), Normalizer.Form.NFD));
+					sb.delete(sb.length()-1,sb.length());
 				}
 				updateCandidates();
 				break;
@@ -191,7 +191,6 @@ public class CompassKeyboard extends InputMethodService implements OnKeyboardAct
 	}
 	// Process the generated text
 	public void onText(CharSequence text) {
-		Log.i("HANDLER TEST",sb.toString());
 		InputConnection ic = getCurrentInputConnection();
 		if(text.length()>0&&text.charAt(0)==' '){
 			ic.finishComposingText();
@@ -209,6 +208,8 @@ public class CompassKeyboard extends InputMethodService implements OnKeyboardAct
 	public void handle(String arg){
 		if(sb==null) sb=new StringBuilder();
 		ckv.languageHandler.handle(arg,sb);
+		Log.i("ZaiC","sb="+sb.toString());
+		sb.replace(0,sb.length(), Normalizer.normalize(sb.toString(), Normalizer.Form.NFC));
 		onText("");
 	}
 	// Process a command
@@ -355,7 +356,6 @@ public class CompassKeyboard extends InputMethodService implements OnKeyboardAct
 	private List<String> mSuggestions;
 	private SpellCheckerSession mScs;
 	@Override public View onCreateCandidatesView() {
-		Log.d("CAUADD","onCreateCandidatesView Invoked");
 		mCandidateView = new CandidateView(this);
 		mCandidateView.setService(this);
 		mCandidateView.setSuggestions(new ArrayList<String>(Arrays.asList("ASDF","GHJK","LMNO")),true,true);
@@ -364,11 +364,10 @@ public class CompassKeyboard extends InputMethodService implements OnKeyboardAct
 		return mCandidateView;
 	}
 	public void pickSuggestionManually(int index) {
-
+		db.updateRecordParameter(mCompletions.get(index));
 		if (mCompletionOn && mCompletions != null && index >= 0
 				&& index < mCompletions.size()) {
 			String ci = mCompletions.get(index);
-			Log.d("ZaiC","CommitCompletion : "+ci);
 			getCurrentInputConnection().commitText(ci,ci.length());
 			getCurrentInputConnection().finishComposingText();
 			if (mCandidateView != null) {
@@ -394,7 +393,7 @@ public class CompassKeyboard extends InputMethodService implements OnKeyboardAct
 	}
 	private void updateCandidates() {
 		if(sb!=null&&sb.length()>0) {
-			ArrayList<String> suggList = db.search(sb.toString(),"");
+			ArrayList<String> suggList = db.search(sb.toString());
 			suggList.add(0, sb.toString());
 			mCompletions = suggList;
 			mCandidateView.setSuggestions(suggList, true, true);

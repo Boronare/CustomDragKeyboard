@@ -4,15 +4,37 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#ffffff"
     tools:context="org.dyndns.fules.ck.MainActivity">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
+    <Button
+        android:id="@+id/button17"
+        android:layout_width="275dp"
+        android:layout_height="47dp"
+        android:layout_marginTop="208dp"
+        android:onClick="btn1_click"
+        android:text="키보드 활성화하기"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    </android.support.constraint.ConstraintLayout>
+    <Button
+        android:id="@+id/button18"
+        android:layout_width="275dp"
+        android:layout_height="47dp"
+        android:layout_marginEnd="1dp"
+        android:onClick="btn2_click"
+        android:text="사용 키보드로 설정하기"
+        app:layout_constraintEnd_toEndOf="@+id/button17"
+        app:layout_constraintTop_toBottomOf="@+id/button17" />
+
+    <Button
+        android:id="@+id/button19"
+        android:layout_width="275dp"
+        android:layout_height="wrap_content"
+        android:onClick="btn3_click"
+        android:text="키보드 설정하기"
+        app:layout_constraintStart_toStartOf="@+id/button18"
+        app:layout_constraintTop_toBottomOf="@+id/button18" />
+
+</android.support.constraint.ConstraintLayout>

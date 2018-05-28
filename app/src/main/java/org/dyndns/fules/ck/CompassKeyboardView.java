@@ -75,9 +75,9 @@ class Action {
 public class CompassKeyboardView extends FrameLayout {
 	// Constants
 	private static final String		TAG = "CompassKeyboard";
-	private static final long[][]		vibratePattern = { { 10, 100 }, { 10, 50, 50, 50 } };
+	private static final long[][]		vibratePattern = { { 10, 10 }, { 10, 10, 10, 10 } };
 	private static final int		LONG_TAP_TIMEOUT = 700;	// timeout in msec after which a tap is considered a long one
-	private static final int		LONG_TAP_REPEAT = 100;
+	private static final int		LONG_TAP_REPEAT = 75;
 	public static final int			NONE	= -1;
 	public static final int			NW	= 0;
 	public static final int			N	= 1;
@@ -98,7 +98,7 @@ public class CompassKeyboardView extends FrameLayout {
 	int					vibrateOnCancel = 0;
 	int					feedbackNormal = 0;
 	int					feedbackPassword = 0;
-	float					keyMM = 12;	// maximal key size in mm-s
+	float					keyMM = 40;	// maximal key size in mm-s
 	float					marginLeft = 0, marginRight = 0, marginBottom = 0; // margins in mm-s
 
 	// Internal params
@@ -108,6 +108,7 @@ public class CompassKeyboardView extends FrameLayout {
 	float					fontSize;	// height of the key caption font in pixels
 	float					fontDispY;	// Y-displacement of key caption font (top to baseline)
 	boolean					isTypingPassword; // is the user typing a password
+	String lang = "none";
 
 	Vibrator				vibro;		// vibrator
 	Paint					textPaint;	// Paint for drawing key captions
@@ -133,7 +134,6 @@ public class CompassKeyboardView extends FrameLayout {
 	 */
 	private final class LongTap implements Runnable {
 		public void run() {
-			Log.i("ZaiC","LongTap invoked");
 			wasLongTap=true;
 			processAction(longTapKey.dir[TAP]);
 			postDelayed(onLongTap, LONG_TAP_REPEAT);
@@ -204,8 +204,8 @@ public class CompassKeyboardView extends FrameLayout {
 			// figure out the direction of the swipe
 			int getDirection(float x, float y,int idx) {
 				int d;
-				float dx = (x - downX[idx]) * 2;
-				float dy = (y - downY[idx]) * 2;
+				float dx = (x - downX[idx]) * 3;
+				float dy = (y - downY[idx]) * 3;
 
 				if (dx < -xmax) {
 					if (dy < -ymax)
@@ -307,14 +307,13 @@ public class CompassKeyboardView extends FrameLayout {
 
 		public Row(Context context, KbdModel.Row row) throws IOException {
 			super(context);
-			Log.i("CAU_ZAIC_TEST",Integer.toString(row.col.length));
 			String s;
 
 			setOrientation(LinearLayout.HORIZONTAL);
 			setGravity(Gravity.CENTER);
 
 			LayoutParams lp = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-			lp.setMargins(1, 0, 1, 0);
+			lp.setMargins(0, 0, 0, 0);
 
 			buttonPaint = new Paint();
 			buttonPaint.setAntiAlias(true);
@@ -423,7 +422,7 @@ public class CompassKeyboardView extends FrameLayout {
 		ck=context;
 		kbd = new LinearLayout(context);
 		kbd.setOrientation(LinearLayout.VERTICAL);
-		kbd.setGravity(Gravity.TOP);
+		kbd.setGravity(Gravity.CENTER_HORIZONTAL|Gravity.TOP);
 		//kbd.setBackgroundColor(0xff003f00); // for debugging placement
 		addView(kbd);
 
@@ -431,7 +430,7 @@ public class CompassKeyboardView extends FrameLayout {
 		addView(overlay);
 
 		lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-		lp.setMargins(0, 1, 0, 1);
+		lp.setMargins(0, 0, 0, 0);
 
 		textPaint = new Paint();
 		textPaint.setAntiAlias(true);
@@ -472,22 +471,19 @@ public class CompassKeyboardView extends FrameLayout {
 
 	// Read the layout from an XML parser
 	public void readLayout(KbdModel kbdModel) throws IOException {
-
-		Log.i("CAU_ZAIC_TEST",Integer.toString(kbdModel.row.length));
+		lang=kbdModel.kbdLang;
 		// drop and re-read all previously existing rows
 		kbd.removeAllViews();
 		nColumns = nKeys = 0;
-		int nextGlobalSwipe = NW;
 		for(int i=0;i<kbdModel.row.length;i++) {
 				Row nr = new Row(getContext(), kbdModel.row[i]);
-				kbd.addView(nr, lp);
+			kbd.addView(nr, lp);
 
-				int nc = nr.getChildCount();
+			int nc = nr.getChildCount();
 				if (nColumns < nr.columns)
 					nColumns = nr.columns;
 				if (nKeys < nc)
 					nKeys = nc;
-				Log.i("CAU_ZAIC_TEST","nKeys"+nc+"/nColumns"+nColumns);
 			/*else if (parser.getName().contentEquals("Align")) {
 				Align na = new Align(getContext(), parser);
 				kbd.addView(na, lp);
@@ -496,6 +492,7 @@ public class CompassKeyboardView extends FrameLayout {
 					nColumns = na.width;
 			}*/
 		}
+
 
 		// recalculate sizes and set bg colour
 		calculateSizesForMetrics(getResources().getDisplayMetrics());
@@ -566,7 +563,6 @@ public class CompassKeyboardView extends FrameLayout {
 	public boolean processTouchEvent(MotionEvent event) {
 		int idx=event.getActionIndex();
 		if(idx>3) return false;
-		Log.i("ZAIC_TEST :","idx="+idx+"; Action="+event.getAction());
 		switch (event.getAction()) {
 			case MotionEvent.ACTION_DOWN:
 			case MotionEvent.ACTION_POINTER_DOWN:
