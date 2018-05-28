@@ -18,11 +18,16 @@ public class MainActivity extends Activity {
 
     public void btn1_click(View v) {
         Intent intent = new Intent(Settings.ACTION_INPUT_METHOD_SETTINGS);
+
         startActivityForResult(intent, 0);
     }
 
     public void btn2_click(View v) {
         InputMethodManager imeManager = (InputMethodManager) getApplicationContext().getSystemService(INPUT_METHOD_SERVICE);
         imeManager.showInputMethodPicker();
+    }
+    public void btn3_click(View v) {
+        Intent intent = new Intent(this, CompassKeyboardSettings.class);
+        startActivity(intent);
     }
 }

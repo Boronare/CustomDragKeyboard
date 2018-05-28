@@ -6,26 +6,32 @@ import java.text.Normalizer;
 interface LanguageHandler {
 
     StringBuilder handle(String s, StringBuilder sb);
+
     boolean deletable(StringBuilder sb);
+
     void delete(StringBuilder sb);
 }
 
-class DummyHandler implements LanguageHandler{
-    public StringBuilder handle(String s,StringBuilder sb){
-    return sb;}
-    public boolean deletable(StringBuilder sb){
+class DummyHandler implements LanguageHandler {
+    public StringBuilder handle(String s, StringBuilder sb) {
+        return sb;
+    }
+
+    public boolean deletable(StringBuilder sb) {
         return false;
     }
-    public void delete(StringBuilder sb){
+
+    public void delete(StringBuilder sb) {
     }
 }
+
 class KoreanHandler implements LanguageHandler {
     //private static final String[] cho =  {"ㄱ", "ㄲ", "ㄴ", "ㄷ", "ㄸ", "ㄹ", "ㅁ", "ㅂ", "ㅃ", "ㅅ", "ㅆ", "ㅇ", "ㅈ", "ㅉ", "ㅊ", "ㅋ", "ㅌ", "ㅍ", "ㅎ"};
-    private static final String[] nfcNfdCho =  {"ᄀ", "ᄁ", "","ᄂ", "","","ᄃ", "ᄄ", "ᄅ","","","","","","","", "ᄆ", "ᄇ" ,"ᄈ","", "ᄉ", "ᄊ", "ᄋ", "ᄌ", "ᄍ", "ᄎ", "ᄏ", "ᄐ", "ᄑ", "ᄒ" };
-    private static final String[] nfcNfdMo = {"ᅡ" ,"ᅢ" ,"ᅣ" ,"ᅤ" ,"ᅥ" ,"ᅦ" ,"ᅧ" ,"ᅨ" ,"ᅩ" ,"ᅪ" ,"ᅫ","ᅬ", "ᅭ" ,"ᅮ" ,"ᅯ","ᅰ" ,"ᅱ" ,"ᅲ", "ᅳ", "ᅴ", "ᅵ" };
-    private static final String[] nfcNfcJong={"ᆨ", "ᆩ" ,"ᆪ", "ᆫ" ,"ᆬ", "ᆭ", "ᆮ","" ,"ᆯ", "ᆰ" ,"ᆱ", "ᆲ" ,"ᆳ","ᆴ", "ᆵ","ᆶ" ,"ᆷ" ,"ᆸ","" ,"ᆹ", "ᆺ","ᆻ" ,"ᆼ" ,"ᆽ" ,"","ᆾ" ,"ᆿ","ᇀ","ᇁ","ᇂ"};
-    private static final String[] leftJong = {"","","ᆨ","","ᆫ","ᆫ","","","ㄹ","ᆯ","ᆯ","ᆯ","ᆯ","ᆯ","ᆯ","","","ㅂ","","","","","","","","","","",""};
-    private static final String[] jongCho = {"ᄀ", "ᄁ", "ᄉ","ᄂ", "ᄌ","ᄒ","ᄃ", "ᄅ","ᄀ","ᄆ","ᄇ","ᄉ","ᄐ","ᄑ","ᄒ", "ᄆ", "ᄇ" ,"ᄉ", "ᄉ", "ᄊ", "ᄋ", "ᄌ", "ᄎ", "ᄏ", "ᄐ", "ᄑ", "ᄒ"};
+    private static final String[] nfcNfdCho = {"ᄀ", "ᄁ", "", "ᄂ", "", "", "ᄃ", "ᄄ", "ᄅ", "", "", "", "", "", "", "", "ᄆ", "ᄇ", "ᄈ", "", "ᄉ", "ᄊ", "ᄋ", "ᄌ", "ᄍ", "ᄎ", "ᄏ", "ᄐ", "ᄑ", "ᄒ"};
+    private static final String[] nfcNfdMo = {"ᅡ", "ᅢ", "ᅣ", "ᅤ", "ᅥ", "ᅦ", "ᅧ", "ᅨ", "ᅩ", "ᅪ", "ᅫ", "ᅬ", "ᅭ", "ᅮ", "ᅯ", "ᅰ", "ᅱ", "ᅲ", "ᅳ", "ᅴ", "ᅵ"};
+    private static final String[] nfcNfcJong = {"ᆨ", "ᆩ", "ᆪ", "ᆫ", "ᆬ", "ᆭ", "ᆮ", "", "ᆯ", "ᆰ", "ᆱ", "ᆲ", "ᆳ", "ᆴ", "ᆵ", "ᆶ", "ᆷ", "ᆸ", "", "ᆹ", "ᆺ", "ᆻ", "ᆼ", "ᆽ", "", "ᆾ", "ᆿ", "ᇀ", "ᇁ", "ᇂ"};
+    private static final String[] leftJong = {"", "", "ᆨ", "", "ᆫ", "ᆫ", "", "", "ᆯ", "ᆯ", "ᆯ", "ᆯ", "ᆯ", "ᆯ", "ᆯ", "", "", "ㅂ", "", "", "", "", "", "", "", "", "", "", ""};
+    private static final String[] jongCho = {"ᄀ", "ᄁ", "ᄉ", "ᄂ", "ᄌ", "ᄒ", "ᄃ", "ᄅ", "ᄀ", "ᄆ", "ᄇ", "ᄉ", "ᄐ", "ᄑ", "ᄒ", "ᄆ", "ᄇ", "ᄉ", "ᄉ", "ᄊ", "ᄋ", "ᄌ", "ᄎ", "ᄏ", "ᄐ", "ᄑ", "ᄒ"};
     /*private static final String[] moum = {"ㅏ", "ㅐ", "ㅑ", "ㅒ", "ㅓ", "ㅔ", "ㅕ", "ㅖ", "ㅗ", "ㅘ", "ㅙ", "ㅚ", "ㅛ", "ㅜ", "ㅝ", "ㅞ", "ㅟ", "ㅠ", "ㅡ", "ㅢ", "ㅣ"};
     private static final String[] jong = {"", "ㄱ", "ㄲ", "ㄳ", "ㄴ", "ㄵ", "ㄶ", "ㄷ", "ㄹ", "ㄺ", "ㄻ", "ㄼ", "ㄽ", "ㄾ", "ㄿ", "ㅀ", "ㅁ", "ㅂ", "ㅄ", "ㅅ", "ㅆ", "ㅇ", "ㅈ", "ㅊ", "ㅋ", "ㅌ", "ㅍ", "ㅎ"};
 
@@ -44,77 +50,111 @@ class KoreanHandler implements LanguageHandler {
     KoreanHandler() {
         super();
     }
-    public boolean deletable(StringBuilder sb){
+
+    public boolean deletable(StringBuilder sb) {
         return false;
     }
-    public void delete(StringBuilder sb){
-    }
-    public StringBuilder handle(String new_s, StringBuilder sb) {
-        String s = Normalizer.normalize(sb.toString(),Normalizer.Form.NFD);
-        sb.replace(0,sb.length(), s);
-        int ns=new_s.codePointAt(0);
 
-        if(s.length()==0){
+    public void delete(StringBuilder sb) {
+    }
+
+    public StringBuilder handle(String new_s, StringBuilder sb) {
+        String s = Normalizer.normalize(sb.toString(), Normalizer.Form.NFD);
+        sb.replace(0, sb.length(), s);
+        int ns = new_s.codePointAt(0);
+
+        if (s.length() == 0) {
             sb.append(new_s);
             return sb;
         }
-        int cd=s.codePointBefore(s.length());
-        if(ns>='ㄱ'&&ns<='ㅎ'){
-            if(cd>='ᅡ'&&cd<='ᅵ') {//첫가끝 모음
-                if(nfcNfcJong[ns-'ㄱ'].length()==0) sb.append(new_s);
+        int cd = s.codePointBefore(s.length());
+        if (ns >= 'ㄱ' && ns <= 'ㅎ') {
+            if (cd >= 'ᅡ' && cd <= 'ᅵ') {//첫가끝 모음
+                if (nfcNfcJong[ns - 'ㄱ'].length() == 0) sb.append(new_s);
                 else sb.append(nfcNfcJong[ns - 'ㄱ']);
                 return sb;
-            }else if(cd>='ᄀ'&&cd<='ᇂ') {//첫가끝 종성
-                switch(cd){
-                    case 'ᆨ':if(ns=='ㅅ'){sb.replace(sb.length()-1,sb.length(),"ᆪ"); return sb;}break;
-                    case 'ᆫ':if(ns=='ㅈ'){sb.replace(sb.length()-1,sb.length(),"ᆬ"); return sb;}
-                        else if(ns=='ㅎ'){sb.replace(sb.length()-1,sb.length(),"ᆭ"); return sb;}break;
-                    case 'ᆯ': if(ns=='ㄱ'){sb.replace(sb.length()-1,sb.length(),"ᆰ"); return sb;}
-                        else if(ns=='ㅁ'){sb.replace(sb.length()-1,sb.length(),"ᆱ"); return sb;}
-                        else if(ns=='ㅂ'){sb.replace(sb.length()-1,sb.length(),"ᆲ"); return sb;}
-                        else if(ns=='ㅅ'){sb.replace(sb.length()-1,sb.length(),"ᆳ"); return sb;}
-                        else if(ns=='ㅌ'){sb.replace(sb.length()-1,sb.length(),"ᆴ"); return sb;}
-                        else if(ns=='ㅍ'){sb.replace(sb.length()-1,sb.length(),"ᆵ"); return sb;}
-                        else if(ns=='ㅎ'){sb.replace(sb.length()-1,sb.length(),"ᆶ"); return sb;}break;
-                    case 'ᆸ': if(ns=='ㅅ'){sb.replace(sb.length()-1,sb.length(),"ᆹ"); return sb;}
+            } else if (cd >= 'ᄀ' && cd <= 'ᇂ') {//첫가끝 종성
+                switch (cd) {
+                    case 'ᆨ':
+                        if (ns == 'ㅅ') {
+                            sb.replace(sb.length() - 1, sb.length(), "ᆪ");
+                            return sb;
+                        }
+                        break;
+                    case 'ᆫ':
+                        if (ns == 'ㅈ') {
+                            sb.replace(sb.length() - 1, sb.length(), "ᆬ");
+                            return sb;
+                        } else if (ns == 'ㅎ') {
+                            sb.replace(sb.length() - 1, sb.length(), "ᆭ");
+                            return sb;
+                        }
+                        break;
+                    case 'ᆯ':
+                        if (ns == 'ㄱ') {
+                            sb.replace(sb.length() - 1, sb.length(), "ᆰ");
+                            return sb;
+                        } else if (ns == 'ㅁ') {
+                            sb.replace(sb.length() - 1, sb.length(), "ᆱ");
+                            return sb;
+                        } else if (ns == 'ㅂ') {
+                            sb.replace(sb.length() - 1, sb.length(), "ᆲ");
+                            return sb;
+                        } else if (ns == 'ㅅ') {
+                            sb.replace(sb.length() - 1, sb.length(), "ᆳ");
+                            return sb;
+                        } else if (ns == 'ㅌ') {
+                            sb.replace(sb.length() - 1, sb.length(), "ᆴ");
+                            return sb;
+                        } else if (ns == 'ㅍ') {
+                            sb.replace(sb.length() - 1, sb.length(), "ᆵ");
+                            return sb;
+                        } else if (ns == 'ㅎ') {
+                            sb.replace(sb.length() - 1, sb.length(), "ᆶ");
+                            return sb;
+                        }
+                        break;
+                    case 'ᆸ':
+                        if (ns == 'ㅅ') {
+                            sb.replace(sb.length() - 1, sb.length(), "ᆹ");
+                            return sb;
+                        }
                 }
             }
             sb.append(new_s);
             return sb;
         }
-        if(ns>='ㅏ'&&ns<='ㅣ'){
-            if(cd>='ㄱ'&&cd<='ㅎ'){
-                sb.replace(sb.length()-1,sb.length(),nfcNfdCho[cd-'ㄱ']);
-                sb.append(nfcNfdMo[ns-'ㅏ']);
+        if (ns >= 'ㅏ' && ns <= 'ㅣ') {
+            if (cd >= 'ㄱ' && cd <= 'ㅎ') {
+                sb.replace(sb.length() - 1, sb.length(), nfcNfdCho[cd - 'ㄱ']);
+                sb.append(nfcNfdMo[ns - 'ㅏ']);
                 return sb;
-            }
-            else if(cd>='ᄀ'&&cd<='ᄒ'){
-                sb.append(nfcNfdMo[ns-'ㅏ']);
+            } else if (cd >= 'ᄀ' && cd <= 'ᄒ') {
+                sb.append(nfcNfdMo[ns - 'ㅏ']);
                 return sb;
-            }
-            else if(cd>='ㅏ'&&cd<='ㅣ'){
-                switch(cd){
+            } else if (cd >= 'ㅏ' && cd <= 'ㅣ') {
+                switch (cd) {
                     case 'ㅗ'://단모음 ㅗ
-                        if(new_s.equals("ㅏ"))sb.replace(sb.length()-1,sb.length(),"ㅘ");
-                        else if(new_s.equals("ㅐ"))sb.replace(sb.length()-1,sb.length(),"ㅙ");
-                        else if(new_s.equals("ㅣ"))sb.replace(sb.length()-1,sb.length(),"ㅚ");
+                        if (new_s.equals("ㅏ")) sb.replace(sb.length() - 1, sb.length(), "ㅘ");
+                        else if (new_s.equals("ㅐ")) sb.replace(sb.length() - 1, sb.length(), "ㅙ");
+                        else if (new_s.equals("ㅣ")) sb.replace(sb.length() - 1, sb.length(), "ㅚ");
                         else sb.append(new_s);
                         return sb;
                     case 'ㅜ'://단모음 ㅜ
-                        if(new_s.equals("ㅓ"))sb.replace(sb.length()-1,sb.length(),"ㅝ");
-                        else if(new_s.equals("ㅔ"))sb.replace(sb.length()-1,sb.length(),"ㅞ");
-                        else if(new_s.equals("ㅣ"))sb.replace(sb.length()-1,sb.length(),"ㅟ");
+                        if (new_s.equals("ㅓ")) sb.replace(sb.length() - 1, sb.length(), "ㅝ");
+                        else if (new_s.equals("ㅔ")) sb.replace(sb.length() - 1, sb.length(), "ㅞ");
+                        else if (new_s.equals("ㅣ")) sb.replace(sb.length() - 1, sb.length(), "ㅟ");
                         else sb.append(new_s);
                         return sb;
                     case 'ㅡ'://단모음 ㅡ
-                        if(new_s.equals("ㅣ"))sb.replace(sb.length()-1,sb.length(),"ㅢ");
+                        if (new_s.equals("ㅣ")) sb.replace(sb.length() - 1, sb.length(), "ㅢ");
                         else sb.append(new_s);
                         return sb;
-                    default: sb.append(new_s);
-                    return sb;
+                    default:
+                        sb.append(new_s);
+                        return sb;
                 }
-            }
-            else if(cd>='ᅡ'&&cd<='ᅵ') {
+            } else if (cd >= 'ᅡ' && cd <= 'ᅵ') {
                 switch (cd) {
                     case 'ᅩ'://첫가끝 ㅗ
                         if (new_s.equals("ㅏ")) sb.replace(sb.length() - 1, sb.length(), "ᅪ");
@@ -132,13 +172,13 @@ class KoreanHandler implements LanguageHandler {
                         if (new_s.equals("ㅣ")) sb.replace(sb.length() - 1, sb.length(), "ᅴ");
                         else sb.append(new_s);
                         return sb;
-                    default: sb.append(new_s);
+                    default:
+                        sb.append(new_s);
                         return sb;
                 }
-            }
-            else if(cd>='ᆨ'&&cd<='ᇂ'){
-                sb.replace(sb.length()-1,sb.length(), leftJong[cd-'ᆨ']);
-                sb.append(jongCho[cd-'ᆨ']+nfcNfdMo[ns-'ㅏ']);
+            } else if (cd >= 'ᆨ' && cd <= 'ᇂ') {
+                sb.replace(sb.length() - 1, sb.length(), leftJong[cd - 'ᆨ']);
+                sb.append(jongCho[cd - 'ᆨ'] + nfcNfdMo[ns - 'ㅏ']);
                 return sb;
             }
         }
@@ -248,21 +288,20 @@ class KoreanHandler implements LanguageHandler {
                 }
             }
         }*/
-        else{
+        else {
             sb.append(new_s);
         }
         return sb;
     }
 
     private boolean isHangul(String string) {
-        if(string.length()==0) return false;
+        if (string.length() == 0) return false;
         char c = string.charAt(string.length() - 1);
         Character.UnicodeBlock unicodeBlock = Character.UnicodeBlock.of(c);
 
-        if (Character.UnicodeBlock.HANGUL_SYLLABLES.equals( unicodeBlock ) ||
-                Character.UnicodeBlock.HANGUL_COMPATIBILITY_JAMO.equals( unicodeBlock ) ||
-                Character.UnicodeBlock.HANGUL_JAMO.equals(unicodeBlock))
-        {
+        if (Character.UnicodeBlock.HANGUL_SYLLABLES.equals(unicodeBlock) ||
+                Character.UnicodeBlock.HANGUL_COMPATIBILITY_JAMO.equals(unicodeBlock) ||
+                Character.UnicodeBlock.HANGUL_JAMO.equals(unicodeBlock)) {
             return true;
         }
 
@@ -270,19 +309,25 @@ class KoreanHandler implements LanguageHandler {
     }
 
     private boolean isConsonan(String string) {
-        if(string.length()==0) return false;
+        if (string.length() == 0) return false;
         String s = String.format("U+%04X", string.codePointAt(string.length() - 1));
 
-        if (0 <= s.compareTo("U+3130") && s.compareTo("U+314E") <= 0) { return true; }
-        else { return false; }
+        if (0 <= s.compareTo("U+3130") && s.compareTo("U+314E") <= 0) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     private boolean isVowel(String string) {
-        if(string.length()==0) return false;
+        if (string.length() == 0) return false;
         String s = String.format("U+%04X", string.codePointAt(string.length() - 1));
 
-        if (0 <= s.compareTo("U+314F") && s.compareTo("U+3163") <= 0) { return true; }
-        else { return false; }
+        if (0 <= s.compareTo("U+314F") && s.compareTo("U+3163") <= 0) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     private int calculateCodePointValue(int a, int b, int c) {
