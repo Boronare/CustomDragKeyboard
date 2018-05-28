@@ -28,6 +28,7 @@ import java.util.List;
 public class LayoutImportActivity extends ListActivity {
 
     KbdModelSelector kbdList;
+    KbdModel kbdModel;
 
     private List<String> item = null;
     private List<String> path = null;
@@ -40,7 +41,6 @@ public class LayoutImportActivity extends ListActivity {
         setContentView(R.layout.activity_layout_import);
         mPath = (TextView) findViewById(R.id.path);
         getDir(root);
-       /* Log.i("TEST::","" + Environment.getExternalStorageState());
         try {
             kbdList = (KbdModelSelector) this.undoSerializable("kbdList");
         } catch(FileNotFoundException e) {
@@ -53,6 +53,7 @@ public class LayoutImportActivity extends ListActivity {
             e.printStackTrace();
             kbdList = new KbdModelSelector();
         }
+        /*
         try {
 
             FileOutputStream fos = new FileOutputStream(new File(Environment.
@@ -116,7 +117,8 @@ public class LayoutImportActivity extends ListActivity {
             }
         } else {    //파일 읽는 부분...
             try {
-                kbdList = (KbdModelSelector) this.saveKbdList(file);
+                kbdModel = (KbdModel) this.saveKbdList(file);
+                kbdList.add(kbdModel);
                 FileOutputStream fos = openFileOutput("kbdList", Context.MODE_PRIVATE);
                 ObjectOutputStream oos = new ObjectOutputStream(fos);
                 oos.writeObject(kbdList);
@@ -131,6 +133,10 @@ public class LayoutImportActivity extends ListActivity {
                 e.printStackTrace();
             } catch (ClassNotFoundException e) {
                 Log.i("TEST::","error3");
+                e.printStackTrace();
+            } catch (ClassCastException e) {
+                Log.i("TEST::","error4");
+                Toast.makeText(this, "맞는 형식이 아닙니다.", Toast.LENGTH_SHORT).show();
                 e.printStackTrace();
             }
         }
@@ -149,10 +155,10 @@ public class LayoutImportActivity extends ListActivity {
 
         FileInputStream fis = new FileInputStream(file);
         ObjectInputStream ois = new ObjectInputStream(fis);
-        Object kbdList = (KbdModelSelector) ois.readObject();
+        Object kbdModel = (KbdModel) ois.readObject();
         ois.close();
         Log.i("TEST::","불러온 file로 saved");
-        return kbdList;
+        return kbdModel;
     }
 
 }

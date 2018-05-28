@@ -228,7 +228,7 @@ public class KeySettingSelectActivity extends Activity {
                 startActivityForResult(intent, 0);
             }
         });
-
+/*
         btr3 = findViewById(R.id.btr3);
         btr3.setText("Export");
         btr3.setOnClickListener(new View.OnClickListener() {
@@ -251,7 +251,7 @@ public class KeySettingSelectActivity extends Activity {
                     e.printStackTrace();
                 }
             }
-        });
+        });*/
 
     }
 
