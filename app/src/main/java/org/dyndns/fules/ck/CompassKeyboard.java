@@ -82,8 +82,6 @@ public class CompassKeyboard extends InputMethodService implements OnKeyboardAct
 		currentLayout = 0;			// enforce reloading layout
 		DbHelper.copyDataBase(this);
 		db=new DbHelper(this);
-		Log.i("ZAIC","Before ReadFile");
-		Log.i("ZAIC","After ReadFile");
 		updateLayout(Integer.parseInt(mPrefs.getString("layout", "0")));
 		ckv.setVibrateOnKey(getPrefInt("feedback_key", 0));
 		ckv.setVibrateOnModifier(getPrefInt("feedback_mod", 0));
@@ -150,8 +148,11 @@ public class CompassKeyboard extends InputMethodService implements OnKeyboardAct
 				if(sb!=null){
 					sb.replace(0,sb.length(),Normalizer.normalize(sb.toString(), Normalizer.Form.NFD));
 					sb.delete(sb.length()-1,sb.length());
+					sb.replace(0,sb.length(),Normalizer.normalize(sb.toString(), Normalizer.Form.NFC));
+					updateCandidates();
+					getCurrentInputConnection().setComposingText(sb.toString(),sb.length());
+					return;
 				}
-				updateCandidates();
 				break;
 			default:
 				sb = null;
