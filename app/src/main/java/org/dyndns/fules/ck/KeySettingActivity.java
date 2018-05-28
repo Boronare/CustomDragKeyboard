@@ -5,18 +5,22 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ScrollView;
+import android.widget.Spinner;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -48,17 +52,19 @@ public class KeySettingActivity extends Activity {
     KbdModel tempKbdModel;
 
     EditText kbdTitle;
-    EditText kbdLangEdit;
-    //Button btr[][];
     TableLayout kbdKeyLayout[][];
     TextView kbdText[][];
+    Spinner spinnerLang;
+
+    private final String[] listLang = {"영어", "한국어", "일본어", "중국어"};
+    private final String[] listLangValue = {"0", "1", "2", "ZH"};
 
     private class btnOnClickListener implements Button.OnClickListener{
 
         @Override
         public void onClick(View view) {    //save (적용)
             tempKbdModel.kbdName = kbdTitle.getText().toString();
-            tempKbdModel.kbdLang = kbdLangEdit.getText().toString();
+            tempKbdModel.kbdLang = listLangValue[spinnerLang.getSelectedItemPosition()];
             try {
                /*
                 FileOutputStream fos = openFileOutput("" + kbdModelSerial, Context.MODE_PRIVATE);
@@ -88,8 +94,6 @@ public class KeySettingActivity extends Activity {
         super.onCreate(savedInstanceState);
 
         Intent intent = getIntent();
-
-
         /*try {
             userKbdModel = (KbdModel) this.undoSerializable();
 
@@ -109,7 +113,7 @@ public class KeySettingActivity extends Activity {
         row = userKbdModel.row.length;
         col = userKbdModel.row[0].col.length;
         tempKbdModel = userKbdModel;    //temp에 복사해서 temp를 사용하자.
- 
+
         ScrollView mainScroll = new ScrollView(this);
         ScrollView.LayoutParams scrollParams = new ScrollView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT);
@@ -134,7 +138,6 @@ public class KeySettingActivity extends Activity {
         kbdTitle.setLayoutParams(titleParams);
         kbdTitle.setText(tempKbdModel.kbdName);    //"키보드 이름 :" + 키보드이름변수
         kbdTitle.setTextSize(24);
-        kbdTitle.setLines(1);
         kbdTitle.setSingleLine();
         titleTr.addView(kbdTitle);
         mainLayout.addView(titleTr);
@@ -144,24 +147,30 @@ public class KeySettingActivity extends Activity {
         langParams.span = col/2;
         langParams.width = (getResources().getDisplayMetrics().widthPixels);
         langParams.height = (getResources().getDisplayMetrics().heightPixels/10);   //어림잡아 정한 크기
-        langParams.setMargins(16,0,16,0);
+        langParams.setMargins(20,0,0,0);
 
         TextView kbdLang = new TextView(this);
         kbdLang.setLayoutParams(langParams);
-        kbdLang.setText("기본 언어 : ");    //"기본 언어 :" + 키보드언어변수
+        kbdLang.setText("기본 언어 :");    //"기본 언어 :" + 키보드언어변수
         kbdLang.setTextSize(24);
         langTr.addView(kbdLang);
 
-        kbdLangEdit = new EditText(this);
-        kbdLangEdit.setLayoutParams(langParams);
-        kbdLangEdit.setText("" + tempKbdModel.kbdLang);
-        kbdLangEdit.setTextSize(24);
-        kbdLangEdit.setLines(1);
-        kbdLangEdit.setSingleLine();
-        langTr.addView(kbdLangEdit);
+
+        spinnerLang = new Spinner(this);
+        ArrayAdapter<String> spinnerAdapterLang = new ArrayAdapter<String>(this,  android.R.layout.simple_list_item_activated_1, listLang);
+        spinnerLang.setAdapter(spinnerAdapterLang);
+        TableRow.LayoutParams spinnerParams = new TableRow.LayoutParams();
+        if(col%2==0)
+            spinnerParams.span = col/2;
+        else
+            spinnerParams.span = col/2 +1;
+        spinnerParams.width = (getResources().getDisplayMetrics().widthPixels);
+        spinnerParams.height = (getResources().getDisplayMetrics().heightPixels/10);   //어림잡아 정한 크기
+        spinnerParams.setMargins(0,0,20,0);
+        spinnerLang.setLayoutParams(spinnerParams);
+        langTr.addView(spinnerLang);
         mainLayout.addView(langTr);
-        //여기서부터 키보드 레이아웃...
-        //btr = new Button[row][col];
+
         kbdKeyLayout = new TableLayout[row][col];
         kbdText = new TextView[row*3][col*3];
 
@@ -205,7 +214,7 @@ public class KeySettingActivity extends Activity {
         Button sizeBtr = new Button(this);
         TableRow.LayoutParams sizeBtrParams = new TableRow.LayoutParams();
         sizeBtrParams.span = col;
-        sizeBtrParams.setMargins(20,20,20,0);
+        sizeBtrParams.setMargins(20,10,20,0);
         sizeBtr.setLayoutParams(sizeBtrParams);
         sizeBtr.setText("크기 변경");
         sizeBtr.setOnClickListener(new View.OnClickListener() {
@@ -219,6 +228,34 @@ public class KeySettingActivity extends Activity {
         });
         sizeTr.addView(sizeBtr);
         mainLayout.addView(sizeTr);
+
+        TableRow exportTr = new TableRow(this);
+        Button exportBtr = new Button(this);
+        exportBtr.setLayoutParams(sizeBtrParams);
+        exportBtr.setText("Export");
+        exportBtr.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try {
+                    FileOutputStream fos = new FileOutputStream(new File(Environment.
+                            getExternalStorageDirectory() + "/" + tempKbdModel.kbdName));
+                    ObjectOutputStream oos = new ObjectOutputStream(fos);
+                    oos.writeObject(tempKbdModel);
+                    Log.i("TEST::","저장된 경로 :" + Environment.
+                            getExternalStorageDirectory());
+                    Toast.makeText(KeySettingActivity.this, "" + Environment.
+                            getExternalStorageDirectory() + " 에 저장되었습니다.", Toast.LENGTH_SHORT).show();
+                    oos.close();
+                } catch (FileNotFoundException e) {
+                    Log.i("TEST::","failed");
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        exportTr.addView(exportBtr);
+        mainLayout.addView(exportTr);
 
         TableRow applyTr = new TableRow(this);
         Button applyBtr = new Button(this);

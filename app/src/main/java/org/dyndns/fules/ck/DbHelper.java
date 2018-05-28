@@ -140,10 +140,3 @@ class DbHelper extends SQLiteOpenHelper {
 
     }
 }
-
-
-
-
-
-    }
-}

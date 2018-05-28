@@ -93,7 +93,7 @@ public class KbdModel implements Serializable {
          * 0:Action List 실행
          * 1:sValue 출력
          * 2:iValue에 해당하는 Keycode 입력
-         * 3:iValue에 해당하는 unicode char 입력
+         * 3:언어에 해당하는 입력기 입력(sValue)
          * 4:iValue에 해당하는 KbdModel호출 (-1:최근, -2:이전, -3:다음, -4:sValue의 파일 호출)
          */
         int actType;
