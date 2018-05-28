@@ -1,6 +1,8 @@
 package org.dyndns.fules.ck;
 
 
+import java.text.Normalizer;
+
 interface LanguageHandler {
 
     StringBuilder handle(String s, StringBuilder sb);
@@ -48,7 +50,7 @@ class KoreanHandler implements LanguageHandler {
     public void delete(StringBuilder sb){
     }
     public StringBuilder handle(String new_s, StringBuilder sb) {
-        String s = sb.toString();
+        String s = Normalizer.normalize(sb.toString(),Normalizer.Form.NFD);
         int ns=new_s.codePointAt(0);
 
         if(s.length()==0){

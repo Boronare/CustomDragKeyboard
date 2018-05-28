@@ -16,6 +16,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -208,6 +209,8 @@ public class CompassKeyboard extends InputMethodService implements OnKeyboardAct
 	public void handle(String arg){
 		if(sb==null) sb=new StringBuilder();
 		ckv.languageHandler.handle(arg,sb);
+		
+		sb.replace(0,sb.length(), Normalizer.normalize(sb.toString(), Normalizer.Form.NFC));
 		onText("");
 	}
 	// Process a command
