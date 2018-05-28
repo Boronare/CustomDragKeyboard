@@ -148,9 +148,8 @@ public class CompassKeyboard extends InputMethodService implements OnKeyboardAct
 			case KeyEvent.KEYCODE_DEL:
 			case Keyboard.KEYCODE_DELETE:
 				if(sb!=null){
-					if(ckv.languageHandler.deletable(sb)){
-						ckv.languageHandler.delete(sb);
-                }else sb.delete(sb.length()>0?sb.length()-1:0,sb.length());
+					sb.replace(0,sb.length(),Normalizer.normalize(sb.toString(), Normalizer.Form.NFD));
+					sb.delete(sb.length()-1,sb.length());
 				}
 				updateCandidates();
 				break;
@@ -365,7 +364,7 @@ public class CompassKeyboard extends InputMethodService implements OnKeyboardAct
 		return mCandidateView;
 	}
 	public void pickSuggestionManually(int index) {
-
+		db.updateRecordParameter(mCompletions.get(index));
 		if (mCompletionOn && mCompletions != null && index >= 0
 				&& index < mCompletions.size()) {
 			String ci = mCompletions.get(index);

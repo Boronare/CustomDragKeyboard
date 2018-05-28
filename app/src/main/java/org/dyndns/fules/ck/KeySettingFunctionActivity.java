@@ -27,7 +27,7 @@ public class KeySettingFunctionActivity extends Activity {
     Spinner spinnerKeycode;
     Button btr;
 
-    private final String[] listAct = {"1. 문자 입력", "2. Keycode 입력", "3. 입력기 입력"};
+    private final String[] listAct = {"1. 문자 입력", "2. Keycode 입력", "3. 입력기 입력", "4. 이전 키보드", "5. 다음 키보드"};
     private final String[] listKeycode = {"KEYCODE_DPAD_LEFT", "KEYCODE_DPAD_RIGHT", "KEYCODE_SHIFT_LEFT", "KEYCODE_SPACE", "KEYCODE_ENTER", "KEYCODE_DEL"}; //조사해서 중요한 몇 개 넣기
     private final int[] ArrKeycode = {21, 22, 59, 62, 66, 67};
 
@@ -91,7 +91,7 @@ public class KeySettingFunctionActivity extends Activity {
             //3번 editKey    spinnerKeycode  editKey
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if(position==0){    //actType 1
+                if(position==0 || position==2){    //actType 1
                     textShow.setVisibility(View.GONE);
                     editShow.setVisibility(View.VISIBLE);
                     spinnerKeycode.setVisibility(View.GONE);
@@ -103,11 +103,11 @@ public class KeySettingFunctionActivity extends Activity {
                     editKey.setVisibility(View.GONE);
                     spinnerKeycode.setVisibility(View.VISIBLE);
                 }
-                else if(position==2){
+                else if(position==3 || position==4){
                     textShow.setVisibility(View.GONE);
                     editShow.setVisibility(View.VISIBLE);
                     spinnerKeycode.setVisibility(View.GONE);
-                    editKey.setVisibility(View.VISIBLE);
+                    editKey.setVisibility(View.INVISIBLE);
                 }
 
             }
@@ -135,8 +135,13 @@ public class KeySettingFunctionActivity extends Activity {
                 }
                 else if(spinnerAct.getSelectedItemPosition()==1){
                     intent.putExtra("show", editShow.getText().toString());
-                    intent.putExtra("iValue", ArrKeycode[spinnerKeycode.getSelectedItemPosition()]);
                     intent.putExtra("sValue", "");  //초기화
+                    intent.putExtra("iValue", ArrKeycode[spinnerKeycode.getSelectedItemPosition()]);
+                }
+                else if(spinnerAct.getSelectedItemPosition()==3 || spinnerAct.getSelectedItemPosition()==4){
+                    intent.putExtra("show", editShow.getText().toString());
+                    intent.putExtra("sValue", "");
+                    intent.putExtra("iValue", 0);   //초기화
                 }
                 setResult(0, intent);
                 finish();

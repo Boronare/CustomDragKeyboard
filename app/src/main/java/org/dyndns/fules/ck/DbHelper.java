@@ -128,13 +128,15 @@ class DbHelper extends SQLiteOpenHelper {
         return ans;
     }
 
-    public void updateRecordParameter(String dic, String name) {
+    public void updateRecordParameter(String name) {
         String dic_table = null;
+
+        String dic = whatLanguage(name);
 
         if (dic == "EN") { dic_table = "EN_DICTIONARY_TABLE"; }
         else if (dic == "KO") { dic_table = "KO_DICTIONARY_TABLE"; }
         else if (dic == "JP") { dic_table = "JP_DICTIONARY_TABLE"; }
-        else if (dic == "CH") { dic_table = "CH_DICTIONARY_TABLE"; }
+        else if (dic == "ZH") { dic_table = "CH_DICTIONARY_TABLE"; }
 
         String sql = "UPDATE " + dic_table + " SET FREQUENCY = FREQUENCY + 1 WHERE NAME = " + name;
 

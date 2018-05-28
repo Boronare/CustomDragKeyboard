@@ -3,8 +3,11 @@ package org.dyndns.fules.ck;
 import android.inputmethodservice.Keyboard;
 import android.view.KeyEvent;
 
+import android.view.KeyEvent;
+
 import java.io.Serializable;
 
+import static android.view.KeyEvent.*;
 import static org.dyndns.fules.ck.KeySettingActivity.defaultShow;
 
 /**
@@ -18,7 +21,7 @@ public class KbdModel implements Serializable {
     final long serialVersionUID= 1L;
 
     String kbdName;
-    String kbdLang;
+    int kbdLang;    //  0: 영어   1: 한국어  2: 일본어  3: 중국어
     Row[] row;
 
     KbdModel(int rows,int cols){
@@ -34,7 +37,7 @@ public class KbdModel implements Serializable {
             row[i] = new Row(5);
         }
         this.kbdName = "기본 키보드";
-        this.kbdLang = "KO";
+        this.kbdLang = 0;
 
         for (int i = 0; i < 3; i++) {
             this.row[i] = new KbdModel.Row(5);
@@ -62,12 +65,12 @@ public class KbdModel implements Serializable {
                                 break;
                             case "⏎":curdir.show="⏎";
                             curdir.sValue="";
-                            curdir.iValue= KeyEvent.KEYCODE_ENTER;
+                            curdir.iValue= KEYCODE_ENTER;
                             curdir.actType=2;
                             break;
                             case "⌫":curdir.show="⌫";
                             curdir.sValue="";
-                            curdir.iValue=KeyEvent.KEYCODE_DEL;
+                            curdir.iValue= KEYCODE_DEL;
                             curdir.actType=2;
                             break;
                             default:
