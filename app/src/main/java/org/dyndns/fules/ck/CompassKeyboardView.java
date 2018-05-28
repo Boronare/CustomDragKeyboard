@@ -108,7 +108,7 @@ public class CompassKeyboardView extends FrameLayout {
 	float					fontSize;	// height of the key caption font in pixels
 	float					fontDispY;	// Y-displacement of key caption font (top to baseline)
 	boolean					isTypingPassword; // is the user typing a password
-	String lang = "none";
+	int lang = 0;
 
 	Vibrator				vibro;		// vibrator
 	Paint					textPaint;	// Paint for drawing key captions
