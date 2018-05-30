@@ -82,6 +82,8 @@ public class CompassKeyboard extends InputMethodService implements OnKeyboardAct
 		currentLayout = 0;			// enforce reloading layout
 		DbHelper.copyDataBase(this);
 		db=new DbHelper(this);
+		Log.i("ZAIC","Before ReadFile");
+		Log.i("ZAIC","After ReadFile");
 		updateLayout(Integer.parseInt(mPrefs.getString("layout", "0")));
 		ckv.setVibrateOnKey(getPrefInt("feedback_key", 0));
 		ckv.setVibrateOnModifier(getPrefInt("feedback_mod", 0));
@@ -145,14 +147,15 @@ public class CompassKeyboard extends InputMethodService implements OnKeyboardAct
 		switch(primaryCode) {
 			case KeyEvent.KEYCODE_DEL:
 			case Keyboard.KEYCODE_DELETE:
-				if(sb!=null){
+				if(sb!=null&&sb.length()>0){
 					sb.replace(0,sb.length(),Normalizer.normalize(sb.toString(), Normalizer.Form.NFD));
 					sb.delete(sb.length()-1,sb.length());
 					sb.replace(0,sb.length(),Normalizer.normalize(sb.toString(), Normalizer.Form.NFC));
 					updateCandidates();
-					getCurrentInputConnection().setComposingText(sb.toString(),sb.length());
+					getCurrentInputConnection().setComposingText(sb.toString(),1);
 					return;
 				}
+				updateCandidates();
 				break;
 			default:
 				sb = null;
@@ -201,7 +204,7 @@ public class CompassKeyboard extends InputMethodService implements OnKeyboardAct
 			sendModifiers(ic, KeyEvent.ACTION_DOWN);
 			if (sb == null) sb = new StringBuilder(text);
 			else sb.append(text);
-			ic.setComposingText(sb,sb.length());
+			ic.setComposingText(sb,1);
 		}
 		updateCandidates();
 		//sendKeyChar(text.charAt(0));
@@ -365,7 +368,7 @@ public class CompassKeyboard extends InputMethodService implements OnKeyboardAct
 		return mCandidateView;
 	}
 	public void pickSuggestionManually(int index) {
-		db.updateRecordParameter(mCompletions.get(index));
+		//db.updateRecordParameter(mCompletions.get(index));
 		if (mCompletionOn && mCompletions != null && index >= 0
 				&& index < mCompletions.size()) {
 			String ci = mCompletions.get(index);
@@ -393,7 +396,8 @@ public class CompassKeyboard extends InputMethodService implements OnKeyboardAct
 		}
 	}
 	private void updateCandidates() {
-		if(sb!=null&&sb.length()>0) {
+		return;//TODO:지워야 될 코드.
+		/*if(sb!=null&&sb.length()>0) {
 			ArrayList<String> suggList = db.search(sb.toString());
 			suggList.add(0, sb.toString());
 			mCompletions = suggList;
@@ -409,7 +413,7 @@ public class CompassKeyboard extends InputMethodService implements OnKeyboardAct
 			} else {
 				setSuggestions(null, false, false);
 			}
-		}
+		}*/
 	}
 	public void setSuggestions(List<String> suggestions, boolean completions,
 							   boolean typedWordValid) {
