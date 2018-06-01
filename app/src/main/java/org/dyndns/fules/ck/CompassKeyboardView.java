@@ -71,7 +71,7 @@ class Action {
 public class CompassKeyboardView extends FrameLayout {
 	// Constants
 	private static final String		TAG = "CompassKeyboard";
-	private static final long[][]		vibratePattern = { { 10, 10 }, { 10, 10, 10, 10 } };
+	private static final long[][]		vibratePattern = { { 10, 10 }, { 20, 20, 20, 20 } };
 	private static final int		LONG_TAP_TIMEOUT = 700;	// timeout in msec after which a tap is considered a long one
 	private static final int		LONG_TAP_REPEAT = 75;
 	public static final int			NONE	= -1;
@@ -103,6 +103,7 @@ public class CompassKeyboardView extends FrameLayout {
 	float					fontDispY;	// Y-displacement of key caption font (top to baseline)
 	boolean					isTypingPassword; // is the user typing a password
 	int lang = 0;
+	float xsen,ysen;
 
 	Vibrator				vibro;		// vibrator
 	Paint					textPaint;	// Paint for drawing key captions
@@ -199,29 +200,29 @@ public class CompassKeyboardView extends FrameLayout {
 			// figure out the direction of the swipe
 			int getDirection(float x, float y,int idx) {
 				int d;
-				float dx = (x - downX[idx]) * 3;
-				float dy = (y - downY[idx]) * 3;
+				float dx = (x - downX[idx]);
+				float dy = (y - downY[idx]);
 
-				if (dx < -xmax) {
-					if (dy < -ymax)
+				if (dx < -xsen) {
+					if (dy < -ysen)
 						d = NW;
-					else if (dy < ymax)
+					else if (dy < ysen)
 						d = W;
 					else
 						d = SW;
 				}
-				else if (dx < xmax) {
-					if (dy < -ymax)
+				else if (dx < xsen) {
+					if (dy < -ysen)
 						d = N;
-					else if (dy < ymax)
+					else if (dy < ysen)
 						d = TAP;
 					else
 						d = S;
 				}
 				else {
-					if (dy < -ymax)
+					if (dy < -ysen)
 						d = NE;
-					else if (dy < ymax)
+					else if (dy < ysen)
 						d = E;
 					else
 						d = SE;
@@ -520,7 +521,7 @@ public class CompassKeyboardView extends FrameLayout {
 		//   nKeys*keySize/12 + nColumns*keySize*(2/9 + 1/12) = keySize * (nKeys/12 + nColumns*11/36)
 		totalWidth = Math.round(keyMM * metrics.xdpi / 25.4f * ((nKeys / 12.f) + (nColumns * 11 / 36.f)));
 		// Regardless of keyMM, it must fit the metrics, that is width - margins - 1 pixel between keys
-		i = metrics.widthPixels - marginPixelsLeft - marginPixelsRight - (nKeys - 1);
+		i = metrics.widthPixels - marginPixelsLeft - marginPixelsRight;
 		if (i < totalWidth)
 			totalWidth = i;
 
@@ -648,6 +649,8 @@ public class CompassKeyboardView extends FrameLayout {
 	public void setFeedbackPassword(int n) {
 		feedbackPassword = n;
 	}
+
+	public void setSensitivity(float x,float y){int dpi=getResources().getDisplayMetrics().densityDpi;xsen=x*dpi/25.4f; ysen=y*dpi/25.4f;}
 
 	public void setLeftMargin(float f) {
 		marginLeft = f;
