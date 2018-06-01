@@ -35,8 +35,8 @@
             android:label="@string/settings" />
         <activity
             android:name=".MainActivity"
-            android:label="MainActivityHello"
-            android:theme="@android:style/Theme.NoTitleBar">
+            android:label="CustomDragKeyboard"
+            android:theme="@android:style/Theme.DeviceDefault.Panel">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

@@ -66,7 +66,7 @@
     <string name="version_summary">Final Presentation</string>
 
     <string name="copyright">Copyright</string>
-    <string name="copyright_summary">2011-2014 Gabor Simon. All rights reserved, New BSD License applies.\n2018 Modified by Chung-Ang University CSE Team135</string>
+    <string name="copyright_summary">Based on CompassKeyboard by Gabor Simon.\n2018 Modified by Chung-Ang University CSE Team135</string>
     <string name="source">Source</string>
     <string name="source_summary">https://github.com/Boronare/CustomDragKeyboard</string>
 
@@ -80,4 +80,7 @@
     <string name="sensitivity_summary">Set drag sensitivity</string>
     <string name="sensitivity_summary_">The smaller values, the more sensitive.</string>
     <string name="sensitivity_y">Sensitivity:Y axis</string>
+
+    <string name="activate_keyboard">Activate keyboard</string>
+    <string name="set_current_keyboard">Set currently using keyboard</string>
 </resources>

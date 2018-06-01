@@ -210,7 +210,7 @@ public class CompassKeyboard extends InputMethodService implements OnKeyboardAct
 	// Process the generated text
 	public void onText(CharSequence text) {
 		InputConnection ic = getCurrentInputConnection();
-		if(text.length()>0&&text.charAt(0)==' '){
+		if(text.length()>0&&(text.charAt(0)<'0'||text.length()>1)){
 			ic.finishComposingText();
 			sb=null;
 			ic.commitText(text,text.length());
