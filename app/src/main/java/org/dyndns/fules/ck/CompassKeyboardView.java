@@ -48,12 +48,6 @@ class Action {
 	String		code, text, cmd, handlerStr;
 	boolean		isLock, isEmpty, isSpecial;
 
-	public Action() {
-		isLock = isSpecial = false;
-		keyCode = layout = -1;
-		isEmpty = true;
-	}
-
 	public Action(KbdModel.Dir dir) throws IOException {
 		isLock = isEmpty = false;
 		keyCode = layout = -1;
@@ -90,9 +84,6 @@ public class CompassKeyboardView extends FrameLayout {
 	public static final int			SW	= 6;
 	public static final int			S	= 7;
 	public static final int			SE	= 8;
-
-	public static final int			FEEDBACK_HIGHLIGHT	= 1;
-	public static final int			FEEDBACK_TOAST		= 2;
 
 	// Parameters
 	int					vibrateOnKey = 0;
@@ -333,6 +324,12 @@ public class CompassKeyboardView extends FrameLayout {
 				addView(nk,lp);
 				columns+=3;
 			}
+			if(getResources().getDisplayMetrics().widthPixels>getResources().getDisplayMetrics().heightPixels)
+				for(int i=0;i<row.col.length;i++) {
+					Key nk = new Key(getContext(), row.col[i]);
+					addView(nk,lp);
+					columns+=3;
+				}
 
 		}
 
@@ -523,7 +520,7 @@ public class CompassKeyboardView extends FrameLayout {
 		//   nKeys*keySize/12 + nColumns*keySize*(2/9 + 1/12) = keySize * (nKeys/12 + nColumns*11/36)
 		totalWidth = Math.round(keyMM * metrics.xdpi / 25.4f * ((nKeys / 12.f) + (nColumns * 11 / 36.f)));
 		// Regardless of keyMM, it must fit the metrics, that is width - margins - 1 pixel between keys
-		i = (metrics.widthPixels<metrics.heightPixels?metrics.widthPixels:metrics.heightPixels) - marginPixelsLeft - marginPixelsRight - (nKeys - 1);
+		i = metrics.widthPixels - marginPixelsLeft - marginPixelsRight - (nKeys - 1);
 		if (i < totalWidth)
 			totalWidth = i;
 
