@@ -33,6 +33,7 @@ public class CompassKeyboard extends InputMethodService implements OnKeyboardAct
 	private SharedPreferences	mPrefs;					// the preferences instance
 	CompassKeyboardView		ckv;					// the current layout view, either @ckv or @ckvVertical
 	int				currentLayout;
+	int layoutCount=1;
 	StringBuilder		sb;
 	boolean				lastInPortrait;
 	DisplayMetrics			lastMetrics = new DisplayMetrics();
@@ -46,6 +47,17 @@ public class CompassKeyboard extends InputMethodService implements OnKeyboardAct
 	public String updateLayout(int index){
 		String result = "same";
 		String err = null;
+		if(index==-2){
+			index=currentLayout-1;
+			if(index<0)
+				index=layoutCount-1;
+		}else if(index==-3){
+			index=currentLayout+1;
+			if(index>=layoutCount)
+				index=0;
+		}
+		Log.i("ZAIC","currentLayout="+currentLayout+"/layoutCount="+layoutCount);
+		currentLayout=index;
 		try {
 			try {
 				FileInputStream fis;
@@ -53,7 +65,8 @@ public class CompassKeyboard extends InputMethodService implements OnKeyboardAct
 				ObjectInputStream ois = new ObjectInputStream(fis);
 				KbdModelSelector kbdSelector = (KbdModelSelector) ois.readObject();
 				fis.close();
-				ckv.readLayout(kbdSelector.kbdSerialList.get(0));
+				layoutCount=kbdSelector.kbdSerialList.size();
+				ckv.readLayout(kbdSelector.kbdSerialList.get(currentLayout));
 				ois.close();
 			} catch (FileNotFoundException e) {
 				ckv.readLayout(KeySettingActivity.init(3, 5));
@@ -124,13 +137,13 @@ public class CompassKeyboard extends InputMethodService implements OnKeyboardAct
 		mCandidateView.clear();
 		sb=null;
 		super.onStartInputView(attribute, restarting);
-		updateLayout(0);
 		if (ckv != null) {
 			ckv.setInputType(attribute.inputType);
 		}
 	}
 	@Override public void onStartInput(EditorInfo attribute, boolean restarting) {
-		super.onStartInput(attribute, restarting); 
+		super.onStartInput(attribute, restarting);
+		updateLayout(0);
 		if (ckv != null) {
 			ckv.setInputType(attribute.inputType);
 		}

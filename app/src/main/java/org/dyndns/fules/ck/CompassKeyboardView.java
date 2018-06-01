@@ -65,6 +65,8 @@ class Action {
 			case 1:code=dir.sValue;break;
 			case 2:keyCode=dir.iValue;break;
 			case 3:handlerStr=dir.sValue;break;
+			case 4:layout=-2;
+			case 5:layout=-3;
 		}
 	}
 }
@@ -102,6 +104,7 @@ public class CompassKeyboardView extends FrameLayout {
 	float					marginLeft = 0, marginRight = 0, marginBottom = 0; // margins in mm-s
 
 	// Internal params
+	int nRows;
 	int					nColumns;	// maximal number of symbol columns (eg. 3 for full key, 2 for side key), used for size calculations
 	int					nKeys;		// maximal number of keys per row, used for calculating with the gaps between keys
 	int					sym, gap;	// size of symbols on keys and gap between them (in pixels)
@@ -197,6 +200,7 @@ public class CompassKeyboardView extends FrameLayout {
 			}
 
 			void setCandidate(int d) {
+				if(d!=4) removeCallbacks(onLongTap);
 				candidateDir = d;
 				invalidate();
 			}
@@ -403,7 +407,9 @@ public class CompassKeyboardView extends FrameLayout {
 		}
 
 		@Override protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-			setMeasuredDimension(kbd.getWidth(), kbd.getHeight());
+			Log.i("ZaiC","kbd.width="+kbd.getWidth()+"/height="+kbd.getHeight());
+			//setMeasuredDimension(kbd.getWidth(), kbd.getHeight());
+			setMeasuredDimension(kbd.getWidth(), 10);
 		}
 
 		void setDir(int d) {
@@ -472,6 +478,7 @@ public class CompassKeyboardView extends FrameLayout {
 	// Read the layout from an XML parser
 	public void readLayout(KbdModel kbdModel) throws IOException {
 		lang=kbdModel.kbdLang;
+		nRows = kbdModel.row.length;
 		// drop and re-read all previously existing rows
 		kbd.removeAllViews();
 		nColumns = nKeys = 0;
@@ -516,7 +523,7 @@ public class CompassKeyboardView extends FrameLayout {
 		//   nKeys*keySize/12 + nColumns*keySize*(2/9 + 1/12) = keySize * (nKeys/12 + nColumns*11/36)
 		totalWidth = Math.round(keyMM * metrics.xdpi / 25.4f * ((nKeys / 12.f) + (nColumns * 11 / 36.f)));
 		// Regardless of keyMM, it must fit the metrics, that is width - margins - 1 pixel between keys
-		i = metrics.widthPixels - marginPixelsLeft - marginPixelsRight - (nKeys - 1);
+		i = (metrics.widthPixels<metrics.heightPixels?metrics.widthPixels:metrics.heightPixels) - marginPixelsLeft - marginPixelsRight - (nKeys - 1);
 		if (i < totalWidth)
 			totalWidth = i;
 
@@ -533,7 +540,6 @@ public class CompassKeyboardView extends FrameLayout {
 		// it from totalWidth and rounding it only downwards:
 		//   gap*(nKeys+nColumns) + sym*nColumns = totalWidth
 		sym = (totalWidth - gap*(nKeys+nColumns)) / nColumns;
-
 		// Sample data: nKeys=5, columns=13; Galaxy Mini: 240x320, Ace: 320x480, S: 480x80, S3: 720x1280 
 
 		// construct the Paint used for printing the labels
@@ -567,6 +573,7 @@ public class CompassKeyboardView extends FrameLayout {
 			case MotionEvent.ACTION_DOWN:
 			case MotionEvent.ACTION_POINTER_DOWN:
 				postDelayed(onLongTap, LONG_TAP_TIMEOUT);
+				if(idx>0) removeCallbacks(onLongTap);
 				// remember the swipe starting coordinates for checking for global swipes
 				downX[idx] = event.getX();
 				downY[idx] = event.getY();
@@ -582,11 +589,6 @@ public class CompassKeyboardView extends FrameLayout {
 				removeCallbacks(onLongTap);
 				// touch event processed
 				return true;
-
-			case MotionEvent.ACTION_MOVE:
-				// cancel any pending checks for long tap
-				removeCallbacks(onLongTap);
-				return false;
 		}
 		// we're not interested in other kinds of events
 		return false;
@@ -617,6 +619,10 @@ public class CompassKeyboardView extends FrameLayout {
 				CompassKeyboard ck = (CompassKeyboard)actionListener;
 				if (cd.layout >= 0)
 					ck.updateLayout(cd.layout); // process a 'layout'
+				else if(cd.layout==-2)
+					ck.updateLayout(-2);
+				else if(cd.layout==-3)
+					ck.updateLayout(-3);
 				else if ((cd.cmd != null) && (cd.cmd.length() > 0))
 					ck.execCmd(cd.cmd); // process a 'cmd'
 			}
