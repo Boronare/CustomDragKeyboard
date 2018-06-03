@@ -1,113 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen
        	xmlns:android="http://schemas.android.com/apk/res/android"
-	xmlns:fules="http://schemas.android.com/apk/res/org.dyndns.fules.ck"
 	android:title="@string/settings"
         android:key="settings">
-
-	<PreferenceScreen
-		android:key="pg_feedback"
-		android:title="@string/pg_feedback"
-		android:summary="@string/pg_feedback_summary"
-		android:orderingFromXml="true">
-		<ListPreference
-			android:key="feedback_key"
-			android:title="@string/feedback_key"
-			android:summary="@string/feedback_key_summary"
-			android:entries="@array/key_feedback_names"
-			android:entryValues="@array/key_feedback_values"
-			android:defaultValue="-1"/>
-		<ListPreference
-			android:key="feedback_mod"
-			android:title="@string/feedback_mod"
-			android:summary="@string/feedback_mod_summary"
-			android:entries="@array/key_feedback_names"
-			android:entryValues="@array/key_feedback_values"
-			android:defaultValue="1"/>
-		<ListPreference
-			android:key="feedback_cancel"
-			android:title="@string/feedback_cancel"
-			android:summary="@string/feedback_cancel_summary"
-			android:entries="@array/key_feedback_names"
-			android:entryValues="@array/key_feedback_values"
-			android:defaultValue="2"/>
-		<ListPreference
-			android:key="feedback_text"
-			android:title="@string/feedback_text"
-			android:summary="@string/feedback_text_summary"
-			android:entries="@array/text_feedback_names"
-			android:entryValues="@array/text_feedback_values"
-			android:defaultValue="2"/>
-		<ListPreference
-			android:key="feedback_password"
-			android:title="@string/feedback_password"
-			android:summary="@string/feedback_password_summary"
-			android:entries="@array/text_feedback_names"
-			android:entryValues="@array/text_feedback_values"
-			android:defaultValue="1"/>
-	</PreferenceScreen>
-
 	<ListPreference
-		android:key="layout"
-		android:title="@string/current_layout"
-		android:summary="@string/current_layout_summary"
-		android:entries="@array/layout_names"
-		android:entryValues="@array/layout_values"
-		android:defaultValue="0"/>
-
-	<PreferenceScreen
-		android:key="pg_layouts"
-		android:title="@string/layout"
-		android:summary="@string/layout_summary">
-		<CheckBoxPreference
-			android:key="portrait_only"
-			android:title="@string/portrait_only"
-			android:summary="@string/portrait_only_summary"/>
-		<CheckBoxPreference
-			android:key="disable_layout_keys"
-			android:title="@string/disable_layout_keys"
-			android:summary="@string/disable_layout_keys_summary"/>
-        
-		<Preference
-			android:key="layout_4"
-			android:title="Layout 4"
-			android:summary="custom layout 4"
-			android:defaultValue="">
-            <intent android:action="org.dyndns.fules.ck.filepicker.action.PICK" android:targetClass="org.dyndns.fules.ck.FilePicker">
-                <extra android:name="org.dyndns.fules.ck.filepicker.extra.path" android:value="/mnt/sdcard"/>
-                <extra android:name="org.dyndns.fules.ck.filepicker.extra.regex" android:value="\.xml$"/>
-                <extra android:name="org.dyndns.fules.ck.filepicker.extra.preference" android:value="CompassKeyboardSettings"/>
-                <extra android:name="org.dyndns.fules.ck.filepicker.extra.preference.key" android:value="layout_path_4"/>
-            </intent>
-        </Preference>
-        
-		<Preference
-			android:key="layout_5"
-			android:title="Layout 5"
-			android:summary="custom layout 5"
-			android:defaultValue="">
-            <intent android:action="org.dyndns.fules.ck.filepicker.action.PICK" android:targetClass="org.dyndns.fules.ck.FilePicker">
-                <extra android:name="org.dyndns.fules.ck.filepicker.extra.path" android:value="/mnt/sdcard"/>
-                <extra android:name="org.dyndns.fules.ck.filepicker.extra.regex" android:value="\.xml$"/>
-                <extra android:name="org.dyndns.fules.ck.filepicker.extra.preference" android:value="CompassKeyboardSettings"/>
-                <extra android:name="org.dyndns.fules.ck.filepicker.extra.preference.key" android:value="layout_path_5"/>
-            </intent>
-        </Preference>
-        
-		<Preference
-			android:key="layout_6"
-			android:title="Layout 6"
-			android:summary="custom layout 6"
-			android:defaultValue="">
-            <intent android:action="org.dyndns.fules.ck.filepicker.action.PICK" android:targetClass="org.dyndns.fules.ck.FilePicker">
-                <extra android:name="org.dyndns.fules.ck.filepicker.extra.path" android:value="/mnt/sdcard"/>
-                <extra android:name="org.dyndns.fules.ck.filepicker.extra.regex" android:value="\.xml$"/>
-                <extra android:name="org.dyndns.fules.ck.filepicker.extra.preference" android:value="CompassKeyboardSettings"/>
-                <extra android:name="org.dyndns.fules.ck.filepicker.extra.preference.key" android:value="layout_path_6"/>
-            </intent>
-        </Preference>
-	</PreferenceScreen>
-
+		android:key="feedback_key"
+		android:title="@string/feedback_key"
+		android:summary="@string/feedback_key_summary"
+		android:entries="@array/key_feedback_names"
+		android:entryValues="@array/key_feedback_values"
+		android:defaultValue="-1"/>
+	<ListPreference
+	android:key="use_candidate"
+	android:title="@string/use_candidate"
+	android:summary="@string/use_candidate_summary"
+	android:entries="@array/yesno"
+	android:entryValues="@array/zeroone"
+	android:defaultValue="1"/>
+	<Preference
+		android:key="key_setting"
+		android:title="@string/key_setting"
+		android:summary="@string/key_setting_summary">
+		<intent
+			android:action="android.intent.action.MAIN"
+			android:targetPackage="org.dyndns.fules.ck"
+			android:targetClass="org.dyndns.fules.ck.KeySettingSelectActivity">
+		</intent>
+	</Preference>
+	<Preference
+		android:key="layout_import"
+		android:title="@string/layout_import"
+		android:summary="@string/layout_import_summary">
+		<intent
+			android:action="android.intent.action.MAIN"
+			android:targetPackage="org.dyndns.fules.ck"
+			android:targetClass="org.dyndns.fules.ck.LayoutImportActivity">
+		</intent>
+	</Preference>
+	<EditTextPreference
+		android:key="sensitivity_x"
+		android:title="@string/sensitivity_x"
+		android:summary="@string/sensitivity_summary"
+		android:defaultValue="2.0"/>
+	<EditTextPreference
+	android:key="sensitivity_y"
+	android:title="@string/sensitivity_y"
+	android:summary="@string/sensitivity_summary_"
+	android:defaultValue="2.0"/>
 	<PreferenceScreen
 		android:key="p_sizes"
 		android:title="@string/p_sizes"
@@ -128,11 +67,6 @@
 			android:title="@string/margin_bottom"
 			android:summary="@string/margin_bottom_summary"
 			android:defaultValue="0"/>
-		<EditTextPreference
-			android:key="portrait_max_keysize"
-			android:title="@string/max_keysize"
-			android:summary="@string/max_keysize_summary"
-			android:defaultValue="12"/>
 	</PreferenceScreen>
 
 	<PreferenceScreen
@@ -155,11 +89,6 @@
 			android:title="@string/margin_bottom"
 			android:summary="@string/margin_bottom_summary"
 			android:defaultValue="0"/>
-		<EditTextPreference
-			android:key="landscape_max_keysize"
-			android:title="@string/max_keysize"
-			android:summary="@string/max_keysize_summary"
-			android:defaultValue="12"/>
 	</PreferenceScreen>
 
 	<PreferenceScreen
@@ -183,25 +112,6 @@
 			android:summary="@string/copyright_summary"
 			android:selectable="false"/>
 	</PreferenceScreen>
-	<Preference
-		android:key="key_setting"
-		android:title="@string/key_setting"
-		android:summary="@string/key_setting_summary">
-		<intent
-			android:action="android.intent.action.MAIN"
-			android:targetPackage="org.dyndns.fules.ck"
-			android:targetClass="org.dyndns.fules.ck.KeySettingSelectActivity">
-		</intent>
-	</Preference>
-	<Preference
-		android:key="layout_import"
-		android:title="@string/layout_import"
-		android:summary="@string/layout_import_summary">
-		<intent
-			android:action="android.intent.action.MAIN"
-			android:targetPackage="org.dyndns.fules.ck"
-			android:targetClass="org.dyndns.fules.ck.LayoutImportActivity">
-		</intent>
-	</Preference>
+
 
 </PreferenceScreen>

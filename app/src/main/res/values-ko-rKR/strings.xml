@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="ime_name">Custom Drag Keyboard</string>
+
+    <string name="settings">설정</string>
+
+    <string name="pg_feedback">반응</string>
+    <string name="pg_feedback_summary">시각효과와 진동을 조절합니다.</string>
+
+    <string name="feedback_key">키 입력 반응</string>
+    <string name="feedback_key_summary">입력 시 진동</string>
+
+    <string name="p_sizes">세로 모드 여백</string>
+    <string name="l_sizes">가로 모드 여백</string>
+    <string name="sizes_summary">키보드에 좌우,하단 여백을 설정하여 모서리 입력을 편하게 합니다.</string>
+
+    <string name="margin_left">왼쪽</string>
+    <string name="margin_left_summary">mm단위의 왼쪽 여백을 설정합니다.</string>
+
+    <string name="margin_right">오른쪽</string>
+    <string name="margin_right_summary">mm단위의 오른쪽 여백을 설정합니다.</string>
+
+    <string name="margin_bottom">하단</string>
+    <string name="margin_bottom_summary">mm단위의 하단 여백을 설정합니다.</string>
+
+    <string-array name="key_feedback_names">
+        <item>"없음"</item>
+        <item>"한 번 진동"</item>
+        <item>"두 번 진동"</item>
+    </string-array>
+
+    <string-array name="key_feedback_values">
+        <item>"-1"</item>
+        <item>"0"</item>
+        <item>"1"</item>
+    </string-array>
+    <string-array name="yesno">
+    <item>"예"</item>
+    <item>"아니오"</item>
+</string-array>
+
+    <string name="pg_about_summary">제작자 정보</string>
+
+    <string name="copyright_summary">Based on CompassKeyboard by Gabor Simon.\n2018 중앙대학교 SW공학부 팀135 Modified.</string>
+
+    <string name="key_setting">키보드 자판 설정</string>
+    <string name="key_setting_summary">원하는 글자를 키보드 자판에 상세 설정할 수 있습니다.</string>
+
+    <string name="layout_import">키보드 불러오기</string>
+    <string name="layout_import_summary">외부 키보드 레이아웃을 불러와 적용할 수 있습니다.</string>
+
+    <string name="sensitivity_x">X축 감도</string>
+    <string name="sensitivity_summary">드래그 할 때의 감도를 설정합니다.</string>
+    <string name="sensitivity_summary_">숫자가 작을수록 예민해집니다.</string>
+
+    <string name="sensitivity_y">Y축 감도</string>
+
+    <string name="activate_keyboard">키보드 활성화하기</string>
+    <string name="set_current_keyboard">사용중인 키보드로 설정하기</string>
+
+    <string name="swap">순서 변경</string>
+    <string name="add">추가</string>
+    <string name="inform_select">길게 눌러 삭제할 수 있습니다.</string>
+    <string name="save">저장</string>
+    <string name="inform_swap">길게 누르고 움직여 순서를 변경할 수 있습니다.</string>
+    <string name="confirm_delete">삭제하시겠습니까?</string>
+    <string name="use_candidate">단어 추천 사용</string>
+    <string name="use_candidate_summary">끄면 성능 향상이 있습니다.</string>
+</resources>

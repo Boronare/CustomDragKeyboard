@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="ime_name">Compass Keyboard</string>
+    <string name="ime_name">Custom Drag Keyboard</string>
 
     <string name="settings">Settings</string>
 
@@ -35,78 +35,59 @@
     <string name="margin_bottom">Bottom</string>
     <string name="margin_bottom_summary">Bottom margin in mm-s</string>
 
-    <string name="max_keysize">Key size</string>
-    <string name="max_keysize_summary">Maximal key size in mm-s</string>
-
-    <string name="layout">Layouts</string>
-    <string name="layout_summary">Layouts for various alphabets</string>
-
-    <string name="current_layout">Current layout</string>
-    <string name="current_layout_summary">Choose the active layout</string>
-
-    <string-array name="layout_names">
-        <item>"Latin"</item>
-        <item>"Кириллица"</item>
-        <item>"Ελληνικό"</item>
-        <!-- custom layout names will be added/removed programmatically -->
-    </string-array>
-
-    <string-array name="layout_values">
-        <item>"@latin"</item>
-        <item>"@cyrillic"</item>
-        <item>"@greek"</item>
-        <!-- custom layout filenames will be added/removed programmatically -->
-    </string-array>
-
-    <string name="custom_layout_positive">OK</string>
-    <string name="custom_layout_negative">Cancel</string>
-
-    <string name="portrait_only">Portrait layout only</string>
-    <string name="portrait_only_summary">Use the portrait layout even in landscape mode</string>
-
-    <string name="disable_layout_keys">Disable layout keys</string>
-    <string name="disable_layout_keys_summary">Disable the layout switching keys</string>
-
     <string-array name="key_feedback_names">
         <item>"None"</item>
-        <item>"Tick"</item>
         <item>"Vibrate once"</item>
         <item>"Vibrate twice"</item>
     </string-array>
 
     <string-array name="key_feedback_values">
-        <item>"-2"</item>
         <item>"-1"</item>
         <item>"0"</item>
         <item>"1"</item>
     </string-array>
 
-    <string-array name="text_feedback_names">
-        <item>"None"</item>
-        <item>"Highlight"</item>
-        <item>"Toast"</item>
+    <string-array name="yesno">
+        <item>"Yes"</item>
+        <item>"No"</item>
     </string-array>
 
-    <string-array name="text_feedback_values">
-        <item>"0"</item>
+    <string-array name="zeroone">
         <item>"1"</item>
-        <item>"2"</item>
+        <item>"0"</item>
     </string-array>
 
     <string name="pg_about">About</string>
     <string name="pg_about_summary">Miscellaneous information</string>
 
     <string name="version">Version</string>
-    <string name="version_summary">v1.6pre2</string>
+    <string name="version_summary">Final Presentation</string>
 
     <string name="copyright">Copyright</string>
-    <string name="copyright_summary">2011-2014 Gabor Simon. All rights reserved, New BSD License applies.</string>
+    <string name="copyright_summary">Based on CompassKeyboard by Gabor Simon.\n2018 Modified by Chung-Ang University CSE Team135</string>
     <string name="source">Source</string>
-    <string name="source_summary">$HeadURL$</string>
+    <string name="source_summary">https://github.com/Boronare/CustomDragKeyboard</string>
 
-    <string name="key_setting">키보드 자판 설정</string>
-    <string name="key_setting_summary">원하는 글자를 키보드 자판에 상세 설정할 수 있습니다.</string>
+    <string name="key_setting">Keyboard Layout Setting</string>
+    <string name="key_setting_summary">Can set key layout as you want</string>
 
-    <string name="layout_import">키보드 불러오기</string>
-    <string name="layout_import_summary">외부 키보드 레이아웃을 불러와 적용할 수 있습니다.</string>
+    <string name="layout_import">Load Keyboard Layout</string>
+    <string name="layout_import_summary">Load pre-made layout from external file</string>
+
+    <string name="sensitivity_x">Sensitivity:X axis</string>
+    <string name="sensitivity_summary">Set drag sensitivity</string>
+    <string name="sensitivity_summary_">The smaller values, the more sensitive.</string>
+    <string name="sensitivity_y">Sensitivity:Y axis</string>
+
+    <string name="activate_keyboard">Activate keyboard</string>
+    <string name="set_current_keyboard">Set currently using keyboard</string>
+
+    <string name="swap">Replace order</string>
+    <string name="add">Add new layout</string>
+    <string name="inform_select">Long tap to remove layout</string>
+    <string name="save">Save</string>
+    <string name="inform_swap">Long tap and drag to change order</string>
+    <string name="confirm_delete">Delete this layout?</string>
+    <string name="use_candidate">Use word suggestion</string>
+    <string name="use_candidate_summary">Disable it if you have performance issue</string>
 </resources>

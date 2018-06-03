@@ -306,7 +306,7 @@ public class KeySettingActivity extends Activity {
             initCols = cols;
 
         userKbdModel = new KbdModel(initRows, initCols);
-        userKbdModel.kbdName = "기본 키보드";
+        userKbdModel.kbdName = "Default Keyboard";
         userKbdModel.kbdLang = 0;
 
         for (int i = 0; i < initRows; i++) {
@@ -321,11 +321,6 @@ public class KeySettingActivity extends Activity {
                         curdir.sValue = "";
                         curdir.iValue = 0;
                         curdir.actType = 1;
-                    }else if(defaultShow[i][j][k].length()>0&&defaultShow[i][j][k].codePointAt(0)>='ㄱ'&&defaultShow[i][j][k].codePointAt(0)<='ㅣ') {
-                        curdir.show = defaultShow[i][j][k];
-                        curdir.sValue = defaultShow[i][j][k];
-                        curdir.iValue = 0;
-                        curdir.actType = 3;
                     }
                     else{
                         switch(defaultShow[i][j][k]){
