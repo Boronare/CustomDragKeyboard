@@ -204,7 +204,7 @@ public class CompassKeyboardView extends FrameLayout {
 				float dy = (y - downY[idx]);
 
 				if (dx < -xsen) {
-					if (dy < -ysen)
+					if (dy < -ysen||y==0f)
 						d = NW;
 					else if (dy < ysen)
 						d = W;
@@ -212,7 +212,7 @@ public class CompassKeyboardView extends FrameLayout {
 						d = SW;
 				}
 				else if (dx < xsen) {
-					if (dy < -ysen)
+					if (dy < -ysen||y==0f)
 						d = N;
 					else if (dy < ysen)
 						d = TAP;
@@ -220,7 +220,7 @@ public class CompassKeyboardView extends FrameLayout {
 						d = S;
 				}
 				else {
-					if (dy < -ysen)
+					if (dy < -ysen||y==0f)
 						d = NE;
 					else if (dy < ysen)
 						d = E;
