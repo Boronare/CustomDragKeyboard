@@ -471,7 +471,7 @@ public class CompassKeyboardView extends FrameLayout {
 
 	// Read the layout from an XML parser
 	public void readLayout(KbdModel kbdModel) throws IOException {
-		lang=kbdModel.kbdLang;
+		//lang=kbdModel.kbdLang;
 		// drop and re-read all previously existing rows
 		kbd.removeAllViews();
 		nColumns = nKeys = 0;

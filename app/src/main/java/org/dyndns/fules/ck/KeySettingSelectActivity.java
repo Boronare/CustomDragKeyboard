@@ -219,7 +219,7 @@ public class KeySettingSelectActivity extends Activity {
         });
 
         btr2 = findViewById(R.id.btr2);
-        btr2.setText("수정");
+        btr2.setText("순서 변경");
         btr2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

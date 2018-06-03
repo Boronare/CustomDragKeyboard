@@ -364,7 +364,7 @@ public class CompassKeyboard extends InputMethodService implements OnKeyboardAct
 		return mCandidateView;
 	}
 	public void pickSuggestionManually(int index) {
-		db.updateRecordParameter(mCompletions.get(index));
+		//db.updateRecordParameter(mCompletions.get(index));
 		if (mCompletionOn && mCompletions != null && index >= 0
 				&& index < mCompletions.size()) {
 			String ci = mCompletions.get(index);
