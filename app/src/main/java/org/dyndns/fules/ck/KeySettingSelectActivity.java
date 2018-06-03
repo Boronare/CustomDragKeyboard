@@ -131,7 +131,7 @@ public class KeySettingSelectActivity extends Activity {
             final int pos = position;
             Log.i("TEST::","Long event 됬음. get() is " + mItems.get(position));
             AlertDialog.Builder alert = new AlertDialog.Builder(KeySettingSelectActivity.this);
-            alert.setMessage("삭제하시겠습니까?");
+            alert.setMessage(R.string.confirm_delete);
             alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
@@ -195,7 +195,6 @@ public class KeySettingSelectActivity extends Activity {
         mRecyclerView.setAdapter(mAdaptor);
 
         btr = findViewById(R.id.btr1);
-        btr.setText("추가");
         btr.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -219,7 +218,6 @@ public class KeySettingSelectActivity extends Activity {
         });
 
         btr2 = findViewById(R.id.btr2);
-        btr2.setText("수정");
         btr2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

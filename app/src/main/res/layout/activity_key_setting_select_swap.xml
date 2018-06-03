@@ -13,11 +13,18 @@
         android:paddingTop="30dp"
         android:scrollbars="vertical">
     </android.support.v7.widget.RecyclerView>
+
     <Button
         android:id="@+id/btr1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:text="Button" />
+        android:text="@string/save" />
+
+    <TextView
+        android:id="@+id/textView6"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/inform_swap" />
 </LinearLayout>
 

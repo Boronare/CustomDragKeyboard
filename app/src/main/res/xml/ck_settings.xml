@@ -10,6 +10,13 @@
 		android:entries="@array/key_feedback_names"
 		android:entryValues="@array/key_feedback_values"
 		android:defaultValue="-1"/>
+	<ListPreference
+	android:key="use_candidate"
+	android:title="@string/use_candidate"
+	android:summary="@string/use_candidate_summary"
+	android:entries="@array/yesno"
+	android:entryValues="@array/zeroone"
+	android:defaultValue="1"/>
 	<Preference
 		android:key="key_setting"
 		android:title="@string/key_setting"

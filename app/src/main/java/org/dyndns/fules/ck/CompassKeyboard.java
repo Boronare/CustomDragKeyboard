@@ -40,6 +40,7 @@ public class CompassKeyboard extends InputMethodService implements OnKeyboardAct
 	boolean				forcePortrait;				// use the portrait layout even for horizontal screens
 	ExtractedTextRequest		etreq = new ExtractedTextRequest();
 	int				selectionStart = -1, selectionEnd = -1;
+	boolean useCandidate=true;
 	DbHelper db;
 	// send an auto-revoked notification with a title and a message
 	void sendNotification(String title, String msg) {
@@ -98,16 +99,7 @@ public class CompassKeyboard extends InputMethodService implements OnKeyboardAct
 		Log.i("ZAIC","Before ReadFile");
 		Log.i("ZAIC","After ReadFile");
 		updateLayout(Integer.parseInt(mPrefs.getString("layout", "0")));
-		ckv.setVibrateOnKey(getPrefInt("feedback_key", 0));
-		ckv.setVibrateOnModifier(getPrefInt("feedback_mod", 0));
-		ckv.setVibrateOnCancel(getPrefInt("feedback_cancel", 0));
-		ckv.setFeedbackNormal(getPrefInt("feedback_text", 0));
-		ckv.setFeedbackPassword(getPrefInt("feedback_password", 0));
-		ckv.setLeftMargin(getPrefFloat("margin_left", 0));
-		ckv.setRightMargin(getPrefFloat("margin_right", 0));
-		ckv.setBottomMargin(getPrefFloat("margin_bottom", 0));
-		ckv.setMaxKeySize(100);
-		ckv.setSensitivity(getPrefFloat("sensitivity_x",2f),getPrefFloat("sensitivity_y",2f));
+
 		mPrefs.registerOnSharedPreferenceChangeListener(this);
 		return super.onCreateInputMethodInterface();
 	}
@@ -141,6 +133,20 @@ public class CompassKeyboard extends InputMethodService implements OnKeyboardAct
 		if (ckv != null) {
 			ckv.setInputType(attribute.inputType);
 		}
+		ckv.setVibrateOnKey(getPrefInt("feedback_key", 0));
+		ckv.setVibrateOnModifier(getPrefInt("feedback_mod", 0));
+		ckv.setVibrateOnCancel(getPrefInt("feedback_cancel", 0));
+		ckv.setFeedbackNormal(getPrefInt("feedback_text", 0));
+		ckv.setFeedbackPassword(getPrefInt("feedback_password", 0));
+		ckv.setLeftMargin(getPrefFloat("margin_left", 0));
+		ckv.setRightMargin(getPrefFloat("margin_right", 0));
+		ckv.setBottomMargin(getPrefFloat("margin_bottom", 0));
+		ckv.setMaxKeySize(100);
+		ckv.setSensitivity(getPrefFloat("sensitivity_x",2f),getPrefFloat("sensitivity_y",2f));
+		useCandidate=getPrefInt("use_candidate",0)==1;
+		if(!useCandidate) mCandidateView.disabled=true;
+		else mCandidateView.disabled=false;
+		mCandidateView.requestLayout();
 	}
 	@Override public void onStartInput(EditorInfo attribute, boolean restarting) {
 		super.onStartInput(attribute, restarting);
@@ -374,9 +380,9 @@ public class CompassKeyboard extends InputMethodService implements OnKeyboardAct
 	private List<String> mSuggestions;
 	private SpellCheckerSession mScs;
 	@Override public View onCreateCandidatesView() {
-		mCandidateView = new CandidateView(this);
+		if(useCandidate)mCandidateView = new CandidateView(this);
+		else mCandidateView=new DummyCandidateView(this);
 		mCandidateView.setService(this);
-		mCandidateView.setSuggestions(new ArrayList<String>(Arrays.asList("ASDF","GHJK","LMNO")),true,true);
 		setCandidatesViewShown(true);
 		//ckv.addView(mCandidateView,0);
 		return mCandidateView;
@@ -410,24 +416,25 @@ public class CompassKeyboard extends InputMethodService implements OnKeyboardAct
 		}
 	}
 	private void updateCandidates() {
-		return;//TODO:지워야 될 코드.
-		/*if(sb!=null&&sb.length()>0) {
-			ArrayList<String> suggList = db.search(sb.toString());
-			suggList.add(0, sb.toString());
-			mCompletions = suggList;
-			mCandidateView.setSuggestions(suggList, true, true);
-		}else mCandidateView.clear();
+		if(useCandidate) {
+			if (sb != null && sb.length() > 0) {
+				ArrayList<String> suggList = db.search(sb.toString());
+				suggList.add(0, sb.toString());
+				mCompletions = suggList;
+				mCandidateView.setSuggestions(suggList, true, true);
+			} else mCandidateView.clear();
 
-		if (!mCompletionOn) {
-			if (mComposing.length() > 0) {
-				ArrayList<String> list = new ArrayList<String>();
-				//list.add(mComposing.toString());
-				Log.d("SoftKeyboard", "REQUESTING: " + mComposing.toString());
-				mScs.getSentenceSuggestions(new TextInfo[] {new TextInfo(mComposing.toString())}, 5);
-			} else {
-				setSuggestions(null, false, false);
+			if (!mCompletionOn) {
+				if (mComposing.length() > 0) {
+					ArrayList<String> list = new ArrayList<String>();
+					//list.add(mComposing.toString());
+					Log.d("SoftKeyboard", "REQUESTING: " + mComposing.toString());
+					mScs.getSentenceSuggestions(new TextInfo[]{new TextInfo(mComposing.toString())}, 5);
+				} else {
+					setSuggestions(null, false, false);
+				}
 			}
-		}*/
+		}
 	}
 	public void setSuggestions(List<String> suggestions, boolean completions,
 							   boolean typedWordValid) {

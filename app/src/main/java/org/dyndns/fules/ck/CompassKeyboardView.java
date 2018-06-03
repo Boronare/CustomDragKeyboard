@@ -71,7 +71,7 @@ class Action {
 public class CompassKeyboardView extends FrameLayout {
 	// Constants
 	private static final String		TAG = "CompassKeyboard";
-	private static final long[][]		vibratePattern = { { 10, 10 }, { 20, 20, 20, 20 } };
+	private static final long[][]		vibratePattern = { { 0, 10 }, { 0, 20, 20, 10 } };
 	private static final int		LONG_TAP_TIMEOUT = 700;	// timeout in msec after which a tap is considered a long one
 	private static final int		LONG_TAP_REPEAT = 75;
 	public static final int			NONE	= -1;

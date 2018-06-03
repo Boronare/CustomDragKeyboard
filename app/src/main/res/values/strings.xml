@@ -47,16 +47,14 @@
         <item>"1"</item>
     </string-array>
 
-    <string-array name="text_feedback_names">
-        <item>"None"</item>
-        <item>"Highlight"</item>
-        <item>"Toast"</item>
+    <string-array name="yesno">
+        <item>"Yes"</item>
+        <item>"No"</item>
     </string-array>
 
-    <string-array name="text_feedback_values">
-        <item>"0"</item>
+    <string-array name="zeroone">
         <item>"1"</item>
-        <item>"2"</item>
+        <item>"0"</item>
     </string-array>
 
     <string name="pg_about">About</string>
@@ -83,4 +81,13 @@
 
     <string name="activate_keyboard">Activate keyboard</string>
     <string name="set_current_keyboard">Set currently using keyboard</string>
+
+    <string name="swap">Replace order</string>
+    <string name="add">Add new layout</string>
+    <string name="inform_select">Long tap to remove layout</string>
+    <string name="save">Save</string>
+    <string name="inform_swap">Long tap and drag to change order</string>
+    <string name="confirm_delete">Delete this layout?</string>
+    <string name="use_candidate">Use word suggestion</string>
+    <string name="use_candidate_summary">Disable it if you have performance issue</string>
 </resources>

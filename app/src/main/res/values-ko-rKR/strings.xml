@@ -34,6 +34,10 @@
         <item>"0"</item>
         <item>"1"</item>
     </string-array>
+    <string-array name="yesno">
+    <item>"예"</item>
+    <item>"아니오"</item>
+</string-array>
 
     <string name="pg_about_summary">제작자 정보</string>
 
@@ -53,4 +57,13 @@
 
     <string name="activate_keyboard">키보드 활성화하기</string>
     <string name="set_current_keyboard">사용중인 키보드로 설정하기</string>
+
+    <string name="swap">순서 변경</string>
+    <string name="add">추가</string>
+    <string name="inform_select">길게 눌러 삭제할 수 있습니다.</string>
+    <string name="save">저장</string>
+    <string name="inform_swap">길게 누르고 움직여 순서를 변경할 수 있습니다.</string>
+    <string name="confirm_delete">삭제하시겠습니까?</string>
+    <string name="use_candidate">단어 추천 사용</string>
+    <string name="use_candidate_summary">끄면 성능 향상이 있습니다.</string>
 </resources>

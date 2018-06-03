@@ -166,7 +166,6 @@ public class KeySettingSelectSwapActivity extends Activity {
         touchHelper.attachToRecyclerView(mRecyclerView);
 
         btr = findViewById(R.id.btr1);
-        btr.setText("완료");
         btr.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -306,7 +306,7 @@ public class KeySettingActivity extends Activity {
             initCols = cols;
 
         userKbdModel = new KbdModel(initRows, initCols);
-        userKbdModel.kbdName = "기본 키보드";
+        userKbdModel.kbdName = "Default Keyboard";
         userKbdModel.kbdLang = 0;
 
         for (int i = 0; i < initRows; i++) {
