@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -124,6 +125,8 @@ public class LayoutImportActivity extends ListActivity {
                 oos.writeObject(kbdList);
                 oos.close();
                 Toast.makeText(this, R.string.import_success, Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(LayoutImportActivity.this, KeySettingSelectActivity.class);
+                setResult(2, intent);
                 finish();
             } catch(FileNotFoundException e) {
                 Log.i("TEST::","error1");

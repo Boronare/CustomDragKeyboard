@@ -135,6 +135,7 @@ public class KeySettingSelectActivity extends Activity {
 
         @Override
         public void onListItemLongClick(int position) {
+
             final int pos = position;
             String[] yesno = getResources().getStringArray(R.array.yesno);
             Log.i("TEST::","Long event 됬음. get() is " + mItems.get(position));
@@ -324,6 +325,9 @@ public class KeySettingSelectActivity extends Activity {
             recreate();
         }
         else if(requestCode == 1 && resultCode ==1 && data!=null) { //세부 레이아웃 변경 후 저장
+            recreate();
+        }
+        else if(requestCode == 2 && resultCode ==2 && data!=null) { //레이아웃 import
             recreate();
         }
     }
