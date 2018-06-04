@@ -87,11 +87,19 @@ class DbHelper extends SQLiteOpenHelper {
         }
     }
 
-    public ArrayList<String> search(/*String dic,*/ String cond) {
+    public ArrayList<String> search(String cond,int lang) {
         Cursor cursor = null;
         ArrayList<String> ans = new ArrayList<String>();
 
-        String dic = whatLanguage(cond);
+        //String dic = whatLanguage(cond);
+        String dic;
+        switch(lang){
+            case 0:dic="EN"; break;
+            case 1:dic="KO"; break;
+            case 2:dic="JP"; break;
+            case 3:dic="ZH"; break;
+            default:dic="ERR";
+        }
 
         if (dic.compareTo("EN") == 0) {
             cursor = mDB.rawQuery("SELECT NAME FROM EN_DICTIONARY_TABLE WHERE NAME LIKE '" + cond + "%' Order by FREQUENCY DESC Limit 10",null);
@@ -108,14 +116,14 @@ class DbHelper extends SQLiteOpenHelper {
             }
         }
         else if (dic.compareTo("JP") == 0) {
-            cursor = mDB.rawQuery("SELECT RESULT FROM JP_DICTIONARY_TABLE WHERE NAME LIKE '" + cond + "%' Order by FREQUENCY DESC Limit 10",null);
+            cursor = mDB.rawQuery("SELECT NAME FROM JP_DICTIONARY_TABLE WHERE HIRA LIKE '" + cond + "%' Order by FREQUENCY DESC Limit 10",null);
             cursor.moveToFirst();
             while(cursor.moveToNext()) {
                 ans.add(cursor.getString(cursor.getColumnIndex("RESULT")));
             }
         }
-        else if (dic.compareTo("CH") == 0) {
-            cursor = mDB.rawQuery("SELECT NAME FROM CH_DICTIONARY_TABLE WHERE PINYIN_NUBER = '" + cond +"'",null);
+        else if (dic.compareTo("ZH") == 0) {
+            cursor = mDB.rawQuery("SELECT NAME FROM CH_DICTIONARY_TABLE WHERE PINYIN_NUMBER LIKE '" + cond +"%' Order by frequency desc limit 10",null);
             cursor.moveToFirst();
             while(cursor.moveToNext()) {
                 ans.add(cursor.getString(cursor.getColumnIndex("NAME")));
@@ -128,17 +136,24 @@ class DbHelper extends SQLiteOpenHelper {
         return ans;
     }
 
-    public void updateRecordParameter(String name) {
+    public void updateRecordParameter(String name,int lang) {
         String dic_table = null;
 
-        String dic = whatLanguage(name);
+        String dic;
+        switch(lang){
+            case 0:dic="EN"; break;
+            case 1:dic="KO"; break;
+            case 2:dic="JP"; break;
+            case 3:dic="ZH"; break;
+            default : dic="ERR";
+        }//String dic = whatLanguage(name);
 
         if (dic == "EN") { dic_table = "EN_DICTIONARY_TABLE"; }
         else if (dic == "KO") { dic_table = "KO_DICTIONARY_TABLE"; }
         else if (dic == "JP") { dic_table = "JP_DICTIONARY_TABLE"; }
         else if (dic == "ZH") { dic_table = "CH_DICTIONARY_TABLE"; }
 
-        String sql = "UPDATE " + dic_table + " SET FREQUENCY = FREQUENCY + 1 WHERE NAME = " + name;
+        String sql = "UPDATE " + dic_table + " SET FREQUENCY = FREQUENCY + 1 WHERE NAME = '" + name+"'";
 
         mDB.execSQL(sql);
     }
@@ -166,7 +181,7 @@ class DbHelper extends SQLiteOpenHelper {
                 Character.UnicodeBlock.CJK_COMPATIBILITY_IDEOGRAPHS.equals( unicodeBlock ) ||
                 Character.UnicodeBlock.CJK_COMPATIBILITY_IDEOGRAPHS_SUPPLEMENT.equals( unicodeBlock ))
         {
-            lang = "CH";
+            lang = "ZH";
         }
         else if(Character.UnicodeBlock.BASIC_LATIN.equals( unicodeBlock ) ||
                 Character.UnicodeBlock.LATIN_1_SUPPLEMENT.equals( unicodeBlock ) ||

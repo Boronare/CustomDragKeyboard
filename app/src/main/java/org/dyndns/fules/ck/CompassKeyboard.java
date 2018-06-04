@@ -392,6 +392,7 @@ public class CompassKeyboard extends InputMethodService implements OnKeyboardAct
 		if (mCompletionOn && mCompletions != null && index >= 0
 				&& index < mCompletions.size()) {
 			String ci = mCompletions.get(index);
+			db.updateRecordParameter(ci,ckv.lang);
 			getCurrentInputConnection().commitText(ci,ci.length());
 			getCurrentInputConnection().finishComposingText();
 			if (mCandidateView != null) {
@@ -418,7 +419,7 @@ public class CompassKeyboard extends InputMethodService implements OnKeyboardAct
 	private void updateCandidates() {
 		if(useCandidate) {
 			if (sb != null && sb.length() > 0) {
-				ArrayList<String> suggList = db.search(sb.toString());
+				ArrayList<String> suggList = db.search(sb.toString(),ckv.lang);
 				suggList.add(0, sb.toString());
 				mCompletions = suggList;
 				mCandidateView.setSuggestions(suggList, true, true);
