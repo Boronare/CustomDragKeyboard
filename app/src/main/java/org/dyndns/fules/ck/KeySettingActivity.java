@@ -1,11 +1,16 @@
 package org.dyndns.fules.ck;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -239,7 +244,8 @@ public class KeySettingActivity extends Activity {
         exportBtr.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                try {
+
+                /*try {
                     FileOutputStream fos = new FileOutputStream(new File(Environment.
                             getExternalStorageDirectory() + "/" + tempKbdModel.kbdName));
                     ObjectOutputStream oos = new ObjectOutputStream(fos);
@@ -254,7 +260,34 @@ public class KeySettingActivity extends Activity {
                     e.printStackTrace();
                 } catch (IOException e) {
                     e.printStackTrace();
+                }*/
+                //마시멜로우 이상인지 확인...
+                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
+                        && ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
+                    requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
                 }
+                else if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED){
+                    try {
+                        FileOutputStream fos = new FileOutputStream(new File(Environment.
+                                getExternalStorageDirectory() + "/" + tempKbdModel.kbdName));
+                        ObjectOutputStream oos = new ObjectOutputStream(fos);
+                        oos.writeObject(tempKbdModel);
+                        Log.i("TEST::","저장된 경로 :" + Environment.
+                                getExternalStorageDirectory());
+                        Toast.makeText(KeySettingActivity.this, "" + Environment.
+                                getExternalStorageDirectory() + " 에 저장되었습니다.", Toast.LENGTH_SHORT).show();
+                        oos.close();
+                    } catch (FileNotFoundException e) {
+                        Log.i("TEST::","failed");
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+                else{
+
+                }
+
             }
         });
         exportTr.addView(exportBtr);
@@ -286,6 +319,33 @@ public class KeySettingActivity extends Activity {
 
         mainScroll.addView(mainLayout);
         setContentView(mainScroll);
+    }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == 1
+                && grantResults[0] == PackageManager.PERMISSION_GRANTED
+                ) {
+            try {
+                FileOutputStream fos = new FileOutputStream(new File(Environment.
+                        getExternalStorageDirectory() + "/" + tempKbdModel.kbdName));
+                ObjectOutputStream oos = new ObjectOutputStream(fos);
+                oos.writeObject(tempKbdModel);
+                Log.i("TEST::","저장된 경로 :" + Environment.
+                        getExternalStorageDirectory());
+                Toast.makeText(KeySettingActivity.this, "" + Environment.
+                        getExternalStorageDirectory() + " 에 저장되었습니다.", Toast.LENGTH_SHORT).show();
+                oos.close();
+            } catch (FileNotFoundException e) {
+                Log.i("TEST::","failed");
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            Toast.makeText(getApplicationContext(), "사용자가 해당 권한을 거부하였습니다.", Toast.LENGTH_SHORT).show();
+        }
     }
 
     public static KbdModel init(int rows, int cols) {
