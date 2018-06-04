@@ -1,11 +1,18 @@
 package org.dyndns.fules.ck;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
+import android.provider.Settings;
+import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -129,10 +136,11 @@ public class KeySettingSelectActivity extends Activity {
         @Override
         public void onListItemLongClick(int position) {
             final int pos = position;
+            String[] yesno = getResources().getStringArray(R.array.yesno);
             Log.i("TEST::","Long event 됬음. get() is " + mItems.get(position));
             AlertDialog.Builder alert = new AlertDialog.Builder(KeySettingSelectActivity.this);
-            alert.setMessage("삭제하시겠습니까?");
-            alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            alert.setMessage(R.string.confirm_delete);
+            alert.setPositiveButton(yesno[0], new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     mItems.remove(pos);
@@ -151,7 +159,7 @@ public class KeySettingSelectActivity extends Activity {
                     recreate();
                 }
             });
-            alert.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            alert.setNegativeButton(yesno[1], new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     dialog.dismiss();     //닫기
@@ -195,7 +203,6 @@ public class KeySettingSelectActivity extends Activity {
         mRecyclerView.setAdapter(mAdaptor);
 
         btr = findViewById(R.id.btr1);
-        btr.setText("추가");
         btr.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -219,7 +226,6 @@ public class KeySettingSelectActivity extends Activity {
         });
 
         btr2 = findViewById(R.id.btr2);
-        btr2.setText("순서 변경");
         btr2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -228,31 +234,66 @@ public class KeySettingSelectActivity extends Activity {
                 startActivityForResult(intent, 0);
             }
         });
-/*
+
         btr3 = findViewById(R.id.btr3);
-        btr3.setText("Export");
         btr3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                try {
-                    FileOutputStream fos = new FileOutputStream(new File(Environment.
-                            getExternalStorageDirectory() + "/kbdList"));
-                    ObjectOutputStream oos = new ObjectOutputStream(fos);
-                    oos.writeObject(kbdList);
-                    Log.i("TEST::","저장된 경로 :" + Environment.
-                            getExternalStorageDirectory());
-                    Toast.makeText(mContext, "" + Environment.
-                            getExternalStorageDirectory() + " 에 저장되었습니다.", Toast.LENGTH_SHORT).show();
-                    oos.close();
-                } catch (FileNotFoundException e) {
-                    Log.i("TEST::","failed");
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
+                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
+                        && ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
+                    requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 3);
+                }
+                else if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED){
+                    Intent intent = new Intent(KeySettingSelectActivity.this, LayoutImportActivity.class);
+                    startActivityForResult(intent, 2);
+                }
+                else{
+
                 }
             }
-        });*/
+        });
 
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == 3
+                && grantResults[0] == PackageManager.PERMISSION_GRANTED
+                ) {
+                Intent intent = new Intent(KeySettingSelectActivity.this, LayoutImportActivity.class);
+                startActivityForResult(intent, 2);
+            } else {
+            CALLDialog();
+            //Toast.makeText(getApplicationContext(), "사용자가 해당 권한을 거부하였습니다.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public void CALLDialog() {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
+
+        alertDialog.setTitle(R.string.permission_dialog_title);
+        alertDialog.setMessage(R.string.permission_dialog);
+
+        // 권한 설정
+        alertDialog.setPositiveButton(R.string.permission_dialog_yes,
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).setData(Uri.parse("package:" + getApplicationContext().getPackageName()));
+                        startActivity(intent);
+                        dialog.cancel();
+                    }
+                });
+        //취소
+        alertDialog.setNegativeButton(R.string.cancel,
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+
+        alertDialog.show();
     }
 
     public Object undoSerializable() throws IOException, ClassNotFoundException {
@@ -267,7 +308,7 @@ public class KeySettingSelectActivity extends Activity {
         return kbdList;
     }
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(requestCode == 0 && resultCode ==0 && data!=null) {
+        if(requestCode == 0 && resultCode ==0 && data!=null) {  //순서 변겅
             kbdList = (KbdModelSelector) data.getSerializableExtra("kbdList");
             try {
                 FileOutputStream fos = openFileOutput("kbdList", Context.MODE_PRIVATE);
@@ -282,7 +323,7 @@ public class KeySettingSelectActivity extends Activity {
             }
             recreate();
         }
-        else if(requestCode == 1 && resultCode ==1 && data!=null) {
+        else if(requestCode == 1 && resultCode ==1 && data!=null) { //세부 레이아웃 변경 후 저장
             recreate();
         }
     }

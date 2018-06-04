@@ -59,11 +59,11 @@ public class KeySettingSizeActivity extends Activity {
         btr.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                String[] yesno = getResources().getStringArray(R.array.yesno);
                 AlertDialog.Builder alert = new AlertDialog.Builder(KeySettingSizeActivity.this);
-                alert.setTitle("※주의");
-                alert.setMessage("변경 시 키보드가 초기화됩니다. " +
-                        "실행하시겠습니까?");
-                alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                alert.setTitle(R.string.size_dialog_title);
+                alert.setMessage(R.string.size_dialog);
+                alert.setPositiveButton(yesno[0], new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         Intent intent = new Intent(KeySettingSizeActivity.this, KeySettingActivity.class);
@@ -74,13 +74,14 @@ public class KeySettingSizeActivity extends Activity {
                         finish();
                     }
                 });
-                alert.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                alert.setNegativeButton(yesno[1], new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        Intent intent = new Intent(KeySettingSizeActivity.this, KeySettingActivity.class);
-                        intent.addFlags(intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        startActivity(intent);
-                        dialog.dismiss();     //닫기
+                        //Intent intent = new Intent(KeySettingSizeActivity.this, KeySettingActivity.class);
+                        //intent.addFlags(intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        //startActivity(intent);
+                        dialog.dismiss();
+                        finish();
                     }
                 });
                 // 창 띄우기

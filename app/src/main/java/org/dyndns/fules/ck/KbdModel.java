@@ -36,7 +36,7 @@ public class KbdModel implements Serializable {
         for (int i = 0; i < 3; i++) {
             row[i] = new Row(5);
         }
-        this.kbdName = "기본 키보드";
+        this.kbdName = "Default Keyboard";
         this.kbdLang = 0;
 
         for (int i = 0; i < 3; i++) {
@@ -50,11 +50,6 @@ public class KbdModel implements Serializable {
                         curdir.sValue = "";
                         curdir.iValue = 0;
                         curdir.actType = 1;
-                    }else if(defaultShow[i][j][k].length()>0&&defaultShow[i][j][k].codePointAt(0)>='ㄱ'&&defaultShow[i][j][k].codePointAt(0)<='ㅣ') {
-                        curdir.show = defaultShow[i][j][k];
-                        curdir.sValue = defaultShow[i][j][k];
-                        curdir.iValue = 0;
-                        curdir.actType = 3;
                     }
                     else{
                         switch(defaultShow[i][j][k]){

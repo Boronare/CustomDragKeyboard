@@ -14,7 +14,7 @@
         android:gravity="center_vertical"
         android:textSize="24dp"
         android:layout_marginLeft="10dp"
-        android:text="가로 갯수 조정 (5 - 9)"/>
+        android:text="@string/size_col"/>
 
     <Spinner
         android:id="@+id/spinnerCol"
@@ -28,7 +28,7 @@
         android:gravity="center_vertical"
         android:textSize="24dp"
         android:layout_marginLeft="10dp"
-        android:text="세로 갯수 조정 (2 - 6)" />
+        android:text="@string/size_row" />
 
     <Spinner
         android:id="@+id/spinnerRow"
@@ -40,5 +40,5 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="50dp"
-        android:text="적용" />
+        android:text="@string/size_yes" />
 </LinearLayout>

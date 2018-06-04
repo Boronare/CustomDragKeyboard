@@ -48,12 +48,6 @@ class Action {
 	String		code, text, cmd, handlerStr;
 	boolean		isLock, isEmpty, isSpecial;
 
-	public Action() {
-		isLock = isSpecial = false;
-		keyCode = layout = -1;
-		isEmpty = true;
-	}
-
 	public Action(KbdModel.Dir dir) throws IOException {
 		isLock = isEmpty = false;
 		keyCode = layout = -1;
@@ -65,6 +59,8 @@ class Action {
 			case 1:code=dir.sValue;break;
 			case 2:keyCode=dir.iValue;break;
 			case 3:handlerStr=dir.sValue;break;
+			case 4:layout=-2;
+			case 5:layout=-3;
 		}
 	}
 }
@@ -75,7 +71,7 @@ class Action {
 public class CompassKeyboardView extends FrameLayout {
 	// Constants
 	private static final String		TAG = "CompassKeyboard";
-	private static final long[][]		vibratePattern = { { 10, 10 }, { 10, 10, 10, 10 } };
+	private static final long[][]		vibratePattern = { { 0, 10 }, { 0, 20, 20, 10 } };
 	private static final int		LONG_TAP_TIMEOUT = 700;	// timeout in msec after which a tap is considered a long one
 	private static final int		LONG_TAP_REPEAT = 75;
 	public static final int			NONE	= -1;
@@ -89,9 +85,6 @@ public class CompassKeyboardView extends FrameLayout {
 	public static final int			S	= 7;
 	public static final int			SE	= 8;
 
-	public static final int			FEEDBACK_HIGHLIGHT	= 1;
-	public static final int			FEEDBACK_TOAST		= 2;
-
 	// Parameters
 	int					vibrateOnKey = 0;
 	int					vibrateOnModifier = 0;
@@ -102,6 +95,7 @@ public class CompassKeyboardView extends FrameLayout {
 	float					marginLeft = 0, marginRight = 0, marginBottom = 0; // margins in mm-s
 
 	// Internal params
+	int nRows;
 	int					nColumns;	// maximal number of symbol columns (eg. 3 for full key, 2 for side key), used for size calculations
 	int					nKeys;		// maximal number of keys per row, used for calculating with the gaps between keys
 	int					sym, gap;	// size of symbols on keys and gap between them (in pixels)
@@ -109,6 +103,7 @@ public class CompassKeyboardView extends FrameLayout {
 	float					fontDispY;	// Y-displacement of key caption font (top to baseline)
 	boolean					isTypingPassword; // is the user typing a password
 	int lang = 0;
+	float xsen,ysen;
 
 	Vibrator				vibro;		// vibrator
 	Paint					textPaint;	// Paint for drawing key captions
@@ -197,6 +192,7 @@ public class CompassKeyboardView extends FrameLayout {
 			}
 
 			void setCandidate(int d) {
+				if(d!=4) removeCallbacks(onLongTap);
 				candidateDir = d;
 				invalidate();
 			}
@@ -204,29 +200,29 @@ public class CompassKeyboardView extends FrameLayout {
 			// figure out the direction of the swipe
 			int getDirection(float x, float y,int idx) {
 				int d;
-				float dx = (x - downX[idx]) * 3;
-				float dy = (y - downY[idx]) * 3;
+				float dx = (x - downX[idx]);
+				float dy = (y - downY[idx]);
 
-				if (dx < -xmax) {
-					if (dy < -ymax)
+				if (dx < -xsen) {
+					if (dy < -ysen||y==0f)
 						d = NW;
-					else if (dy < ymax)
+					else if (dy < ysen)
 						d = W;
 					else
 						d = SW;
 				}
-				else if (dx < xmax) {
-					if (dy < -ymax)
+				else if (dx < xsen) {
+					if (dy < -ysen||y==0f)
 						d = N;
-					else if (dy < ymax)
+					else if (dy < ysen)
 						d = TAP;
 					else
 						d = S;
 				}
 				else {
-					if (dy < -ymax)
+					if (dy < -ysen||y==0f)
 						d = NE;
-					else if (dy < ymax)
+					else if (dy < ysen)
 						d = E;
 					else
 						d = SE;
@@ -329,6 +325,12 @@ public class CompassKeyboardView extends FrameLayout {
 				addView(nk,lp);
 				columns+=3;
 			}
+			if(getResources().getDisplayMetrics().widthPixels>getResources().getDisplayMetrics().heightPixels)
+				for(int i=0;i<row.col.length;i++) {
+					Key nk = new Key(getContext(), row.col[i]);
+					addView(nk,lp);
+					columns+=3;
+				}
 
 		}
 
@@ -403,7 +405,9 @@ public class CompassKeyboardView extends FrameLayout {
 		}
 
 		@Override protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-			setMeasuredDimension(kbd.getWidth(), kbd.getHeight());
+			Log.i("ZaiC","kbd.width="+kbd.getWidth()+"/height="+kbd.getHeight());
+			//setMeasuredDimension(kbd.getWidth(), kbd.getHeight());
+			setMeasuredDimension(kbd.getWidth(), 10);
 		}
 
 		void setDir(int d) {
@@ -472,6 +476,7 @@ public class CompassKeyboardView extends FrameLayout {
 	// Read the layout from an XML parser
 	public void readLayout(KbdModel kbdModel) throws IOException {
 		lang=kbdModel.kbdLang;
+		nRows = kbdModel.row.length;
 		// drop and re-read all previously existing rows
 		kbd.removeAllViews();
 		nColumns = nKeys = 0;
@@ -516,7 +521,7 @@ public class CompassKeyboardView extends FrameLayout {
 		//   nKeys*keySize/12 + nColumns*keySize*(2/9 + 1/12) = keySize * (nKeys/12 + nColumns*11/36)
 		totalWidth = Math.round(keyMM * metrics.xdpi / 25.4f * ((nKeys / 12.f) + (nColumns * 11 / 36.f)));
 		// Regardless of keyMM, it must fit the metrics, that is width - margins - 1 pixel between keys
-		i = metrics.widthPixels - marginPixelsLeft - marginPixelsRight - (nKeys - 1);
+		i = metrics.widthPixels - marginPixelsLeft - marginPixelsRight;
 		if (i < totalWidth)
 			totalWidth = i;
 
@@ -533,7 +538,6 @@ public class CompassKeyboardView extends FrameLayout {
 		// it from totalWidth and rounding it only downwards:
 		//   gap*(nKeys+nColumns) + sym*nColumns = totalWidth
 		sym = (totalWidth - gap*(nKeys+nColumns)) / nColumns;
-
 		// Sample data: nKeys=5, columns=13; Galaxy Mini: 240x320, Ace: 320x480, S: 480x80, S3: 720x1280 
 
 		// construct the Paint used for printing the labels
@@ -567,6 +571,7 @@ public class CompassKeyboardView extends FrameLayout {
 			case MotionEvent.ACTION_DOWN:
 			case MotionEvent.ACTION_POINTER_DOWN:
 				postDelayed(onLongTap, LONG_TAP_TIMEOUT);
+				if(idx>0) removeCallbacks(onLongTap);
 				// remember the swipe starting coordinates for checking for global swipes
 				downX[idx] = event.getX();
 				downY[idx] = event.getY();
@@ -582,11 +587,6 @@ public class CompassKeyboardView extends FrameLayout {
 				removeCallbacks(onLongTap);
 				// touch event processed
 				return true;
-
-			case MotionEvent.ACTION_MOVE:
-				// cancel any pending checks for long tap
-				removeCallbacks(onLongTap);
-				return false;
 		}
 		// we're not interested in other kinds of events
 		return false;
@@ -606,8 +606,10 @@ public class CompassKeyboardView extends FrameLayout {
 			return false;
 
 		if (actionListener != null) {
-			if (cd.code != null)
-				actionListener.onText(cd.code); // process a 'code'
+			if (cd.code != null) {
+				if(cd.code.length()==1&&cd.code.codePointAt(0)>='ㄱ'&&cd.code.codePointAt(0)<='ㅣ') ck.handle(cd.code);
+				else actionListener.onText(cd.code); // process a 'code'
+			}
 			else if (cd.keyCode >= 0)
 				actionListener.onKey(cd.keyCode, null); // process a 'key'
 			else if (cd.handlerStr!=null){
@@ -617,6 +619,10 @@ public class CompassKeyboardView extends FrameLayout {
 				CompassKeyboard ck = (CompassKeyboard)actionListener;
 				if (cd.layout >= 0)
 					ck.updateLayout(cd.layout); // process a 'layout'
+				else if(cd.layout==-2)
+					ck.updateLayout(-2);
+				else if(cd.layout==-3)
+					ck.updateLayout(-3);
 				else if ((cd.cmd != null) && (cd.cmd.length() > 0))
 					ck.execCmd(cd.cmd); // process a 'cmd'
 			}
@@ -645,6 +651,8 @@ public class CompassKeyboardView extends FrameLayout {
 	public void setFeedbackPassword(int n) {
 		feedbackPassword = n;
 	}
+
+	public void setSensitivity(float x,float y){int dpi=getResources().getDisplayMetrics().densityDpi;xsen=x*dpi/25.4f; ysen=y*dpi/25.4f;}
 
 	public void setLeftMargin(float f) {
 		marginLeft = f;

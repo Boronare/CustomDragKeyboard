@@ -15,14 +15,14 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
         android:layout_marginTop="10dp"
-        android:text="표시 값" />
+        android:text="@string/function_appearances" />
 
     <EditText
         android:id="@+id/editShow"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
-        android:hint="보여줄 문자를 입력하세요."
+        android:hint="@string/function_appearances_hint1"
         android:maxLength="8"
         android:inputType="text"
         android:visibility="gone" />
@@ -34,7 +34,7 @@
         android:layout_marginLeft="10dp"
         android:paddingBottom="13dp"
         android:textSize="24dp"
-        android:hint="입력값이 표시됩니다."
+        android:hint="@string/function_appearances_hint2"
         android:visibility="visible"/>
 
     <TextView
@@ -42,7 +42,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
-        android:text="행동" />
+        android:text="@string/function_act" />
 
     <Spinner
         android:id="@+id/spinnerAct"
@@ -54,14 +54,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
-        android:text="입력" />
+        android:text="@string/function_input" />
 
     <EditText
         android:id="@+id/editKey"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
-        android:hint="입력"
+        android:hint="@string/function_input"
         android:inputType="text"
         android:maxLength="8"
         android:visibility="visible"/>
@@ -78,5 +78,5 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
-        android:text="확인" />
+        android:text="@string/ok" />
 </LinearLayout>

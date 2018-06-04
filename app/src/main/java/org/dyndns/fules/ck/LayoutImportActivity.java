@@ -123,20 +123,20 @@ public class LayoutImportActivity extends ListActivity {
                 ObjectOutputStream oos = new ObjectOutputStream(fos);
                 oos.writeObject(kbdList);
                 oos.close();
-                Toast.makeText(this, "성공적으로 저장되었습니다.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, R.string.import_success, Toast.LENGTH_SHORT).show();
                 finish();
             } catch(FileNotFoundException e) {
                 Log.i("TEST::","error1");
             } catch (IOException e) {
                 Log.i("TEST::","error2");
-                Toast.makeText(this, "맞는 형식이 아닙니다.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, R.string.import_fail, Toast.LENGTH_SHORT).show();
                 e.printStackTrace();
             } catch (ClassNotFoundException e) {
                 Log.i("TEST::","error3");
                 e.printStackTrace();
             } catch (ClassCastException e) {
                 Log.i("TEST::","error4");
-                Toast.makeText(this, "맞는 형식이 아닙니다.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, R.string.import_fail, Toast.LENGTH_SHORT).show();
                 e.printStackTrace();
             }
         }

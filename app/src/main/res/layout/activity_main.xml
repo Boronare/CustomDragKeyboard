@@ -10,31 +10,35 @@
     <Button
         android:id="@+id/button17"
         android:layout_width="275dp"
-        android:layout_height="47dp"
-        android:layout_marginTop="208dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="1dp"
         android:onClick="btn1_click"
-        android:text="키보드 활성화하기"
+        android:text="@string/activate_keyboard"
+        app:layout_constraintBottom_toTopOf="@+id/button18"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/button18"
+        android:layout_width="275dp"
+        android:layout_height="wrap_content"
+        android:onClick="btn2_click"
+        android:text="@string/set_current_keyboard"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/button18"
-        android:layout_width="275dp"
-        android:layout_height="47dp"
-        android:layout_marginEnd="1dp"
-        android:onClick="btn2_click"
-        android:text="사용 키보드로 설정하기"
-        app:layout_constraintEnd_toEndOf="@+id/button17"
-        app:layout_constraintTop_toBottomOf="@+id/button17" />
-
-    <Button
         android:id="@+id/button19"
         android:layout_width="275dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="1dp"
         android:onClick="btn3_click"
-        android:text="키보드 설정하기"
-        app:layout_constraintStart_toStartOf="@+id/button18"
+        android:text="@string/settings"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/button18" />
 
 </android.support.constraint.ConstraintLayout>

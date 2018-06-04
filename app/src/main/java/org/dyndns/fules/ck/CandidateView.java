@@ -46,6 +46,7 @@ public class CandidateView extends View {
     private int mTotalWidth;
 
     private GestureDetector mGestureDetector;
+    boolean disabled;
 
     /**
      * Construct a CandidateView for showing suggested words for completion.
@@ -128,7 +129,7 @@ public class CandidateView extends View {
 
         // Maximum possible width and desired height
         setMeasuredDimension(measuredWidth,
-                resolveSize(desiredHeight, heightMeasureSpec));
+                disabled?0:resolveSize(desiredHeight, heightMeasureSpec));
     }
 
     /**
@@ -292,5 +293,26 @@ public class CandidateView extends View {
             mService.pickSuggestionManually(mSelectedIndex);
         }
         invalidate();
+    }
+}
+class DummyCandidateView extends CandidateView{
+    public DummyCandidateView(Context context){
+        super(context);
+    }
+    @Override
+    public boolean onTouchEvent(MotionEvent me){
+        return false;
+    }
+    @Override
+    public void setSuggestions(List<String> suggestions, boolean completions,
+                               boolean typedWordValid) {
+    }
+    @Override
+    protected void onDraw(Canvas canvas) {
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        setMeasuredDimension(0,0);
     }
 }
