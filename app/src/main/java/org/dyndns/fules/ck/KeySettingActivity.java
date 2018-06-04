@@ -2,13 +2,17 @@ package org.dyndns.fules.ck;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
@@ -62,7 +66,7 @@ public class KeySettingActivity extends Activity {
     TextView kbdText[][];
     Spinner spinnerLang;
 
-    private final String[] listLang = {"영어", "한국어", "일본어", "중국어"};
+    String[] listLang;
     private final int[] listLangValue = {0, 1, 2, 3};
 
     private class btnOnClickListener implements Button.OnClickListener{
@@ -83,7 +87,7 @@ public class KeySettingActivity extends Activity {
                 oos.writeObject(kbdList);
                 Log.i("TEST::","new kbdList and 수정된 kbdModel saved");
                 oos.close();
-                Toast.makeText(KeySettingActivity.this, "수정되었습니다.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(KeySettingActivity.this, R.string.key_setting_modify, Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(KeySettingActivity.this, KeySettingSelectActivity.class);
                 setResult(1, intent);
                 finish();
@@ -98,6 +102,8 @@ public class KeySettingActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        listLang = getResources().getStringArray(R.array.key_setting_lang);
 
         Intent intent = getIntent();
         /*try {
@@ -158,7 +164,7 @@ public class KeySettingActivity extends Activity {
 
         TextView kbdLang = new TextView(this);
         kbdLang.setLayoutParams(langParams);
-        kbdLang.setText("기본 언어 :");    //"기본 언어 :" + 키보드언어변수
+        kbdLang.setText(R.string.key_setting_default_lang);    //"기본 언어 :" + 키보드언어변수
         kbdLang.setTextSize(24);
         langTr.addView(kbdLang);
 
@@ -224,7 +230,7 @@ public class KeySettingActivity extends Activity {
         sizeBtrParams.span = col;
         sizeBtrParams.setMargins(20,10,20,0);
         sizeBtr.setLayoutParams(sizeBtrParams);
-        sizeBtr.setText("크기 변경");
+        sizeBtr.setText(R.string.key_setting_set_size);
         sizeBtr.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -240,7 +246,7 @@ public class KeySettingActivity extends Activity {
         TableRow exportTr = new TableRow(this);
         Button exportBtr = new Button(this);
         exportBtr.setLayoutParams(sizeBtrParams);
-        exportBtr.setText("Export");
+        exportBtr.setText(R.string.key_setting_export);
         exportBtr.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -274,8 +280,8 @@ public class KeySettingActivity extends Activity {
                         oos.writeObject(tempKbdModel);
                         Log.i("TEST::","저장된 경로 :" + Environment.
                                 getExternalStorageDirectory());
-                        Toast.makeText(KeySettingActivity.this, "" + Environment.
-                                getExternalStorageDirectory() + " 에 저장되었습니다.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(KeySettingActivity.this, KeySettingActivity.this.getString(R.string.key_setting_export_locate) + Environment.
+                                getExternalStorageDirectory(), Toast.LENGTH_SHORT).show();
                         oos.close();
                     } catch (FileNotFoundException e) {
                         Log.i("TEST::","failed");
@@ -296,7 +302,7 @@ public class KeySettingActivity extends Activity {
         TableRow applyTr = new TableRow(this);
         Button applyBtr = new Button(this);
         applyBtr.setLayoutParams(sizeBtrParams);
-        applyBtr.setText("저장");
+        applyBtr.setText(R.string.save);
         btnOnClickListener onClickListener = new btnOnClickListener();
         applyBtr.setOnClickListener(onClickListener);
         applyTr.addView(applyBtr);
@@ -306,7 +312,7 @@ public class KeySettingActivity extends Activity {
         TableRow closeTr = new TableRow(this);
         Button closeBtr = new Button(this);
         closeBtr.setLayoutParams(sizeBtrParams);
-        closeBtr.setText("취소");
+        closeBtr.setText(R.string.cancel);
         closeBtr.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -334,8 +340,8 @@ public class KeySettingActivity extends Activity {
                 oos.writeObject(tempKbdModel);
                 Log.i("TEST::","저장된 경로 :" + Environment.
                         getExternalStorageDirectory());
-                Toast.makeText(KeySettingActivity.this, "" + Environment.
-                        getExternalStorageDirectory() + " 에 저장되었습니다.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(KeySettingActivity.this, KeySettingActivity.this.getString(R.string.key_setting_export_locate) + Environment.
+                        getExternalStorageDirectory(), Toast.LENGTH_SHORT).show();
                 oos.close();
             } catch (FileNotFoundException e) {
                 Log.i("TEST::","failed");
@@ -344,8 +350,35 @@ public class KeySettingActivity extends Activity {
                 e.printStackTrace();
             }
         } else {
-            Toast.makeText(getApplicationContext(), "사용자가 해당 권한을 거부하였습니다.", Toast.LENGTH_SHORT).show();
+            CALLDialog();
+            //Toast.makeText(getApplicationContext(), "사용자가 해당 권한을 거부하였습니다.", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    public void CALLDialog() {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
+
+        alertDialog.setTitle(R.string.permission_dialog_title);
+        alertDialog.setMessage(R.string.permission_dialog);
+
+        // 권한 설정
+        alertDialog.setPositiveButton(R.string.permission_dialog_yes,
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).setData(Uri.parse("package:" + getApplicationContext().getPackageName()));
+                        startActivity(intent);
+                        dialog.cancel();
+                    }
+                });
+        //취소
+        alertDialog.setNegativeButton(R.string.cancel,
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+
+        alertDialog.show();
     }
 
     public static KbdModel init(int rows, int cols) {
@@ -464,7 +497,7 @@ public class KeySettingActivity extends Activity {
                 oos.writeObject(kbdList);
                 Log.i("TEST::","new kbdList and 수정된 kbdModel saved");
                 oos.close();
-                Toast.makeText(KeySettingActivity.this, "수정되었습니다.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(KeySettingActivity.this, R.string.key_setting_modify, Toast.LENGTH_SHORT).show();
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             } catch (IOException e) {

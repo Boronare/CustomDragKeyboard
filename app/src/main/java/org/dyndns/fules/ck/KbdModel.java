@@ -36,7 +36,7 @@ public class KbdModel implements Serializable {
         for (int i = 0; i < 3; i++) {
             row[i] = new Row(5);
         }
-        this.kbdName = "기본 키보드";
+        this.kbdName = "Default Keyboard";
         this.kbdLang = 0;
 
         for (int i = 0; i < 3; i++) {

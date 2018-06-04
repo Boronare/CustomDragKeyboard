@@ -27,7 +27,7 @@
 			android:targetClass="org.dyndns.fules.ck.KeySettingSelectActivity">
 		</intent>
 	</Preference>
-	<Preference
+	<!--<Preference
 		android:key="layout_import"
 		android:title="@string/layout_import"
 		android:summary="@string/layout_import_summary">
@@ -36,7 +36,7 @@
 			android:targetPackage="org.dyndns.fules.ck"
 			android:targetClass="org.dyndns.fules.ck.LayoutImportActivity">
 		</intent>
-	</Preference>
+	</Preference>-->
 	<EditTextPreference
 		android:key="sensitivity_x"
 		android:title="@string/sensitivity_x"

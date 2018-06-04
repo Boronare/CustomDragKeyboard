@@ -28,6 +28,12 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
         android:text="@string/swap" />
+    <Button
+        android:id="@+id/btr3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:text="@string/import_btn" />
 
     <TextView
         android:id="@+id/textView5"

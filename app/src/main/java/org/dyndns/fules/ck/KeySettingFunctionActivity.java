@@ -27,7 +27,7 @@ public class KeySettingFunctionActivity extends Activity {
     Spinner spinnerKeycode;
     Button btr;
 
-    private final String[] listAct = {"1. 문자 입력", "2. Keycode 입력", "3. 입력기 입력", "4. 이전 키보드", "5. 다음 키보드"};
+    String[] listAct;
     private final String[] listKeycode = {"KEYCODE_DPAD_LEFT", "KEYCODE_DPAD_RIGHT", "KEYCODE_SHIFT_LEFT", "KEYCODE_SPACE", "KEYCODE_ENTER", "KEYCODE_DEL"}; //조사해서 중요한 몇 개 넣기
     private final int[] ArrKeycode = {21, 22, 59, 62, 66, 67};
 
@@ -48,6 +48,7 @@ public class KeySettingFunctionActivity extends Activity {
         textShow = findViewById(R.id.textShow);
         editShow = findViewById(R.id.editShow);
         editKey = findViewById(R.id.editKey);
+        listAct = getResources().getStringArray(R.array.function_acttype);
 
         ArrayAdapter<String> spinnerAdapterAct = new ArrayAdapter<String>(this,  android.R.layout.simple_list_item_activated_1, listAct);
         ArrayAdapter<String> spinnerAdapterKeycode = new ArrayAdapter<String>(this,  android.R.layout.simple_list_item_activated_1, listKeycode);

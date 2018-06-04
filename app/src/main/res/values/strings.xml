@@ -82,12 +82,56 @@
     <string name="activate_keyboard">Activate keyboard</string>
     <string name="set_current_keyboard">Set currently using keyboard</string>
 
+    <string name="ok">OK</string>
     <string name="swap">Replace order</string>
     <string name="add">Add new layout</string>
+    <string name="import_btn">import layout</string>
     <string name="inform_select">Long tap to remove layout</string>
     <string name="save">Save</string>
+    <string name="cancel">Cancel</string>
     <string name="inform_swap">Long tap and drag to change order</string>
     <string name="confirm_delete">Delete this layout?</string>
     <string name="use_candidate">Use word suggestion</string>
     <string name="use_candidate_summary">Disable it if you have performance issue</string>
+
+    <string name="permission_dialog_title">App permissions</string>
+    <string name="permission_dialog">If you want to use the full functionality of this app, please grant all permissions to Application Information > Permissions.</string>
+    <string name="permission_dialog_yes">Set permissions</string>
+
+    <string name="size_col">The number of cols (5 - 9)</string>
+    <string name="size_row">The number of rows (2 - 6)</string>
+    <string name="size_yes">Apply</string>
+    <string name="size_dialog_title">※Warning</string>
+    <string name="size_dialog">When applied, the keyboard is initialized. Do you want to apply?</string>
+
+    <string name="function_appearances">Appearances</string>
+    <string name="function_appearances_hint1">Please enter a character to show.</string>
+    <string name="function_appearances_hint2">The input value is displayed.</string>
+    <string name="function_act">Act-type</string>
+    <string name="function_input">Input</string>
+
+    <string-array name="function_acttype">
+        <item>"1. Enter characters"</item>
+        <item>"2. Enter keycode"</item>
+        <item>"3. Input tool"</item>
+        <item>"4. Previous keyboard"</item>
+        <item>"5. Next Keyboard"</item>
+    </string-array>
+
+    <string-array name="key_setting_lang">
+        <item>"English"</item>
+        <item>"Korean"</item>
+        <item>"Japanese"</item>
+        <item>"Chinese"</item>
+    </string-array>
+    <string name="key_setting_default_lang">Language</string>
+    <string name="key_setting_set_size">Change size</string>
+    <string name="key_setting_export">Export Keyboard</string>
+    <string name="key_setting_export_locate">Saved Locations :</string>
+    <string name="key_setting_modify">Modified.</string>
+
+    <string name="import_success">Saved.</string>
+    <string name="import_fail">It is not the correct format.</string>
+
+    <string name="kbdmodel_name">Default keyboard</string>
 </resources>
