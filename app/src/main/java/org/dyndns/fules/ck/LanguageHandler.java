@@ -6,10 +6,6 @@ import java.text.Normalizer;
 interface LanguageHandler {
 
     StringBuilder handle(String s, StringBuilder sb);
-
-    boolean deletable(StringBuilder sb);
-
-    void delete(StringBuilder sb);
 }
 
 class KoreanHandler implements LanguageHandler {
@@ -24,13 +20,6 @@ class KoreanHandler implements LanguageHandler {
 
     KoreanHandler() {
         super();
-    }
-
-    public boolean deletable(StringBuilder sb) {
-        return false;
-    }
-
-    public void delete(StringBuilder sb) {
     }
 
     public StringBuilder handle(String new_s, StringBuilder sb) {
