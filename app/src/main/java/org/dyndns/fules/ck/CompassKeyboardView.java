@@ -608,6 +608,7 @@ public class CompassKeyboardView extends FrameLayout {
 		if (actionListener != null) {
 			if (cd.code != null) {
 				if(cd.code.length()==1&&cd.code.codePointAt(0)>='ㄱ'&&cd.code.codePointAt(0)<='ㅣ') ck.handle(cd.code);
+				else if(cd.code.length()==1&&(cd.code.codePointAt(0)=='小'||cd.code.codePointAt(0)=='゛'||cd.code.codePointAt(0)=='゜'))ck.handle(cd.code);
 				else actionListener.onText(cd.code); // process a 'code'
 			}
 			else if (cd.keyCode >= 0)
