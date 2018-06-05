@@ -46,6 +46,9 @@ class DbHelper extends SQLiteOpenHelper {
     public boolean checkDB() {
 
 
+
+
+
         return true;
     }
 
@@ -55,6 +58,7 @@ class DbHelper extends SQLiteOpenHelper {
         File fp = new File(DATABASE_PATH);
         File outFile = new File(DATABASE_PATH + DATABASE_NAME);
         if (outFile.exists()) {
+            return;
         }
 
         if (!fp.exists()) { fp.mkdir(); }
@@ -103,30 +107,34 @@ class DbHelper extends SQLiteOpenHelper {
 
         if (dic.compareTo("EN") == 0) {
             cursor = mDB.rawQuery("SELECT NAME FROM EN_DICTIONARY_TABLE WHERE NAME LIKE '" + cond + "%' Order by FREQUENCY DESC Limit 10",null);
-            cursor.moveToFirst();
-            while(cursor.moveToNext()) {
+            boolean status = cursor.moveToFirst();
+            while(status) {
                 ans.add(cursor.getString(cursor.getColumnIndex("NAME")));
+                status=cursor.moveToNext();
             }
         }
         else if (dic.compareTo("KO") == 0) {
             cursor = mDB.rawQuery("SELECT NAME FROM KO_DICTIONARY_TABLE WHERE NAME LIKE '" + cond + "%' Order by FREQUENCY DESC Limit 10",null);
-            cursor.moveToFirst();
-            while(cursor.moveToNext()) {
+            boolean status = cursor.moveToFirst();
+            while(status) {
                 ans.add(cursor.getString(cursor.getColumnIndex("NAME")));
+                status = cursor.moveToNext();
             }
         }
         else if (dic.compareTo("JP") == 0) {
             cursor = mDB.rawQuery("SELECT NAME FROM JP_DICTIONARY_TABLE WHERE HIRA LIKE '" + cond + "%' Order by FREQUENCY DESC Limit 10",null);
-            cursor.moveToFirst();
-            while(cursor.moveToNext()) {
+            boolean status=cursor.moveToFirst();
+            while(status) {
                 ans.add(cursor.getString(cursor.getColumnIndex("RESULT")));
+                status=cursor.moveToNext();
             }
         }
         else if (dic.compareTo("ZH") == 0) {
             cursor = mDB.rawQuery("SELECT NAME FROM CH_DICTIONARY_TABLE WHERE PINYIN_NUMBER LIKE '" + cond +"%' Order by frequency desc limit 10",null);
-            cursor.moveToFirst();
-            while(cursor.moveToNext()) {
+            boolean status = cursor.moveToFirst();
+            while(status) {
                 ans.add(cursor.getString(cursor.getColumnIndex("NAME")));
+                status=cursor.moveToNext();
             }
         }
         else {
