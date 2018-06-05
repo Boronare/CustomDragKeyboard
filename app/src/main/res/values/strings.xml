@@ -10,17 +10,6 @@
     <string name="feedback_key">Key press feedback</string>
     <string name="feedback_key_summary">Vibrate/tick when a key is entered</string>
 
-    <string name="feedback_mod">Modifier feedback</string>
-    <string name="feedback_mod_summary">Vibrate/tick when a modifier is selected</string>
-
-    <string name="feedback_cancel">Cancel feedback</string>
-    <string name="feedback_cancel_summary">Vibrate/tick when a modifier is cancelled</string>
-
-    <string name="feedback_text">Normal text feedback</string>
-    <string name="feedback_text_summary">Visual feedback for normal text</string>
-
-    <string name="feedback_password">Password feedback</string>
-    <string name="feedback_password_summary">Visual feedback for passwords</string>
 
     <string name="p_sizes">Portrait Sizes</string>
     <string name="l_sizes">Landscape Sizes</string>

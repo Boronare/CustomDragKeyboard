@@ -1,12 +1,13 @@
-package org.dyndns.fules.ck;
+package kr.ac.cau.team135.customdragkeyboard;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.provider.Settings;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+
+import kr.ac.cau.team135.customdragkeyboard.R;
 
 public class MainActivity extends Activity {
 

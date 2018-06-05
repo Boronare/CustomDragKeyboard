@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="org.dyndns.fules.ck"
+    package="kr.ac.cau.team135.customdragkeyboard"
     android:versionCode="21"
-    android:versionName="@string/version_summary">
+    android:versionName="Final Presentation">
 
     <uses-sdk
         android:minSdkVersion="21"
@@ -11,13 +11,12 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
     <application
         android:icon="@drawable/icon_launcher"
         android:label="@string/ime_name">
         <service
-            android:name=".CompassKeyboard"
+            android:name="kr.ac.cau.team135.customdragkeyboard.CompassKeyboard"
             android:permission="android.permission.BIND_INPUT_METHOD">
             <intent-filter>
                 <action android:name="android.view.InputMethod" />
@@ -30,11 +29,11 @@
         </service>
 
         <activity
-            android:name=".CompassKeyboardSettings"
+            android:name="kr.ac.cau.team135.customdragkeyboard.CompassKeyboardSettings"
             android:exported="true"
             android:label="@string/settings" />
         <activity
-            android:name=".MainActivity"
+            android:name="kr.ac.cau.team135.customdragkeyboard.MainActivity"
             android:label="CustomDragKeyboard"
             android:theme="@android:style/Theme.DeviceDefault.Panel">
             <intent-filter>
@@ -43,28 +42,28 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".FilePicker">
+        <activity android:name="kr.ac.cau.team135.customdragkeyboard.FilePicker">
             <intent-filter>
-                <action android:name="org.dyndns.fules.ck.filepicker.action.PICK" />
+                <action android:name="kr.ac.cau.team135.customdragkeyboard.filepicker.action.PICK" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
         <activity
-            android:name=".KeySettingActivity"
+            android:name="kr.ac.cau.team135.customdragkeyboard.KeySettingActivity"
             android:theme="@android:style/Theme.NoTitleBar"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
-            android:name=".KeySettingPopupActivity"
+            android:name="kr.ac.cau.team135.customdragkeyboard.KeySettingPopupActivity"
             android:theme="@android:style/Theme.DeviceDefault.Light.Dialog" />
         <activity
-            android:name=".KeySettingSizeActivity"
+            android:name="kr.ac.cau.team135.customdragkeyboard.KeySettingSizeActivity"
             android:theme="@android:style/Theme.NoTitleBar" />
         <activity
-            android:name=".KeySettingFunctionActivity"
+            android:name="kr.ac.cau.team135.customdragkeyboard.KeySettingFunctionActivity"
             android:theme="@android:style/Theme.DeviceDefault.Light.Dialog" />
         <activity
-            android:name=".KeySettingSelectActivity"
+            android:name="kr.ac.cau.team135.customdragkeyboard.KeySettingSelectActivity"
             android:theme="@android:style/Theme.Light.NoTitleBar">
             <intent-filter>
                 <action android:name="android.provider.Settings.KeySettingSelectActivity" />
@@ -73,10 +72,10 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".KeySettingSelectSwapActivity"
+            android:name="kr.ac.cau.team135.customdragkeyboard.KeySettingSelectSwapActivity"
             android:theme="@android:style/Theme.Light.NoTitleBar" />
         <activity
-            android:name=".LayoutImportActivity"
+            android:name="kr.ac.cau.team135.customdragkeyboard.LayoutImportActivity"
             android:theme="@android:style/Theme.NoTitleBar">
             <intent-filter>
                 <action android:name="android.provider.Settings.LayoutImportActivity" />

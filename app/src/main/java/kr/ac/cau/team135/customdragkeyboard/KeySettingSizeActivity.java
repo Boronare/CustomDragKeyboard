@@ -1,4 +1,4 @@
-package org.dyndns.fules.ck;
+package kr.ac.cau.team135.customdragkeyboard;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -10,7 +10,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
 
-import java.util.ArrayList;
+import kr.ac.cau.team135.customdragkeyboard.R;
 
 public class KeySettingSizeActivity extends Activity {
 

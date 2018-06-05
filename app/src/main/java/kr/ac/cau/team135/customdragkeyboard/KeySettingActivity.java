@@ -1,4 +1,4 @@
-package org.dyndns.fules.ck;
+package kr.ac.cau.team135.customdragkeyboard;
 
 import android.Manifest;
 import android.app.Activity;
@@ -30,12 +30,12 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import kr.ac.cau.team135.customdragkeyboard.R;
+
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
 //설정 진입 시, 기본 객체를 복사하여 조정용 객체를 만듦 (기본 객체 없으면 default 객체)

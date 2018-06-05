@@ -1,4 +1,4 @@
-package org.dyndns.fules.ck;
+package kr.ac.cau.team135.customdragkeyboard;
 
 import android.app.Activity;
 import android.content.Context;
@@ -14,12 +14,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import kr.ac.cau.team135.customdragkeyboard.R;
+
 import java.util.Collections;
 import java.util.List;
 

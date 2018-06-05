@@ -1,14 +1,8 @@
-package org.dyndns.fules.ck;
-
-import android.inputmethodservice.Keyboard;
-import android.view.KeyEvent;
-
-import android.view.KeyEvent;
+package kr.ac.cau.team135.customdragkeyboard;
 
 import java.io.Serializable;
 
 import static android.view.KeyEvent.*;
-import static org.dyndns.fules.ck.KeySettingActivity.defaultShow;
 
 /**
  * 키보드 설정값 저장용 모델.
@@ -52,7 +46,7 @@ public class KbdModel implements Serializable {
                         curdir.actType = 1;
                     }
                     else{
-                        switch(defaultShow[i][j][k]){
+                        switch(KeySettingActivity.defaultShow[i][j][k]){
                             case " ":curdir.show="␣";
                                 curdir.sValue=" ";
                                 curdir.iValue=0;
@@ -69,8 +63,8 @@ public class KbdModel implements Serializable {
                             curdir.actType=2;
                             break;
                             default:
-                            curdir.show = defaultShow[i][j][k];
-                            curdir.sValue = defaultShow[i][j][k];
+                            curdir.show = KeySettingActivity.defaultShow[i][j][k];
+                            curdir.sValue = KeySettingActivity.defaultShow[i][j][k];
                             curdir.iValue = 0;
                             curdir.actType = 1;
                         }

@@ -1,7 +1,6 @@
-package org.dyndns.fules.ck;
-import org.dyndns.fules.ck.R;
+package kr.ac.cau.team135.customdragkeyboard;
+import kr.ac.cau.team135.customdragkeyboard.R;
 
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
 import android.util.Log;

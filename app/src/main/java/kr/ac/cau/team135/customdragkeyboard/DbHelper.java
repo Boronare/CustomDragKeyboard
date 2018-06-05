@@ -1,6 +1,5 @@
-package org.dyndns.fules.ck;
+package kr.ac.cau.team135.customdragkeyboard;
 
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.res.AssetManager;
 import android.database.Cursor;
@@ -23,7 +22,7 @@ class DbHelper extends SQLiteOpenHelper {
     private static int DATABASE_VERSION = 1;
 
     private static final String DATABASE_NAME = "Dictionary.db";
-    private static final String PACKAGE_NAME  = "org.dyndns.fules.ck";
+    private static final String PACKAGE_NAME  = "kr.ac.cau.team135.customdragkeyboard";
     private static final String DATABASE_PATH = "/data/data/" + PACKAGE_NAME + "/databases/";
     private String searchQuery = "SELECT RESULT FROM EN_DICTIONARY_TABLE WHERE NAME LIKE '";
     public DbHelper(Context context) {

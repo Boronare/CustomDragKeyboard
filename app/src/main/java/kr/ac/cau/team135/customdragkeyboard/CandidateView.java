@@ -1,4 +1,4 @@
-package org.dyndns.fules.ck;
+package kr.ac.cau.team135.customdragkeyboard;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Canvas;
@@ -8,6 +8,8 @@ import android.graphics.drawable.Drawable;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
+
+import kr.ac.cau.team135.customdragkeyboard.R;
 
 import java.util.ArrayList;
 import java.util.List;

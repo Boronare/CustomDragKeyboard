@@ -7,7 +7,7 @@
     android:focusable="true"
     android:focusableInTouchMode="true"
     android:stretchColumns="*"
-    tools:context=".KeySettingPopupActivity">
+    tools:context="kr.ac.cau.team135.customdragkeyboard.KeySettingPopupActivity">
     <TableRow>
 
         <TextView

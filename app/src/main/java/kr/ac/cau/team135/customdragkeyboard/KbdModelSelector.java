@@ -1,9 +1,8 @@
-package org.dyndns.fules.ck;
+package kr.ac.cau.team135.customdragkeyboard;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
 
 public class KbdModelSelector implements Serializable {
     final long serialVersionUID= 2L;

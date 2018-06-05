@@ -110,5 +110,17 @@
     <string name="import_fail">맞는 형식이 아닙니다.</string>
 
     <string name="kbdmodel_name">기본 키보드</string>
+    <string-array name="zeroone">
+        <item>"1"</item>
+        <item>"0"</item>
+    </string-array>
+
+    <string name="pg_about">정보</string>
+    <string name="version">Version</string>
+    <string name="version_summary">Final Presentation</string>
+
+    <string name="copyright">Copyright</string>
+    <string name="source">Source</string>
+    <string name="source_summary">https://github.com/Boronare/CustomDragKeyboard</string>
 
 </resources>

@@ -1,40 +1,26 @@
-package org.dyndns.fules.ck;
+package kr.ac.cau.team135.customdragkeyboard;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.LinearGradient;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.graphics.Shader.TileMode;
-import android.graphics.Typeface;
 import android.inputmethodservice.KeyboardView.OnKeyboardActionListener;
-import android.inputmethodservice.KeyboardView;
-import android.media.MediaPlayer;
-import android.net.Uri;
 import android.text.InputType;
 import android.os.Vibrator;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.MotionEvent;
-import android.view.View.MeasureSpec;
 import android.view.View;
-import android.view.ViewConfiguration;
-import android.view.ViewParent;
 import android.view.SoundEffectConstants;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.Toast;
+
 import java.io.IOException;
-import java.net.URLDecoder;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
 
 interface EmbeddableItem {
 	public void calculateSizes();

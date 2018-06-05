@@ -1,4 +1,4 @@
-package org.dyndns.fules.ck;
+package kr.ac.cau.team135.customdragkeyboard;
 import android.content.SharedPreferences;
 import android.inputmethodservice.InputMethodService;
 import android.inputmethodservice.Keyboard;
@@ -7,7 +7,6 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.inputmethod.CompletionInfo;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
 import android.view.inputmethod.ExtractedTextRequest;
@@ -18,10 +17,10 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.text.Normalizer;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
+
+import kr.ac.cau.team135.customdragkeyboard.R;
+
 import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.view.textservice.TextInfo;
@@ -161,6 +160,9 @@ public class CompassKeyboard extends InputMethodService implements OnKeyboardAct
 	private void sendModifiers(InputConnection ic, int action) {
 		if (ckv == null)
 			return;
+	}
+	@Override public void onFinishInput(){
+		ckv.removeCallbacks(ckv.onLongTap);
 	}
 	// Process a generated keycode
 	public void onKey(int primaryCode, int[] keyCodes) {

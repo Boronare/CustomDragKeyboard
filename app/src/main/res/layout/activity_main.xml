@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#ffffff"
-    tools:context="org.dyndns.fules.ck.MainActivity">
+    tools:context="kr.ac.cau.team135.customdragkeyboard.MainActivity">
 
     <Button
         android:id="@+id/button17"

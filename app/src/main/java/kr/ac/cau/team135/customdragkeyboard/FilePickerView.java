@@ -1,20 +1,15 @@
-package org.dyndns.fules.ck;
-import org.dyndns.fules.ck.R;
+package kr.ac.cau.team135.customdragkeyboard;
+import kr.ac.cau.team135.customdragkeyboard.R;
 
 import android.content.Context;
-import android.content.res.TypedArray;
-import android.graphics.drawable.BitmapDrawable;
 import android.util.AttributeSet;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup.LayoutParams;
 import android.view.ViewGroup;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.Checkable;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -25,7 +20,6 @@ import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 class RegexFilter implements FilenameFilter {

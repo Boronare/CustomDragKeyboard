@@ -1,12 +1,9 @@
-package org.dyndns.fules.ck;
-import org.dyndns.fules.ck.R;
+package kr.ac.cau.team135.customdragkeyboard;
+import kr.ac.cau.team135.customdragkeyboard.R;
 
-import android.Manifest;
 import android.annotation.TargetApi;
-import android.content.Context;
 import android.os.Build;
 import android.util.Log;
-import android.view.View;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -21,15 +18,15 @@ import static android.content.pm.PackageManager.*;
 public class FilePicker extends Activity implements FilePickerView.ResultListener {
 	private static final String TAG = "FilePicker";
 
-	public static final String ACTION_PICK = "org.dyndns.fules.ck.filepicker.action.PICK";
-    public static final String EXTRA_PATH = "org.dyndns.fules.ck.filepicker.extra.path";
-	public static final String EXTRA_REGEX = "org.dyndns.fules.ck.filepicker.extra.regex";
-	public static final String EXTRA_SHOW_HIDDEN = "org.dyndns.fules.ck.filepicker.extra.show.hidden";
-	public static final String EXTRA_SHOW_FILES = "org.dyndns.fules.ck.filepicker.extra.show.files";
-	public static final String EXTRA_SHOW_OTHERS = "org.dyndns.fules.ck.filepicker.extra.show.others";
-	public static final String EXTRA_SHOW_UNREADABLE = "org.dyndns.fules.ck.filepicker.extra.show.unreadable";
-	public static final String EXTRA_PREFERENCE = "org.dyndns.fules.ck.filepicker.extra.preference";
-	public static final String EXTRA_PREFERENCE_KEY = "org.dyndns.fules.ck.filepicker.extra.preference.key";
+	public static final String ACTION_PICK = "kr.ac.cau.team135.customdragkeyboard.filepicker.action.PICK";
+    public static final String EXTRA_PATH = "kr.ac.cau.team135.customdragkeyboard.filepicker.extra.path";
+	public static final String EXTRA_REGEX = "kr.ac.cau.team135.customdragkeyboard.filepicker.extra.regex";
+	public static final String EXTRA_SHOW_HIDDEN = "kr.ac.cau.team135.customdragkeyboard.filepicker.extra.show.hidden";
+	public static final String EXTRA_SHOW_FILES = "kr.ac.cau.team135.customdragkeyboard.filepicker.extra.show.files";
+	public static final String EXTRA_SHOW_OTHERS = "kr.ac.cau.team135.customdragkeyboard.filepicker.extra.show.others";
+	public static final String EXTRA_SHOW_UNREADABLE = "kr.ac.cau.team135.customdragkeyboard.filepicker.extra.show.unreadable";
+	public static final String EXTRA_PREFERENCE = "kr.ac.cau.team135.customdragkeyboard.filepicker.extra.preference";
+	public static final String EXTRA_PREFERENCE_KEY = "kr.ac.cau.team135.customdragkeyboard.filepicker.extra.preference.key";
 
     String prefName = null;
     String prefKey = null;
