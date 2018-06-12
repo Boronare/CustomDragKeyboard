@@ -124,7 +124,7 @@ class DbHelper extends SQLiteOpenHelper {
             cursor = mDB.rawQuery("SELECT NAME FROM JP_DICTIONARY_TABLE WHERE HIRA LIKE '" + cond + "%' Order by FREQUENCY DESC Limit 10",null);
             boolean status=cursor.moveToFirst();
             while(status) {
-                ans.add(cursor.getString(cursor.getColumnIndex("RESULT")));
+                ans.add(cursor.getString(cursor.getColumnIndex("NAME")));
                 status=cursor.moveToNext();
             }
         }
