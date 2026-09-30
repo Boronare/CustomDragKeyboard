@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 키 하나와 네 방향 드래그 화살표 -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M44,40h20a4,4 0,0 1,4 4v20a4,4 0,0 1,-4 4h-20a4,4 0,0 1,-4 -4v-20a4,4 0,0 1,4 -4z" />
+    <path
+        android:fillColor="#2F5DA8"
+        android:pathData="M50,50h8v8h-8z" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M54,24l7,9h-14zM54,84l-7,-9h14zM24,54l9,-7v14zM84,54l-9,7v-14z" />
+</vector>

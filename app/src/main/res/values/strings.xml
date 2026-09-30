@@ -1,126 +1,103 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="ime_name">Custom Drag Keyboard</string>
-
-    <string name="settings">Settings</string>
-
-    <string name="pg_feedback">Feedback</string>
-    <string name="pg_feedback_summary">Visual and vibrating feedback settings</string>
-
-    <string name="feedback_key">Key press feedback</string>
-    <string name="feedback_key_summary">Vibrate/tick when a key is entered</string>
-
-
-    <string name="p_sizes">Portrait Sizes</string>
-    <string name="l_sizes">Landscape Sizes</string>
-    <string name="sizes_summary">Keyboard layout sizes in mm-s</string>
-
-    <string name="margin_left">Left</string>
-    <string name="margin_left_summary">Left margin in mm-s</string>
-
-    <string name="margin_right">Right</string>
-    <string name="margin_right_summary">Right margin in mm-s</string>
-
-    <string name="margin_bottom">Bottom</string>
-    <string name="margin_bottom_summary">Bottom margin in mm-s</string>
-
-    <string-array name="key_feedback_names">
-        <item>"None"</item>
-        <item>"Vibrate once"</item>
-        <item>"Vibrate twice"</item>
-    </string-array>
-
-    <string-array name="key_feedback_values">
-        <item>"-1"</item>
-        <item>"0"</item>
-        <item>"1"</item>
-    </string-array>
-
-    <string-array name="yesno">
-        <item>"Yes"</item>
-        <item>"No"</item>
-    </string-array>
-
-    <string-array name="zeroone">
-        <item>"1"</item>
-        <item>"0"</item>
-    </string-array>
-
-    <string name="pg_about">About</string>
-    <string name="pg_about_summary">Miscellaneous information</string>
-
-    <string name="version">Version</string>
-    <string name="version_summary">Final Presentation</string>
-
-    <string name="copyright">Copyright</string>
-    <string name="copyright_summary">Based on CompassKeyboard by Gabor Simon.\n2018 Modified by Chung-Ang University CSE Team135</string>
-    <string name="source">Source</string>
-    <string name="source_summary">https://github.com/Boronare/CustomDragKeyboard</string>
-
-    <string name="key_setting">Keyboard Layout Setting</string>
-    <string name="key_setting_summary">Can set key layout as you want</string>
-
-    <string name="layout_import">Load Keyboard Layout</string>
-    <string name="layout_import_summary">Load pre-made layout from external file</string>
-
-    <string name="sensitivity_x">Sensitivity:X axis</string>
-    <string name="sensitivity_summary">Set drag sensitivity</string>
-    <string name="sensitivity_summary_">The smaller values, the more sensitive.</string>
-    <string name="sensitivity_y">Sensitivity:Y axis</string>
-
-    <string name="activate_keyboard">Activate keyboard</string>
-    <string name="set_current_keyboard">Set currently using keyboard</string>
+<resources>
+    <string name="app_name" translatable="false">Custom Drag Keyboard</string>
+    <string name="subtype_korean">Korean</string>
+    <string name="subtype_english">English</string>
 
     <string name="ok">OK</string>
-    <string name="swap">Replace order</string>
-    <string name="add">Add new layout</string>
-    <string name="import_btn">import layout</string>
-    <string name="inform_select">Long tap to remove layout</string>
-    <string name="save">Save</string>
     <string name="cancel">Cancel</string>
-    <string name="inform_swap">Long tap and drag to change order</string>
-    <string name="confirm_delete">Delete this layout?</string>
-    <string name="use_candidate">Use word suggestion</string>
-    <string name="use_candidate_summary">Disable it if you have performance issue</string>
+    <string name="save">Save</string>
+    <string name="back">Back</string>
+    <string name="create">Create</string>
+    <string name="edit">Edit</string>
+    <string name="delete">Delete</string>
+    <string name="duplicate">Duplicate</string>
+    <string name="export">Export</string>
+    <string name="more">More</string>
+    <string name="move_up">Move up</string>
+    <string name="move_down">Move down</string>
 
-    <string name="permission_dialog_title">App permissions</string>
-    <string name="permission_dialog">If you want to use the full functionality of this app, please grant all permissions to Application Information > Permissions.</string>
-    <string name="permission_dialog_yes">Set permissions</string>
+    <string name="setup_title">Getting started</string>
+    <string name="setup_enable">Enable the keyboard in system settings</string>
+    <string name="setup_enable_button">Enable</string>
+    <string name="setup_select">Choose it as your current keyboard</string>
+    <string name="setup_select_button">Choose</string>
+    <string name="try_it">Try it</string>
+    <string name="try_it_hint">Tap a key, or drag from it in any of 8 directions</string>
 
-    <string name="size_col">The number of cols (5 - 9)</string>
-    <string name="size_row">The number of rows (2 - 6)</string>
-    <string name="size_yes">Apply</string>
-    <string name="size_dialog_title">※Warning</string>
-    <string name="size_dialog">When applied, the keyboard is initialized. Do you want to apply?</string>
+    <string name="layouts">Layouts</string>
+    <string name="layouts_hint">On the keyboard, the ⌨▸ and ◂⌨ actions cycle through the layouts in this order.</string>
+    <string name="layout_summary">%1$s · %2$d×%3$d</string>
+    <string name="new_layout">New layout</string>
+    <string name="new_layout_default_name">My layout</string>
+    <string name="template_blank">Blank 5×3 layout</string>
+    <string name="template_classic">Copy of “Default (Korean/English)”</string>
+    <string name="template_english">Copy of “English”</string>
+    <string name="import_layout">Import</string>
+    <string name="export_all">Export all</string>
+    <string name="export_done">Layouts exported.</string>
+    <string name="import_done">Imported %1$d layout(s).</string>
+    <string name="import_invalid">This file is not a Custom Drag Keyboard layout.</string>
+    <string name="file_error">Could not access the file.</string>
+    <string name="copy_suffix"> (copy)</string>
+    <string name="delete_title">Delete layout?</string>
+    <string name="delete_message">“%1$s” will be deleted.</string>
 
-    <string name="function_appearances">Appearances</string>
-    <string name="function_appearances_hint1">Please enter a character to show.</string>
-    <string name="function_appearances_hint2">The input value is displayed.</string>
-    <string name="function_act">Act-type</string>
-    <string name="function_input">Input</string>
+    <string name="edit_layout">Edit layout</string>
+    <string name="layout_name">Name</string>
+    <string name="language">Language</string>
+    <string name="language_korean">Korean</string>
+    <string name="language_english">English</string>
+    <string name="language_korean_hint">Consonants and vowels are combined into syllables as you type.</string>
+    <string name="language_english_hint">Characters are entered as they are.</string>
+    <string name="columns">Columns</string>
+    <string name="rows">Rows</string>
+    <string name="edit_layout_hint">Tap a key to set what each of its 9 directions does. Resizing keeps the existing keys.</string>
+    <string name="discard_title">Discard changes?</string>
+    <string name="discard_message">Your changes to this layout have not been saved.</string>
+    <string name="discard">Discard</string>
 
-    <string-array name="function_acttype">
-        <item>"1. Enter characters"</item>
-        <item>"2. Enter keycode"</item>
-        <item>"3. Input tool"</item>
-        <item>"4. Previous keyboard"</item>
-        <item>"5. Next Keyboard"</item>
-    </string-array>
+    <string name="edit_key">Edit key</string>
+    <string name="edit_key_hint">The centre is a plain tap; the others are drags. Tap a cell to change it.</string>
+    <string name="key_repeat">Repeat the centre action while held</string>
+    <string name="edit_action">Action for %1$s</string>
+    <string name="action_none">None</string>
+    <string name="action_text">Type text</string>
+    <string name="action_special">Special key</string>
+    <string name="action_keycode">Android key code</string>
+    <string name="action_next_layout">Next layout</string>
+    <string name="action_previous_layout">Previous layout</string>
+    <string name="action_switch_ime">Switch to another keyboard app</string>
+    <string name="action_text_value">Text</string>
+    <string name="action_text_hint">A single space types a space. Longer text is typed in one go.</string>
+    <string name="action_keycode_value">Key code</string>
+    <string name="action_keycode_hint">An Android KeyEvent code, e.g. 111 for Esc.</string>
+    <string name="action_label">Label (optional)</string>
+    <string name="action_label_hint">What is shown on the key.</string>
+    <string name="special_backspace">Backspace</string>
+    <string name="special_enter">Enter</string>
+    <string name="special_tab">Tab</string>
+    <string name="special_cursor_left">Cursor left</string>
+    <string name="special_cursor_right">Cursor right</string>
+    <string name="special_forward_delete">Delete forward</string>
 
-    <string-array name="key_setting_lang">
-        <item>"English"</item>
-        <item>"Korean"</item>
-        <item>"Japanese"</item>
-        <item>"Chinese"</item>
-    </string-array>
-    <string name="key_setting_default_lang">Language</string>
-    <string name="key_setting_set_size">Change size</string>
-    <string name="key_setting_export">Export Keyboard</string>
-    <string name="key_setting_export_locate">Saved Locations :</string>
-    <string name="key_setting_modify">Modified.</string>
-
-    <string name="import_success">Saved.</string>
-    <string name="import_fail">It is not the correct format.</string>
-
-    <string name="kbdmodel_name">Default keyboard</string>
+    <string name="preferences">Settings</string>
+    <string name="pref_vibration">Vibration on key press</string>
+    <string name="vibration_off">Off</string>
+    <string name="vibration_light">Light (system haptics)</string>
+    <string name="vibration_strong">Strong</string>
+    <string name="pref_sensitivity">Drag sensitivity</string>
+    <string name="pref_sensitivity_hint">How far a finger must move before it counts as a drag. Smaller is more sensitive.</string>
+    <string name="pref_sensitivity_x">Horizontal</string>
+    <string name="pref_sensitivity_y">Vertical</string>
+    <string name="pref_key_height">Key size</string>
+    <string name="pref_key_height_value">Key height</string>
+    <string name="pref_margins_portrait">Margins in portrait</string>
+    <string name="pref_margins_landscape">Margins in landscape</string>
+    <string name="pref_margins_hint">Moves the keys away from the screen edges so corner keys are easier to reach.</string>
+    <string name="margin_left">Left</string>
+    <string name="margin_right">Right</string>
+    <string name="margin_bottom">Bottom</string>
+    <string name="about">About</string>
+    <string name="about_text">Custom Drag Keyboard %1$s\nA rewrite of the 2018 Chung-Ang University Team 135 project, originally based on CompassKeyboard by Gabor Simon.\nhttps://github.com/Boronare/CustomDragKeyboard</string>
 </resources>

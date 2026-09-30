@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="subtype_korean">한국어</string>
+    <string name="subtype_english">영어</string>
+
+    <string name="ok">확인</string>
+    <string name="cancel">취소</string>
+    <string name="save">저장</string>
+    <string name="back">뒤로</string>
+    <string name="create">만들기</string>
+    <string name="edit">편집</string>
+    <string name="delete">삭제</string>
+    <string name="duplicate">복제</string>
+    <string name="export">내보내기</string>
+    <string name="more">더보기</string>
+    <string name="move_up">위로 이동</string>
+    <string name="move_down">아래로 이동</string>
+
+    <string name="setup_title">시작하기</string>
+    <string name="setup_enable">시스템 설정에서 키보드 활성화하기</string>
+    <string name="setup_enable_button">활성화</string>
+    <string name="setup_select">사용 중인 키보드로 설정하기</string>
+    <string name="setup_select_button">선택</string>
+    <string name="try_it">입력해 보기</string>
+    <string name="try_it_hint">키를 누르거나 8방향으로 드래그해 보세요</string>
+
+    <string name="layouts">자판</string>
+    <string name="layouts_hint">키보드에서 ⌨▸, ◂⌨ 동작을 쓰면 이 목록 순서대로 자판이 바뀝니다.</string>
+    <string name="layout_summary">%1$s · %2$d×%3$d</string>
+    <string name="new_layout">새 자판</string>
+    <string name="new_layout_default_name">내 자판</string>
+    <string name="template_blank">빈 5×3 자판</string>
+    <string name="template_classic">“기본 (한/영)” 복사</string>
+    <string name="template_english">“English” 복사</string>
+    <string name="import_layout">불러오기</string>
+    <string name="export_all">모두 내보내기</string>
+    <string name="export_done">자판을 내보냈습니다.</string>
+    <string name="import_done">자판 %1$d개를 불러왔습니다.</string>
+    <string name="import_invalid">Custom Drag Keyboard 자판 파일이 아닙니다.</string>
+    <string name="file_error">파일에 접근할 수 없습니다.</string>
+    <string name="copy_suffix"> (사본)</string>
+    <string name="delete_title">자판을 삭제할까요?</string>
+    <string name="delete_message">“%1$s” 자판이 삭제됩니다.</string>
+
+    <string name="edit_layout">자판 편집</string>
+    <string name="layout_name">이름</string>
+    <string name="language">언어</string>
+    <string name="language_korean">한국어</string>
+    <string name="language_english">영어</string>
+    <string name="language_korean_hint">자음과 모음을 입력하면 글자로 조합됩니다.</string>
+    <string name="language_english_hint">입력한 문자가 그대로 입력됩니다.</string>
+    <string name="columns">가로 칸</string>
+    <string name="rows">세로 줄</string>
+    <string name="edit_layout_hint">키를 눌러 9방향 각각의 동작을 설정하세요. 크기를 바꿔도 기존 키는 유지됩니다.</string>
+    <string name="discard_title">변경 사항을 버릴까요?</string>
+    <string name="discard_message">이 자판의 변경 사항이 저장되지 않았습니다.</string>
+    <string name="discard">버리기</string>
+
+    <string name="edit_key">키 설정</string>
+    <string name="edit_key_hint">가운데는 탭, 나머지는 드래그 방향입니다. 칸을 눌러 바꿀 수 있습니다.</string>
+    <string name="key_repeat">길게 누르면 가운데 동작 반복</string>
+    <string name="edit_action">%1$s 방향 동작</string>
+    <string name="action_none">없음</string>
+    <string name="action_text">문자 입력</string>
+    <string name="action_special">특수 키</string>
+    <string name="action_keycode">Keycode 입력</string>
+    <string name="action_next_layout">다음 자판</string>
+    <string name="action_previous_layout">이전 자판</string>
+    <string name="action_switch_ime">다른 키보드 앱으로 전환</string>
+    <string name="action_text_value">입력할 문자</string>
+    <string name="action_text_hint">공백 한 칸을 넣으면 스페이스가 됩니다. 여러 글자는 한 번에 입력됩니다.</string>
+    <string name="action_keycode_value">키코드</string>
+    <string name="action_keycode_hint">Android KeyEvent 코드입니다. 예: 111 = Esc</string>
+    <string name="action_label">표시 값 (선택)</string>
+    <string name="action_label_hint">키 위에 보여줄 문자입니다.</string>
+    <string name="special_backspace">백스페이스</string>
+    <string name="special_enter">엔터</string>
+    <string name="special_tab">탭</string>
+    <string name="special_cursor_left">커서 왼쪽</string>
+    <string name="special_cursor_right">커서 오른쪽</string>
+    <string name="special_forward_delete">앞 글자 지우기</string>
+
+    <string name="preferences">설정</string>
+    <string name="pref_vibration">키 입력 진동</string>
+    <string name="vibration_off">없음</string>
+    <string name="vibration_light">약하게 (시스템 햅틱)</string>
+    <string name="vibration_strong">강하게</string>
+    <string name="pref_sensitivity">드래그 감도</string>
+    <string name="pref_sensitivity_hint">손가락이 이만큼 움직여야 드래그로 인식합니다. 작을수록 예민해집니다.</string>
+    <string name="pref_sensitivity_x">가로</string>
+    <string name="pref_sensitivity_y">세로</string>
+    <string name="pref_key_height">키 크기</string>
+    <string name="pref_key_height_value">키 높이</string>
+    <string name="pref_margins_portrait">세로 모드 여백</string>
+    <string name="pref_margins_landscape">가로 모드 여백</string>
+    <string name="pref_margins_hint">키를 화면 가장자리에서 떨어뜨려 모서리 키를 누르기 편하게 합니다.</string>
+    <string name="margin_left">왼쪽</string>
+    <string name="margin_right">오른쪽</string>
+    <string name="margin_bottom">하단</string>
+    <string name="about">정보</string>
+    <string name="about_text">Custom Drag Keyboard %1$s\n2018 중앙대학교 소프트웨어학부 팀135 프로젝트를 새로 만든 버전입니다. 원작은 Gabor Simon의 CompassKeyboard를 기반으로 했습니다.\nhttps://github.com/Boronare/CustomDragKeyboard</string>
+</resources>
