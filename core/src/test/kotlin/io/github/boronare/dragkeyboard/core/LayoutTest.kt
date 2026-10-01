@@ -65,4 +65,23 @@ class LayoutTest {
             )
         }
     }
+
+    @Test
+    fun edgeActionsRoundTripAndAreOptional() {
+        val layout = DefaultLayouts.english().copy(
+            leftEdge = KeyAction.Special(SpecialKey.BACKSPACE),
+            rightEdge = KeyAction.Text(" "),
+        )
+        assertEquals(layout, LayoutCodec.decode(LayoutCodec.encode(listOf(layout))).single())
+        assertEquals(layout.leftEdge, layout.resized(2, 2).leftEdge)
+
+        // 여백 동작이 없던 파일도 그대로 읽힌다
+        val old = LayoutCodec.decode(
+            """{"format":"custom-drag-keyboard","version":1,"layouts":[
+              {"id":"x","name":"x","language":"ENGLISH","rows":1,"columns":1,
+               "keys":[{"actions":[null,null,null,null,{"type":"text","text":"a"},null,null,null,null]}]}]}""",
+        ).single()
+        assertEquals(null, old.leftEdge)
+        assertEquals(null, old.rightEdge)
+    }
 }

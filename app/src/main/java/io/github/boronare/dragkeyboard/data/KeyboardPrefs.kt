@@ -7,14 +7,17 @@ enum class Vibration { OFF, LIGHT, STRONG }
 /** 키보드 좌우·하단 여백 (mm). 모서리 키를 누르기 편하게 한다. */
 data class Margins(val leftMm: Float = 0f, val rightMm: Float = 0f, val bottomMm: Float = 0f)
 
+val DEFAULT_MARGINS = Margins(leftMm = 5f, rightMm = 5f)
+
 data class KeyboardPrefs(
     val vibration: Vibration = Vibration.LIGHT,
     /** 이 거리(mm) 이상 움직여야 드래그로 인식한다. 작을수록 예민하다. */
     val sensitivityXMm: Float = 3f,
     val sensitivityYMm: Float = 3f,
     val keyHeightMm: Float = 11f,
-    val portraitMargins: Margins = Margins(),
-    val landscapeMargins: Margins = Margins(),
+    // 가장자리 키도 바깥쪽으로 드래그할 공간이 있도록 좌우 여백을 기본으로 둔다
+    val portraitMargins: Margins = DEFAULT_MARGINS,
+    val landscapeMargins: Margins = DEFAULT_MARGINS,
 )
 
 class PrefsStore(context: Context) {
@@ -28,8 +31,8 @@ class PrefsStore(context: Context) {
             sensitivityXMm = sp.getFloat(SENSITIVITY_X, d.sensitivityXMm),
             sensitivityYMm = sp.getFloat(SENSITIVITY_Y, d.sensitivityYMm),
             keyHeightMm = sp.getFloat(KEY_HEIGHT, d.keyHeightMm),
-            portraitMargins = loadMargins("portrait"),
-            landscapeMargins = loadMargins("landscape"),
+            portraitMargins = loadMargins("portrait", d.portraitMargins),
+            landscapeMargins = loadMargins("landscape", d.landscapeMargins),
         )
     }
 
@@ -49,10 +52,10 @@ class PrefsStore(context: Context) {
         get() = sp.getString(ACTIVE_LAYOUT, null)
         set(value) = sp.edit().putString(ACTIVE_LAYOUT, value).apply()
 
-    private fun loadMargins(prefix: String) = Margins(
-        leftMm = sp.getFloat("$prefix.left", 0f),
-        rightMm = sp.getFloat("$prefix.right", 0f),
-        bottomMm = sp.getFloat("$prefix.bottom", 0f),
+    private fun loadMargins(prefix: String, default: Margins) = Margins(
+        leftMm = sp.getFloat("$prefix.left", default.leftMm),
+        rightMm = sp.getFloat("$prefix.right", default.rightMm),
+        bottomMm = sp.getFloat("$prefix.bottom", default.bottomMm),
     )
 
     private fun android.content.SharedPreferences.Editor.putMargins(prefix: String, m: Margins) =

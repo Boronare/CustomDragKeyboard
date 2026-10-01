@@ -37,6 +37,10 @@ data class KeyboardLayout(
     val columns: Int,
     /** 행 우선 순서로 rows * columns 개. */
     val keys: List<KeySpec>,
+    /** 왼쪽 여백을 눌렀을 때의 원터치 동작. null이면 여백은 드래그 공간으로만 쓴다. */
+    val leftEdge: KeyAction? = null,
+    /** 오른쪽 여백을 눌렀을 때의 원터치 동작. */
+    val rightEdge: KeyAction? = null,
 ) {
     init {
         require(rows in ROW_RANGE) { "rows must be in $ROW_RANGE" }

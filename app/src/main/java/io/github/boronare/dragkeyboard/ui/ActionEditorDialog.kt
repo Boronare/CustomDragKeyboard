@@ -27,7 +27,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import io.github.boronare.dragkeyboard.R
-import io.github.boronare.dragkeyboard.core.Direction
 import io.github.boronare.dragkeyboard.core.KeyAction
 import io.github.boronare.dragkeyboard.core.LayoutTarget
 import io.github.boronare.dragkeyboard.core.SpecialKey
@@ -67,7 +66,7 @@ fun specialKeyName(key: SpecialKey): String = stringResource(
 /** 한 방향의 동작을 고른다. 원작의 "문자 입력 / Keycode 입력 / 이전·다음 키보드"를 이어받았다. */
 @Composable
 fun ActionEditorDialog(
-    direction: Direction,
+    title: String,
     action: KeyAction?,
     onDismiss: () -> Unit,
     onConfirm: (KeyAction?) -> Unit,
@@ -92,7 +91,7 @@ fun ActionEditorDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text(stringResource(R.string.edit_action, direction.arrow())) },
+        title = { Text(title) },
         text = {
             Column(Modifier.verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 Column {

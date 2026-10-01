@@ -93,10 +93,15 @@
     <string name="pref_key_height_value">키 높이</string>
     <string name="pref_margins_portrait">세로 모드 여백</string>
     <string name="pref_margins_landscape">가로 모드 여백</string>
-    <string name="pref_margins_hint">키를 화면 가장자리에서 떨어뜨려 모서리 키를 누르기 편하게 합니다.</string>
+    <string name="pref_margins_hint">키 옆에 공간을 두어 가장자리 키도 바깥쪽으로 드래그할 수 있게 합니다. 자판 편집기에서 여백 버튼을 지정하면 이 공간에 표시됩니다.</string>
     <string name="margin_left">왼쪽</string>
     <string name="margin_right">오른쪽</string>
     <string name="margin_bottom">하단</string>
     <string name="about">정보</string>
     <string name="about_text">Custom Drag Keyboard %1$s\n2018 중앙대학교 소프트웨어학부 팀135 프로젝트를 새로 만든 버전입니다. 원작은 Gabor Simon의 CompassKeyboard를 기반으로 했습니다.\nhttps://github.com/Boronare/CustomDragKeyboard</string>
+    <string name="edge_buttons">좌우 여백 버튼</string>
+    <string name="edge_buttons_hint">키보드 좌우 빈 공간을 원터치 버튼으로 쓸 수 있습니다. 키에서 시작한 드래그는 여백까지 밀어도 그 키의 입력입니다. 여백 너비는 설정 › 여백에서 바꿉니다.</string>
+    <string name="edge_left">왼쪽 여백</string>
+    <string name="edge_right">오른쪽 여백</string>
+    <string name="edge_empty">비어 있음 (드래그 공간)</string>
 </resources>

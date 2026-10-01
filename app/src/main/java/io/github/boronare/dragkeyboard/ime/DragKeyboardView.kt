@@ -19,6 +19,7 @@ import io.github.boronare.dragkeyboard.core.Direction
 import io.github.boronare.dragkeyboard.core.DirectionDetector
 import io.github.boronare.dragkeyboard.core.KeyAction
 import io.github.boronare.dragkeyboard.core.KeyboardLayout
+import io.github.boronare.dragkeyboard.core.SpecialKey
 import io.github.boronare.dragkeyboard.data.KeyboardPrefs
 import io.github.boronare.dragkeyboard.data.Vibration
 import kotlin.math.floor
@@ -28,6 +29,9 @@ import kotlin.math.roundToInt
 /**
  * 자판을 그리고 터치를 방향 입력으로 바꾸는 뷰.
  * 각 키에는 9개 방향의 글자가 3x3으로 표시되고, 누른 채 드래그하면 그 방향의 글자가 입력된다.
+ *
+ * 좌우 여백은 가장자리 키를 바깥으로 드래그할 공간이다. 키에서 시작한 드래그는 여백까지 밀어도
+ * 그 키의 입력이고, 여백에서 시작한 터치만 자판에 지정된 여백 원터치 동작을 실행한다.
  */
 @SuppressLint("ViewConstructor")
 class DragKeyboardView(context: Context) : View(context) {
@@ -42,19 +46,44 @@ class DragKeyboardView(context: Context) : View(context) {
     private val radius = 6 * dpPx
 
     private val keyRects = mutableListOf<RectF>()
+    private var leftEdgeRect: RectF? = null
+    private var rightEdgeRect: RectF? = null
     private var gridLeft = 0f
+    private var gridRight = 0f
     private var gridTop = 0f
     private var cellWidth = 1f
     private var cellHeight = 1f
 
-    private inner class Touch(val keyIndex: Int, val downX: Float, val downY: Float) : Runnable {
+    /** 터치가 시작된 곳: 키 번호이거나 [LEFT_EDGE], [RIGHT_EDGE]. */
+    private inner class Touch(val target: Int, val downX: Float, val downY: Float) : Runnable {
         var direction = Direction.TAP
         var repeated = false
+        val isEdge get() = target < 0
+
+        /** 손을 뗐을 때 실행할 동작. 여백 버튼은 방향과 상관없이 하나뿐이다. */
+        fun action(): KeyAction? {
+            val l = layout ?: return null
+            return when (target) {
+                LEFT_EDGE -> l.leftEdge
+                RIGHT_EDGE -> l.rightEdge
+                else -> l.keys.getOrNull(target)?.get(direction)
+            }
+        }
+
+        fun repeats(): Boolean {
+            val l = layout ?: return false
+            return if (isEdge) {
+                (action() as? KeyAction.Special)?.key in REPEATABLE_KEYS
+            } else {
+                val key = l.keys.getOrNull(target) ?: return false
+                key.repeat && key[Direction.TAP] != null
+            }
+        }
 
         // 길게 누르면 가운데 동작을 반복한다
         override fun run() {
-            val action = layout?.keys?.getOrNull(keyIndex)?.get(Direction.TAP) ?: return
             if (direction != Direction.TAP) return
+            val action = action() ?: return
             repeated = true
             onAction?.invoke(action)
             postDelayed(this, REPEAT_INTERVAL_MS)
@@ -67,6 +96,7 @@ class DragKeyboardView(context: Context) : View(context) {
         Configuration.UI_MODE_NIGHT_YES
     private val backgroundColor = if (night) 0xFF1E1F22.toInt() else 0xFFD5D8DE.toInt()
     private val keyColor = if (night) 0xFF3A3B3F.toInt() else 0xFFFFFFFF.toInt()
+    private val edgeColor = if (night) 0xFF2B2C30.toInt() else 0xFFE9EBEF.toInt()
     private val pressedColor = if (night) 0xFF2F4F80.toInt() else 0xFFB9CCEE.toInt()
     private val primaryText = if (night) 0xFFF1F1F4.toInt() else 0xFF1B1B1F.toInt()
     private val secondaryText = if (night) 0xFF9AA0A6.toInt() else 0xFF6B7280.toInt()
@@ -113,11 +143,13 @@ class DragKeyboardView(context: Context) : View(context) {
 
     private fun computeKeyRects() {
         keyRects.clear()
+        leftEdgeRect = null
+        rightEdgeRect = null
         val l = layout ?: return
         if (width == 0 || height == 0) return
         gridLeft = margins.leftMm * mmPx
+        gridRight = width - margins.rightMm * mmPx
         gridTop = gap / 2
-        val gridRight = width - margins.rightMm * mmPx
         val gridBottom = height - margins.bottomMm * mmPx - gap / 2
         cellWidth = ((gridRight - gridLeft) / l.columns).coerceAtLeast(1f)
         cellHeight = ((gridBottom - gridTop) / l.rows).coerceAtLeast(1f)
@@ -131,27 +163,41 @@ class DragKeyboardView(context: Context) : View(context) {
                 )
             }
         }
+        // 여백이 손가락으로 누를 만큼 넓을 때만 원터치 버튼을 둔다
+        val minEdge = MIN_EDGE_BUTTON_MM * mmPx
+        if (l.leftEdge != null && gridLeft >= minEdge) {
+            leftEdgeRect = RectF(gap / 2, gridTop + gap / 2, gridLeft - gap / 2, gridBottom - gap / 2)
+        }
+        if (l.rightEdge != null && width - gridRight >= minEdge) {
+            rightEdgeRect = RectF(gridRight + gap / 2, gridTop + gap / 2, width - gap / 2, gridBottom - gap / 2)
+        }
     }
 
-    /** 가장 가까운 키. 여백이나 키 사이 틈을 눌러도 입력이 빠지지 않게 한다. */
-    private fun keyAt(x: Float, y: Float): Int? {
+    /** 터치가 시작된 대상. 빈 여백이나 키 사이 틈은 가장 가까운 키로 처리해 입력이 빠지지 않게 한다. */
+    private fun targetAt(x: Float, y: Float): Int? {
         val l = layout ?: return null
         if (keyRects.isEmpty()) return null
+        if (leftEdgeRect != null && x < gridLeft) return LEFT_EDGE
+        if (rightEdgeRect != null && x >= gridRight) return RIGHT_EDGE
         val c = floor((x - gridLeft) / cellWidth).toInt().coerceIn(0, l.columns - 1)
         val r = floor((y - gridTop) / cellHeight).toInt().coerceIn(0, l.rows - 1)
         return r * l.columns + c
     }
 
+    private fun isPressed(target: Int) = touches.values.any { it.target == target }
+
     override fun onDraw(canvas: Canvas) {
         canvas.drawColor(backgroundColor)
         val l = layout ?: return
+        leftEdgeRect?.let { drawEdge(canvas, it, l.leftEdge, isPressed(LEFT_EDGE)) }
+        rightEdgeRect?.let { drawEdge(canvas, it, l.rightEdge, isPressed(RIGHT_EDGE)) }
         keyRects.forEachIndexed { index, rect ->
             val key = l.keys[index]
-            val touch = touches.values.firstOrNull { it.keyIndex == index }
+            val touch = touches.values.firstOrNull { it.target == index }
             keyPaint.color = if (touch != null) pressedColor else keyColor
             canvas.drawRoundRect(rect, radius, radius, keyPaint)
 
-            val selected = touch?.let { key[it.direction] }
+            val selected = touch?.action()
             if (selected != null) {
                 drawLabel(canvas, selected.displayLabel, rect.centerX(), rect.centerY(),
                     rect.width() * 0.9f, rect.height() * 0.6f, primaryText, bold = true)
@@ -169,6 +215,15 @@ class DragKeyboardView(context: Context) : View(context) {
                     drawLabel(canvas, action.displayLabel, cx, cy, subW * 0.95f, subH * 0.7f, secondaryText, bold = false)
                 }
             }
+        }
+    }
+
+    private fun drawEdge(canvas: Canvas, rect: RectF, action: KeyAction?, pressed: Boolean) {
+        keyPaint.color = if (pressed) pressedColor else edgeColor
+        canvas.drawRoundRect(rect, radius, radius, keyPaint)
+        if (action != null) {
+            drawLabel(canvas, action.displayLabel, rect.centerX(), rect.centerY(),
+                rect.width() * 0.85f, min(rect.width() * 0.7f, cellHeight * 0.35f), primaryText, bold = true)
         }
     }
 
@@ -190,11 +245,10 @@ class DragKeyboardView(context: Context) : View(context) {
         when (event.actionMasked) {
             MotionEvent.ACTION_DOWN, MotionEvent.ACTION_POINTER_DOWN -> {
                 val i = event.actionIndex
-                val keyIndex = keyAt(event.getX(i), event.getY(i)) ?: return true
-                val touch = Touch(keyIndex, event.getX(i), event.getY(i))
+                val target = targetAt(event.getX(i), event.getY(i)) ?: return true
+                val touch = Touch(target, event.getX(i), event.getY(i))
                 touches[event.getPointerId(i)] = touch
-                val key = layout?.keys?.get(keyIndex)
-                if (key != null && key.repeat && key[Direction.TAP] != null) postDelayed(touch, LONG_PRESS_MS)
+                if (touch.repeats()) postDelayed(touch, LONG_PRESS_MS)
                 feedback()
                 invalidate()
             }
@@ -209,7 +263,7 @@ class DragKeyboardView(context: Context) : View(context) {
                 val touch = touches.remove(event.getPointerId(i)) ?: return true
                 removeCallbacks(touch)
                 updateDirection(touch, event.getX(i), event.getY(i))
-                if (!touch.repeated) layout?.keys?.get(touch.keyIndex)?.get(touch.direction)?.let { onAction?.invoke(it) }
+                if (!touch.repeated) touch.action()?.let { onAction?.invoke(it) }
                 invalidate()
             }
             MotionEvent.ACTION_CANCEL -> cancelTouches()
@@ -218,6 +272,7 @@ class DragKeyboardView(context: Context) : View(context) {
     }
 
     private fun updateDirection(touch: Touch, x: Float, y: Float) {
+        if (touch.isEdge) return
         val direction = DirectionDetector.detect(
             x - touch.downX, y - touch.downY,
             prefs.sensitivityXMm * mmPx, prefs.sensitivityYMm * mmPx,
@@ -248,9 +303,15 @@ class DragKeyboardView(context: Context) : View(context) {
     }
 
     private companion object {
+        const val LEFT_EDGE = -1
+        const val RIGHT_EDGE = -2
         const val LONG_PRESS_MS = 400L
         const val REPEAT_INTERVAL_MS = 60L
         const val STRONG_VIBRATION_MS = 30L
         const val MAX_HEIGHT_RATIO = 0.55f
+        const val MIN_EDGE_BUTTON_MM = 3f
+        val REPEATABLE_KEYS = setOf(
+            SpecialKey.BACKSPACE, SpecialKey.FORWARD_DELETE, SpecialKey.CURSOR_LEFT, SpecialKey.CURSOR_RIGHT,
+        )
     }
 }

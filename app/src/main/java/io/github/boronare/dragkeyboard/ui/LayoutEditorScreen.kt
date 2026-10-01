@@ -52,6 +52,7 @@ import io.github.boronare.dragkeyboard.core.Language
 fun LayoutEditorScreen(original: KeyboardLayout, onSave: (KeyboardLayout) -> Unit, onBack: () -> Unit) {
     var draft by remember(original.id) { mutableStateOf(original) }
     var editingKey by remember { mutableStateOf<Pair<Int, Int>?>(null) }
+    var editingEdge by remember { mutableStateOf<Edge?>(null) }
     var confirmDiscard by remember { mutableStateOf(false) }
     val tryBack: () -> Unit = {
         if (draft != original) {
@@ -124,7 +125,36 @@ fun LayoutEditorScreen(original: KeyboardLayout, onSave: (KeyboardLayout) -> Uni
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
             LayoutGrid(draft) { r, c -> editingKey = r to c }
+
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                Text(stringResource(R.string.edge_buttons), style = MaterialTheme.typography.labelLarge)
+                Text(
+                    stringResource(R.string.edge_buttons_hint),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    EdgeCell(stringResource(R.string.edge_left), draft.leftEdge?.displayLabel, Modifier.weight(1f)) {
+                        editingEdge = Edge.LEFT
+                    }
+                    EdgeCell(stringResource(R.string.edge_right), draft.rightEdge?.displayLabel, Modifier.weight(1f)) {
+                        editingEdge = Edge.RIGHT
+                    }
+                }
+            }
         }
+    }
+
+    editingEdge?.let { edge ->
+        ActionEditorDialog(
+            title = stringResource(if (edge == Edge.LEFT) R.string.edge_left else R.string.edge_right),
+            action = if (edge == Edge.LEFT) draft.leftEdge else draft.rightEdge,
+            onDismiss = { editingEdge = null },
+            onConfirm = {
+                draft = if (edge == Edge.LEFT) draft.copy(leftEdge = it) else draft.copy(rightEdge = it)
+                editingEdge = null
+            },
+        )
     }
 
     editingKey?.let { (r, c) ->
@@ -144,6 +174,28 @@ fun LayoutEditorScreen(original: KeyboardLayout, onSave: (KeyboardLayout) -> Uni
             text = { Text(stringResource(R.string.discard_message)) },
             confirmButton = { TextButton(onClick = onBack) { Text(stringResource(R.string.discard)) } },
             dismissButton = { TextButton(onClick = { confirmDiscard = false }) { Text(stringResource(R.string.cancel)) } },
+        )
+    }
+}
+
+private enum class Edge { LEFT, RIGHT }
+
+@Composable
+private fun EdgeCell(title: String, label: String?, modifier: Modifier, onClick: () -> Unit) {
+    Row(
+        modifier
+            .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(8.dp))
+            .clickable(onClick = onClick)
+            .padding(horizontal = 12.dp, vertical = 10.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Text(title, modifier = Modifier.weight(1f), style = MaterialTheme.typography.bodyMedium)
+        Text(
+            label ?: stringResource(R.string.edge_empty),
+            fontWeight = if (label != null) FontWeight.Bold else FontWeight.Normal,
+            color = if (label != null) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.outline,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
         )
     }
 }
@@ -268,7 +320,7 @@ private fun KeyEditorDialog(key: KeySpec, onDismiss: () -> Unit, onConfirm: (Key
     )
     editing?.let { d ->
         ActionEditorDialog(
-            direction = d,
+            title = stringResource(R.string.edit_action, d.arrow()),
             action = draft[d],
             onDismiss = { editing = null },
             onConfirm = {

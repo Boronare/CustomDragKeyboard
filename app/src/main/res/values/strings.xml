@@ -94,10 +94,15 @@
     <string name="pref_key_height_value">Key height</string>
     <string name="pref_margins_portrait">Margins in portrait</string>
     <string name="pref_margins_landscape">Margins in landscape</string>
-    <string name="pref_margins_hint">Moves the keys away from the screen edges so corner keys are easier to reach.</string>
+    <string name="pref_margins_hint">Leaves space beside the keys so edge keys can be dragged outward. Side buttons set in the layout editor appear in this space.</string>
     <string name="margin_left">Left</string>
     <string name="margin_right">Right</string>
     <string name="margin_bottom">Bottom</string>
     <string name="about">About</string>
     <string name="about_text">Custom Drag Keyboard %1$s\nA rewrite of the 2018 Chung-Ang University Team 135 project, originally based on CompassKeyboard by Gabor Simon.\nhttps://github.com/Boronare/CustomDragKeyboard</string>
+    <string name="edge_buttons">Side buttons</string>
+    <string name="edge_buttons_hint">Optional one-tap actions for the empty space on each side of the keyboard. Drags that start on a key may still slide into that space. Set the side width under Settings › Margins.</string>
+    <string name="edge_left">Left side</string>
+    <string name="edge_right">Right side</string>
+    <string name="edge_empty">Empty (drag space only)</string>
 </resources>
