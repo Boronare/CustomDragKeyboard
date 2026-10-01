@@ -54,4 +54,24 @@ class KeyboardEngineTest {
         val engine = KeyboardEngine(DefaultLayouts.all(), activeIndex = 7)
         assertEquals(1, engine.activeIndex)
     }
+
+    @Test
+    fun passwordModeTypesDubeolsikQwerty() {
+        assertEquals("gks", Dubeolsik.toQwerty("한"))
+        assertEquals("dkssudgktpdy", Dubeolsik.toQwerty("안녕하세요"))
+        assertEquals("ekfr", Dubeolsik.toQwerty("닭"))
+        assertEquals("rhk", Dubeolsik.toQwerty("과"))
+        assertEquals("RTOP", Dubeolsik.toQwerty("ㄲㅆㅒㅖ"))
+        assertEquals("abc1!", Dubeolsik.toQwerty("abc1!"))
+
+        val engine = KeyboardEngine(listOf(DefaultLayouts.classic()))
+        engine.passwordMode = true
+        assertEquals(listOf(ImeCommand.Edit("g", "")), engine.perform(text("ㅎ")))
+        assertEquals(listOf(ImeCommand.Edit("k", "")), engine.perform(text("ㅏ")))
+        assertEquals(listOf(ImeCommand.SendSpecial(SpecialKey.BACKSPACE)), engine.perform(backspace))
+
+        // 비밀번호 칸을 벗어나면 다시 한글을 조합한다
+        engine.passwordMode = false
+        assertEquals(listOf(ImeCommand.Edit("", "ㅎ")), engine.perform(text("ㅎ")))
+    }
 }

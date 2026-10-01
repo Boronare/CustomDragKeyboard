@@ -80,6 +80,7 @@ class DragKeyboardService : InputMethodService() {
         } else {
             engine.setLayouts(userLayouts, userLayouts.indexOfFirst { it.id == prefsStore.activeLayoutId }.coerceAtLeast(0))
         }
+        engine.passwordMode = isPassword(info)
         suggesting = prefs.suggestions && allowsSuggestions(info)
         learning = suggesting && prefs.learnWords &&
             ((info?.imeOptions ?: 0) and EditorInfo.IME_FLAG_NO_PERSONALIZED_LEARNING) == 0
@@ -249,14 +250,19 @@ class DragKeyboardService : InputMethodService() {
             else -> null
         }
 
-    /** 비밀번호나 숫자 입력창에서는 추천하지도 배우지도 않는다. */
-    private fun allowsSuggestions(info: EditorInfo?): Boolean {
+    private fun isPassword(info: EditorInfo?): Boolean {
         val type = info?.inputType ?: return false
         if ((type and InputType.TYPE_MASK_CLASS) != InputType.TYPE_CLASS_TEXT) return false
         val variation = type and InputType.TYPE_MASK_VARIATION
-        return variation != InputType.TYPE_TEXT_VARIATION_PASSWORD &&
-            variation != InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD &&
-            variation != InputType.TYPE_TEXT_VARIATION_WEB_PASSWORD
+        return variation == InputType.TYPE_TEXT_VARIATION_PASSWORD ||
+            variation == InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD ||
+            variation == InputType.TYPE_TEXT_VARIATION_WEB_PASSWORD
+    }
+
+    /** 비밀번호나 숫자 입력창에서는 추천하지도 배우지도 않는다. */
+    private fun allowsSuggestions(info: EditorInfo?): Boolean {
+        val type = info?.inputType ?: return false
+        return (type and InputType.TYPE_MASK_CLASS) == InputType.TYPE_CLASS_TEXT && !isPassword(info)
     }
 
     private fun switchInputMethod() {

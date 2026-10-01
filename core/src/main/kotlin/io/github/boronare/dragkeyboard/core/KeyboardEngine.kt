@@ -20,6 +20,13 @@ class KeyboardEngine(layouts: List<KeyboardLayout>, activeIndex: Int = 0) {
     private var composer: Composer = PassthroughComposer()
 
     val activeLayout: KeyboardLayout get() = layouts[activeIndex]
+    /** 비밀번호 입력칸: 조합하지 않고 한글을 두벌식 자리의 영문으로 바꿔 입력한다. */
+    var passwordMode: Boolean = false
+        set(value) {
+            field = value
+            select(activeIndex)
+        }
+
     val composingText: String get() = composer.composing
     val isComposing: Boolean get() = composingText.isNotEmpty()
 
@@ -35,7 +42,10 @@ class KeyboardEngine(layouts: List<KeyboardLayout>, activeIndex: Int = 0) {
     }
 
     fun perform(action: KeyAction): List<ImeCommand> = when (action) {
-        is KeyAction.Text -> listOf(composer.input(action.text).toCommand())
+        is KeyAction.Text -> {
+            val text = if (passwordMode) Dubeolsik.toQwerty(action.text) else action.text
+            listOf(composer.input(text).toCommand())
+        }
         is KeyAction.Special ->
             if (action.key == SpecialKey.BACKSPACE) {
                 listOf(composer.backspace()?.toCommand() ?: ImeCommand.SendSpecial(SpecialKey.BACKSPACE))
@@ -57,9 +67,10 @@ class KeyboardEngine(layouts: List<KeyboardLayout>, activeIndex: Int = 0) {
 
     private fun select(index: Int) {
         activeIndex = index
-        composer = when (activeLayout.language) {
-            Language.KOREAN -> HangulComposer()
-            Language.ENGLISH -> PassthroughComposer()
+        composer = when {
+            passwordMode -> PassthroughComposer()
+            activeLayout.language == Language.KOREAN -> HangulComposer()
+            else -> PassthroughComposer()
         }
     }
 
