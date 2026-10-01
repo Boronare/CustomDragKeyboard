@@ -35,7 +35,7 @@ private fun App(vm: SettingsViewModel = viewModel()) {
     when {
         route == PREFS -> {
             BackHandler(onBack = goHome)
-            PreferencesScreen(vm.prefs, vm::updatePrefs, onBack = goHome)
+            PreferencesScreen(vm.prefs, vm::updatePrefs, vm::clearLearnedWords, onBack = goHome)
         }
         route.startsWith(EDIT_PREFIX) -> {
             val layout = vm.layout(route.removePrefix(EDIT_PREFIX))

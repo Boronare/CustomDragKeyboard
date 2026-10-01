@@ -10,6 +10,7 @@ import io.github.boronare.dragkeyboard.core.LayoutCodec
 import io.github.boronare.dragkeyboard.data.KeyboardPrefs
 import io.github.boronare.dragkeyboard.data.LayoutRepository
 import io.github.boronare.dragkeyboard.data.PrefsStore
+import io.github.boronare.dragkeyboard.data.WordStore
 
 class SettingsViewModel(app: Application) : AndroidViewModel(app) {
     private val repository = LayoutRepository(app)
@@ -29,6 +30,8 @@ class SettingsViewModel(app: Application) : AndroidViewModel(app) {
         prefs = newPrefs
         prefsStore.save(newPrefs)
     }
+
+    fun clearLearnedWords() = WordStore(getApplication()).clearHistory()
 
     fun layout(id: String): KeyboardLayout? = layouts.find { it.id == id }
 

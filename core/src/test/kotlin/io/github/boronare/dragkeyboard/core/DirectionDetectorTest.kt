@@ -35,4 +35,18 @@ class DirectionDetectorTest {
     fun gridPositionsMatchOrdinals() {
         Direction.entries.forEach { assertEquals(it, Direction.at(it.gridRow, it.gridCol)) }
     }
+
+    @Test
+    fun hybridKeepsShortDragsCardinal() {
+        val hybrid = { dx: Float, dy: Float -> DirectionDetector.detect(dx, dy, 10f, 10f, diagonalScale = 2f) }
+        // 짧은 대각선 드래그는 더 많이 움직인 축의 상하좌우로 판정한다
+        assertEquals(Direction.E, hybrid(12f, -9f))
+        assertEquals(Direction.N, hybrid(9f, -12f))
+        assertEquals(Direction.TAP, hybrid(6f, 6f))
+        // 크게 그어야 대각선이 된다
+        assertEquals(Direction.NE, hybrid(16f, -16f))
+        assertEquals(Direction.SW, hybrid(-15f, 15f))
+        // 멀리 가도 축에 가까우면 상하좌우
+        assertEquals(Direction.S, hybrid(5f, 30f))
+    }
 }

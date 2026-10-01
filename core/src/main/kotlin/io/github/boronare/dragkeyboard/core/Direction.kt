@@ -1,6 +1,7 @@
 package io.github.boronare.dragkeyboard.core
 
 import kotlin.math.PI
+import kotlin.math.abs
 import kotlin.math.atan2
 import kotlin.math.roundToInt
 
@@ -27,14 +28,25 @@ object DirectionDetector {
 
     /**
      * 터치 시작점으로부터의 이동량([dx], [dy])으로 방향을 판정한다.
-     * 이동량을 축별 감도([thresholdX], [thresholdY])로 나눈 타원 안쪽이면 TAP,
-     * 바깥이면 8방향 중 가장 가까운 방향이다.
+     * 이동량을 축별 감도([thresholdX], [thresholdY])로 나눈 거리 r에 따라
+     * - r < 1: TAP
+     * - 1 <= r < [diagonalScale]: 상하좌우만 (십자 판정). 짧은 드래그가 대각선으로 새지 않는다.
+     * - r >= [diagonalScale]: 45도씩 8방향 (각도 판정). 대각선은 크게 그어야 나온다.
+     * [diagonalScale]이 1이면 처음부터 8방향 각도 판정이다.
      */
-    fun detect(dx: Float, dy: Float, thresholdX: Float, thresholdY: Float): Direction {
+    fun detect(dx: Float, dy: Float, thresholdX: Float, thresholdY: Float, diagonalScale: Float = 1f): Direction {
         require(thresholdX > 0f && thresholdY > 0f) { "threshold must be positive" }
         val nx = dx / thresholdX
         val ny = dy / thresholdY
-        if (nx * nx + ny * ny < 1f) return Direction.TAP
+        val r2 = nx * nx + ny * ny
+        if (r2 < 1f) return Direction.TAP
+        if (r2 < diagonalScale * diagonalScale) {
+            return if (abs(nx) >= abs(ny)) {
+                if (nx > 0) Direction.E else Direction.W
+            } else {
+                if (ny > 0) Direction.S else Direction.N
+            }
+        }
         val sector = (atan2(ny.toDouble(), nx.toDouble()) / (PI / 4)).roundToInt()
         return SECTORS[Math.floorMod(sector, 8)]
     }

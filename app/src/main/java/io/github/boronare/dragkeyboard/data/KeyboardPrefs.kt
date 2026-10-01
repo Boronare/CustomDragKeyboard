@@ -14,10 +14,15 @@ data class KeyboardPrefs(
     /** 이 거리(mm) 이상 움직여야 드래그로 인식한다. 작을수록 예민하다. */
     val sensitivityXMm: Float = 3f,
     val sensitivityYMm: Float = 3f,
+    /** 감도의 몇 배를 그어야 대각선으로 인식할지. 그보다 짧으면 상하좌우만 나온다. 1이면 바로 8방향. */
+    val diagonalScale: Float = 1.8f,
     val keyHeightMm: Float = 11f,
     // 가장자리 키도 바깥쪽으로 드래그할 공간이 있도록 좌우 여백을 기본으로 둔다
     val portraitMargins: Margins = DEFAULT_MARGINS,
     val landscapeMargins: Margins = DEFAULT_MARGINS,
+    val suggestions: Boolean = true,
+    /** 입력한 단어를 기억해 추천에 반영한다. */
+    val learnWords: Boolean = true,
 )
 
 class PrefsStore(context: Context) {
@@ -30,9 +35,12 @@ class PrefsStore(context: Context) {
                 ?.let { runCatching { Vibration.valueOf(it) }.getOrNull() } ?: d.vibration,
             sensitivityXMm = sp.getFloat(SENSITIVITY_X, d.sensitivityXMm),
             sensitivityYMm = sp.getFloat(SENSITIVITY_Y, d.sensitivityYMm),
+            diagonalScale = sp.getFloat(DIAGONAL_SCALE, d.diagonalScale),
             keyHeightMm = sp.getFloat(KEY_HEIGHT, d.keyHeightMm),
             portraitMargins = loadMargins("portrait", d.portraitMargins),
             landscapeMargins = loadMargins("landscape", d.landscapeMargins),
+            suggestions = sp.getBoolean(SUGGESTIONS, d.suggestions),
+            learnWords = sp.getBoolean(LEARN_WORDS, d.learnWords),
         )
     }
 
@@ -41,6 +49,9 @@ class PrefsStore(context: Context) {
             .putString(VIBRATION, prefs.vibration.name)
             .putFloat(SENSITIVITY_X, prefs.sensitivityXMm)
             .putFloat(SENSITIVITY_Y, prefs.sensitivityYMm)
+            .putFloat(DIAGONAL_SCALE, prefs.diagonalScale)
+            .putBoolean(SUGGESTIONS, prefs.suggestions)
+            .putBoolean(LEARN_WORDS, prefs.learnWords)
             .putFloat(KEY_HEIGHT, prefs.keyHeightMm)
             .putMargins("portrait", prefs.portraitMargins)
             .putMargins("landscape", prefs.landscapeMargins)
@@ -65,6 +76,9 @@ class PrefsStore(context: Context) {
         const val VIBRATION = "vibration"
         const val SENSITIVITY_X = "sensitivity_x"
         const val SENSITIVITY_Y = "sensitivity_y"
+        const val DIAGONAL_SCALE = "diagonal_scale"
+        const val SUGGESTIONS = "suggestions"
+        const val LEARN_WORDS = "learn_words"
         const val KEY_HEIGHT = "key_height"
         const val ACTIVE_LAYOUT = "active_layout"
     }

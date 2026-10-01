@@ -105,4 +105,15 @@
     <string name="edge_left">Left side</string>
     <string name="edge_right">Right side</string>
     <string name="edge_empty">Empty (drag space only)</string>
+    <string name="pref_diagonal">Diagonal distance</string>
+    <string name="pref_diagonal_value">%1$.1f×</string>
+    <string name="pref_diagonal_hint">Short drags only go up, down, left or right; diagonals need a drag this many times the sensitivity distance. 1.0× uses eight equal directions from the start.</string>
+    <string name="pref_suggestions">Word suggestions</string>
+    <string name="pref_suggestions_enable">Show suggestions above the keyboard</string>
+    <string name="pref_learn_words">Learn from what I type</string>
+    <string name="pref_learn_words_hint">Words you type are kept on this device only and ranked higher. Never in password fields or incognito mode.</string>
+    <string name="pref_clear_learned">Delete learned words</string>
+    <string name="pref_clear_learned_message">All words learned from your typing will be deleted.</string>
+    <string name="pref_clear_learned_done">Learned words deleted</string>
+    <string name="about_dictionary">Suggestion dictionaries are built from wordfreq by Robyn Speer (CC BY-SA 4.0).</string>
 </resources>

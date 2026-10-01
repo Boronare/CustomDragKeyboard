@@ -20,7 +20,8 @@ class KeyboardEngine(layouts: List<KeyboardLayout>, activeIndex: Int = 0) {
     private var composer: Composer = PassthroughComposer()
 
     val activeLayout: KeyboardLayout get() = layouts[activeIndex]
-    val isComposing: Boolean get() = composer.composing.isNotEmpty()
+    val composingText: String get() = composer.composing
+    val isComposing: Boolean get() = composingText.isNotEmpty()
 
     init {
         setLayouts(layouts, activeIndex)

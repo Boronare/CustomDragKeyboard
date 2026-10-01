@@ -37,6 +37,13 @@ import kotlin.math.roundToInt
 class DragKeyboardView(context: Context) : View(context) {
     var onAction: ((KeyAction) -> Unit)? = null
 
+    /** 입력창에 맞춘 엔터 표시(🔍, ➤ …). null이면 기본 ⏎. 표시 값을 직접 정한 엔터 키는 그대로 둔다. */
+    var enterLabel: String? = null
+        set(value) {
+            field = value
+            invalidate()
+        }
+
     private var layout: KeyboardLayout? = null
     private var prefs = KeyboardPrefs()
 
@@ -199,7 +206,7 @@ class DragKeyboardView(context: Context) : View(context) {
 
             val selected = touch?.action()
             if (selected != null) {
-                drawLabel(canvas, selected.displayLabel, rect.centerX(), rect.centerY(),
+                drawLabel(canvas, labelOf(selected), rect.centerX(), rect.centerY(),
                     rect.width() * 0.9f, rect.height() * 0.6f, primaryText, bold = true)
                 return@forEachIndexed
             }
@@ -210,9 +217,9 @@ class DragKeyboardView(context: Context) : View(context) {
                 val cx = rect.left + subW * (d.gridCol + 0.5f)
                 val cy = rect.top + subH * (d.gridRow + 0.5f)
                 if (d == Direction.TAP) {
-                    drawLabel(canvas, action.displayLabel, cx, cy, subW * 1.2f, subH * 1.05f, primaryText, bold = true)
+                    drawLabel(canvas, labelOf(action), cx, cy, subW * 1.2f, subH * 1.05f, primaryText, bold = true)
                 } else {
-                    drawLabel(canvas, action.displayLabel, cx, cy, subW * 0.95f, subH * 0.7f, secondaryText, bold = false)
+                    drawLabel(canvas, labelOf(action), cx, cy, subW * 0.95f, subH * 0.7f, secondaryText, bold = false)
                 }
             }
         }
@@ -222,8 +229,17 @@ class DragKeyboardView(context: Context) : View(context) {
         keyPaint.color = if (pressed) pressedColor else edgeColor
         canvas.drawRoundRect(rect, radius, radius, keyPaint)
         if (action != null) {
-            drawLabel(canvas, action.displayLabel, rect.centerX(), rect.centerY(),
+            drawLabel(canvas, labelOf(action), rect.centerX(), rect.centerY(),
                 rect.width() * 0.85f, min(rect.width() * 0.7f, cellHeight * 0.35f), primaryText, bold = true)
+        }
+    }
+
+    private fun labelOf(action: KeyAction): String {
+        val enter = enterLabel
+        return if (enter != null && action is KeyAction.Special && action.key == SpecialKey.ENTER && action.label.isNullOrEmpty()) {
+            enter
+        } else {
+            action.displayLabel
         }
     }
 
@@ -273,9 +289,14 @@ class DragKeyboardView(context: Context) : View(context) {
 
     private fun updateDirection(touch: Touch, x: Float, y: Float) {
         if (touch.isEdge) return
+        val thresholdY = prefs.sensitivityYMm * mmPx
+        var dy = y - touch.downY
+        // 일부 기기는 키보드 창 위로 나간 터치의 y를 0에 묶어 버린다 (원작의 "위쪽 인식 불량").
+        // 위 경계에 닿았으면 대각선까지 인식될 만큼 위로 그은 것으로 본다.
+        if (y <= 0f) dy = min(dy, -thresholdY * prefs.diagonalScale * TOP_EDGE_BOOST)
         val direction = DirectionDetector.detect(
-            x - touch.downX, y - touch.downY,
-            prefs.sensitivityXMm * mmPx, prefs.sensitivityYMm * mmPx,
+            x - touch.downX, dy,
+            prefs.sensitivityXMm * mmPx, thresholdY, prefs.diagonalScale,
         )
         if (direction == touch.direction) return
         touch.direction = direction
@@ -310,6 +331,7 @@ class DragKeyboardView(context: Context) : View(context) {
         const val STRONG_VIBRATION_MS = 30L
         const val MAX_HEIGHT_RATIO = 0.55f
         const val MIN_EDGE_BUTTON_MM = 3f
+        const val TOP_EDGE_BOOST = 1.05f
         val REPEATABLE_KEYS = setOf(
             SpecialKey.BACKSPACE, SpecialKey.FORWARD_DELETE, SpecialKey.CURSOR_LEFT, SpecialKey.CURSOR_RIGHT,
         )

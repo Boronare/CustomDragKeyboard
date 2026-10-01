@@ -104,4 +104,15 @@
     <string name="edge_left">왼쪽 여백</string>
     <string name="edge_right">오른쪽 여백</string>
     <string name="edge_empty">비어 있음 (드래그 공간)</string>
+    <string name="pref_diagonal">대각선 인식 거리</string>
+    <string name="pref_diagonal_value">%1$.1f배</string>
+    <string name="pref_diagonal_hint">짧게 그으면 상하좌우만 나오고, 감도 거리의 이 배수만큼 그어야 대각선이 됩니다. 1.0배면 처음부터 8방향을 똑같이 나눕니다.</string>
+    <string name="pref_suggestions">단어 추천</string>
+    <string name="pref_suggestions_enable">키보드 위에 추천 단어 보이기</string>
+    <string name="pref_learn_words">입력한 단어 학습</string>
+    <string name="pref_learn_words_hint">입력한 단어를 이 기기에만 저장해 추천 순위에 반영합니다. 비밀번호 칸과 시크릿 모드에서는 학습하지 않습니다.</string>
+    <string name="pref_clear_learned">학습한 단어 삭제</string>
+    <string name="pref_clear_learned_message">입력하면서 학습한 단어가 모두 삭제됩니다.</string>
+    <string name="pref_clear_learned_done">학습한 단어를 삭제했습니다</string>
+    <string name="about_dictionary">추천 사전은 Robyn Speer의 wordfreq 데이터(CC BY-SA 4.0)로 만들었습니다.</string>
 </resources>
