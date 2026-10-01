@@ -67,7 +67,10 @@ JDK 17과 Android SDK(API 35)가 필요합니다.
 ./gradlew :app:assembleDebug  # app/build/outputs/apk/debug/
 ```
 
-GitHub Actions가 푸시할 때마다 테스트를 돌리고 디버그 APK를 artifact로 올립니다.
+GitHub Actions가 푸시할 때마다 테스트를 돌리고, 디버그 APK를 [Releases의 `latest-debug`](https://github.com/Boronare/CustomDragKeyboard/releases/tag/latest-debug)에 올립니다. 로그인 없이 폰 브라우저에서 바로 받아 설치할 수 있습니다.
+
+디버그 APK는 저장소에 포함된 디버그 전용 키(`app/debug.keystore`)로 서명되어, 새 빌드를 지우지 않고 업데이트 설치할 수 있습니다.
+플레이스토어 배포용 업로드 키는 따로 만들어 저장소 밖(GitHub Secrets 등)에 보관해야 합니다.
 
 설치한 뒤 앱을 열어 **시작하기** 카드에서 키보드를 활성화하고 선택하면 됩니다.
 
