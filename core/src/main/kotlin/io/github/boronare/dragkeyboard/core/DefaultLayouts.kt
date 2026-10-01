@@ -4,6 +4,8 @@ package io.github.boronare.dragkeyboard.core
 object DefaultLayouts {
     const val CLASSIC_ID = "default-classic"
     const val ENGLISH_ID = "default-english"
+    const val NUMBER_PAD_ID = "builtin-number-pad"
+    const val PHONE_PAD_ID = "builtin-phone-pad"
 
     fun all(): List<KeyboardLayout> = listOf(classic(), english())
 
@@ -50,6 +52,31 @@ object DefaultLayouts {
         key("<", "\"", ">", "(", ",", ")", "|", ".", "/"),
         key("", "", "", "◂⌨", "⌨▸", "", "", "🌐", ""),
     )
+
+    /**
+     * 숫자 입력칸용 3x4 키패드 + 오른쪽 기능 열. 사용자 자판 목록에는 들어가지 않는다.
+     * 왼쪽 아래 키는 탭하면 -, 밀면 + / : * 이 나와 숫자·날짜·시간 입력을 함께 처리한다.
+     */
+    fun numberPad() = layout(
+        NUMBER_PAD_ID, "123", Language.ENGLISH, 4,
+        digit("1"), digit("2"), digit("3"), key("", "", "", "", "⌫", "", "", "", "", repeat = true),
+        digit("4"), digit("5"), digit("6"), key("", "", "", "◀", "␣", "▶", "", "", ""),
+        digit("7"), digit("8"), digit("9"), key("", "", "", "", "⏎", "", "", "", ""),
+        key("", "+", "", "/", "-", ":", "", "*", ""), digit("0"), key("", ",", "", "", ".", "", "", "", ""),
+        key("", "", "", "", "🌐", "", "", "", ""),
+    )
+
+    /** 전화번호 입력칸용 키패드. * 키를 밀면 + - ( ), # 키를 밀면 , ; (일시정지·대기)가 나온다. */
+    fun phonePad() = layout(
+        PHONE_PAD_ID, "☎", Language.ENGLISH, 4,
+        digit("1"), digit("2"), digit("3"), key("", "", "", "", "⌫", "", "", "", "", repeat = true),
+        digit("4"), digit("5"), digit("6"), key("", "", "", "◀", "␣", "▶", "", "", ""),
+        digit("7"), digit("8"), digit("9"), key("", "", "", "", "⏎", "", "", "", ""),
+        key("", "+", "", "(", "*", ")", "", "-", ""), key("", "+", "", "", "0", "", "", "", ""),
+        key("", ",", "", "", "#", "", "", ";", ""), key("", "", "", "", "🌐", "", "", "", ""),
+    )
+
+    private fun digit(d: String) = key("", "", "", "", d, "", "", "", "")
 
     private fun layout(id: String, name: String, language: Language, columns: Int, vararg keys: KeySpec) =
         KeyboardLayout(id, name, language, keys.size / columns, columns, keys.toList())

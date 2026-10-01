@@ -14,6 +14,7 @@ import io.github.boronare.dragkeyboard.core.DefaultLayouts
 import io.github.boronare.dragkeyboard.core.ImeCommand
 import io.github.boronare.dragkeyboard.core.KeyAction
 import io.github.boronare.dragkeyboard.core.KeyboardEngine
+import io.github.boronare.dragkeyboard.core.KeyboardLayout
 import io.github.boronare.dragkeyboard.core.SpecialKey
 import io.github.boronare.dragkeyboard.core.Suggester
 import io.github.boronare.dragkeyboard.core.UserHistory
@@ -32,6 +33,7 @@ class DragKeyboardService : InputMethodService() {
     private val engine = KeyboardEngine(DefaultLayouts.all())
     private var prefs = KeyboardPrefs()
     private var loadedStamp = Long.MIN_VALUE
+    private var userLayouts: List<KeyboardLayout> = DefaultLayouts.all()
     private var keyboardView: DragKeyboardView? = null
     private var stripView: SuggestionStripView? = null
 
@@ -71,6 +73,13 @@ class DragKeyboardService : InputMethodService() {
         super.onStartInputView(info, restarting)
         reload()
         engine.reset()
+        // 숫자·전화번호·날짜 입력칸에는 사용자 자판 대신 3x4 키패드를 띄운다
+        val pad = numericPadFor(info)
+        if (pad != null) {
+            engine.setLayouts(listOf(pad), 0)
+        } else {
+            engine.setLayouts(userLayouts, userLayouts.indexOfFirst { it.id == prefsStore.activeLayoutId }.coerceAtLeast(0))
+        }
         suggesting = prefs.suggestions && allowsSuggestions(info)
         learning = suggesting && prefs.learnWords &&
             ((info?.imeOptions ?: 0) and EditorInfo.IME_FLAG_NO_PERSONALIZED_LEARNING) == 0
@@ -107,9 +116,7 @@ class DragKeyboardService : InputMethodService() {
         val stamp = repository.lastModified
         if (stamp != loadedStamp) {
             loadedStamp = stamp
-            val layouts = repository.load()
-            val active = layouts.indexOfFirst { it.id == prefsStore.activeLayoutId }.coerceAtLeast(0)
-            engine.setLayouts(layouts, active)
+            userLayouts = repository.load()
         }
         if (wordStore.historyStamp != historyStamp) {
             historyStamp = wordStore.historyStamp
@@ -234,6 +241,13 @@ class DragKeyboardService : InputMethodService() {
         EditorInfo.IME_ACTION_DONE -> "✓"
         else -> null
     }
+
+    private fun numericPadFor(info: EditorInfo?): KeyboardLayout? =
+        when ((info?.inputType ?: 0) and InputType.TYPE_MASK_CLASS) {
+            InputType.TYPE_CLASS_NUMBER, InputType.TYPE_CLASS_DATETIME -> DefaultLayouts.numberPad()
+            InputType.TYPE_CLASS_PHONE -> DefaultLayouts.phonePad()
+            else -> null
+        }
 
     /** 비밀번호나 숫자 입력창에서는 추천하지도 배우지도 않는다. */
     private fun allowsSuggestions(info: EditorInfo?): Boolean {

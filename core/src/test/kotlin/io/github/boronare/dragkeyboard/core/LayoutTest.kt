@@ -21,6 +21,22 @@ class LayoutTest {
     }
 
     @Test
+    fun numericPadsAreStandardKeypads() {
+        listOf(DefaultLayouts.numberPad(), DefaultLayouts.phonePad()).forEach { pad ->
+            assertEquals(4, pad.rows)
+            // 3x4 숫자 배열: 1 2 3 / 4 5 6 / 7 8 9 / _ 0 _
+            val digits = listOf("1", "2", "3", "4", "5", "6", "7", "8", "9")
+            digits.forEachIndexed { i, d ->
+                assertEquals(KeyAction.Text(d), pad.key(i / 3, i % 3)[Direction.TAP])
+            }
+            assertEquals(KeyAction.Text("0"), pad.key(3, 1)[Direction.TAP])
+            val actions = pad.keys.flatMap { it.actions }
+            assertTrue(KeyAction.Special(SpecialKey.BACKSPACE) in actions)
+            assertTrue(KeyAction.Special(SpecialKey.ENTER) in actions)
+        }
+    }
+
+    @Test
     fun resizeKeepsOverlappingKeys() {
         val classic = DefaultLayouts.classic()
         val bigger = classic.resized(4, 6)
