@@ -7,11 +7,11 @@ plugins {
 }
 
 android {
-    namespace = "io.github.boronare.dragkeyboard"
+    namespace = "com.naremotion.dragkeyboard"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "io.github.boronare.dragkeyboard"
+        applicationId = "com.naremotion.dragkeyboard"
         minSdk = 26
         targetSdk = 35
         // CI에서는 실행 번호를 버전 코드로 써서 새 빌드가 항상 이전 빌드 위에 업데이트 설치되게 한다
